@@ -2,7 +2,8 @@
 <html lang="ko" data-ds-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1116">
 <title>개발 진행 스케줄</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -11,17 +12,18 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================
-   개발 진행 스케줄 보드
-   모든 선택자에 ds- 프리픽스를 붙여 외부 CSS와 충돌하지 않게 함
+   개발 진행 스케줄 보드 v2 — 레인 기반 타임라인
+   모든 선택자에 ds- 프리픽스 사용
    ========================================================== */
 
 :root{
-  --ds-r: 10px;
-  --ds-row: 44px;
-  --ds-phrow: 38px;
-  --ds-head: 58px;
-  --ds-side: 288px;
-  --ds-ease: cubic-bezier(.22,.61,.36,1);
+  --ds-r:10px;
+  --ds-head:56px;          /* 타임라인 헤더 높이 */
+  --ds-side:180px;         /* 좌측 레인 이름 폭 */
+  --ds-slot:30px;          /* 서브행 간격 */
+  --ds-bar:24px;           /* 바 높이 */
+  --ds-lpad:7px;           /* 레인 상하 여백 */
+  --ds-ease:cubic-bezier(.22,.61,.36,1);
 
   --ds-planned:#7A879A;
   --ds-active :#4C8DFF;
@@ -31,43 +33,25 @@
 }
 
 html[data-ds-theme="dark"]{
-  --ds-bg:#0E1116;
-  --ds-surface:#141A21;
-  --ds-surface2:#1B222B;
-  --ds-surface3:#232C37;
-  --ds-line:#252E39;
-  --ds-line2:#38434F;
-  --ds-text:#E6EDF3;
-  --ds-text2:#B3BECB;
-  --ds-muted:#7C8A9A;
-  --ds-accent:#FFB020;
-  --ds-weekend:rgba(255,255,255,.022);
-  --ds-shadow:0 18px 50px -12px rgba(0,0,0,.7);
-  --ds-barshade:rgba(0,0,0,.34);
+  --ds-bg:#0E1116; --ds-surface:#141A21; --ds-surface2:#1B222B; --ds-surface3:#232C37;
+  --ds-line:#232B35; --ds-line2:#38434F; --ds-text:#E6EDF3; --ds-text2:#B3BECB; --ds-muted:#7C8A9A;
+  --ds-accent:#FFB020; --ds-weekend:rgba(255,255,255,.022); --ds-hol:rgba(255,107,90,.055);
+  --ds-shadow:0 18px 50px -12px rgba(0,0,0,.7); --ds-barshade:rgba(0,0,0,.34); --ds-on:#0C1016;
 }
 html[data-ds-theme="light"]{
-  --ds-bg:#EEF1F5;
-  --ds-surface:#FFFFFF;
-  --ds-surface2:#F5F7FA;
-  --ds-surface3:#E8EDF2;
-  --ds-line:#DFE5EC;
-  --ds-line2:#C4CEDA;
-  --ds-text:#111820;
-  --ds-text2:#3C4855;
-  --ds-muted:#66748A;
-  --ds-accent:#C97A00;
-  --ds-weekend:rgba(17,24,32,.032);
-  --ds-shadow:0 18px 46px -14px rgba(28,40,58,.32);
-  --ds-barshade:rgba(255,255,255,.42);
+  --ds-bg:#EEF1F5; --ds-surface:#FFFFFF; --ds-surface2:#F5F7FA; --ds-surface3:#E8EDF2;
+  --ds-line:#E1E6EC; --ds-line2:#C4CEDA; --ds-text:#111820; --ds-text2:#3C4855; --ds-muted:#66748A;
+  --ds-accent:#C97A00; --ds-weekend:rgba(17,24,32,.032); --ds-hol:rgba(255,107,90,.07);
+  --ds-shadow:0 18px 46px -14px rgba(28,40,58,.32); --ds-barshade:rgba(255,255,255,.42); --ds-on:#0C1016;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; background:var(--ds-bg); color:var(--ds-text);
+  margin:0;background:var(--ds-bg);color:var(--ds-text);
   font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
-  overflow:hidden;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
 }
 .ds-mono{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -77,420 +61,270 @@ button{cursor:pointer;background:none;border:none;padding:0}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--ds-line2);border-radius:99px;border:3px solid var(--ds-bg)}
 ::-webkit-scrollbar-thumb:hover{background:var(--ds-muted)}
+.ds-hide{display:none !important}
 
-/* ---------- 앱 셸 ---------- */
 .ds-app{display:flex;flex-direction:column;height:100dvh}
 
 /* ---------- 상단바 ---------- */
 .ds-top{
-  flex:0 0 auto;display:flex;align-items:center;gap:12px;
-  padding:0 14px;height:56px;background:var(--ds-surface);
-  border-bottom:1px solid var(--ds-line);z-index:40;
+  flex:0 0 auto;display:flex;align-items:center;gap:9px;padding:0 12px;height:54px;
+  background:var(--ds-surface);border-bottom:1px solid var(--ds-line);z-index:40;
 }
-.ds-brand{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding-right:6px}
-.ds-caret{
-  width:9px;height:17px;background:var(--ds-accent);border-radius:1px;
-  animation:ds-blink 1.15s steps(1) infinite;
-}
+.ds-brand{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.ds-caret{width:9px;height:17px;background:var(--ds-accent);border-radius:1px;animation:ds-blink 1.15s steps(1) infinite}
 @keyframes ds-blink{0%,55%{opacity:1}56%,100%{opacity:.15}}
 .ds-brand h1{margin:0;font-size:14.5px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
-.ds-brand small{display:block;font-size:10px;color:var(--ds-muted);letter-spacing:.09em;font-weight:500}
+.ds-brand small{display:block;font-size:10px;color:var(--ds-muted);letter-spacing:.05em;font-weight:500;white-space:nowrap}
 
-.ds-search{
-  position:relative;flex:1 1 240px;max-width:340px;min-width:0;
-}
-.ds-search input{
-  width:100%;height:34px;padding:0 30px 0 32px;border-radius:8px;
-  background:var(--ds-surface2);border:1px solid var(--ds-line);
-  transition:border-color .15s,background .15s;
-}
+.ds-search{position:relative;flex:1 1 200px;max-width:300px;min-width:0}
+.ds-search input{width:100%;height:34px;padding:0 30px 0 32px;border-radius:8px;background:var(--ds-surface2);border:1px solid var(--ds-line);transition:border-color .15s,background .15s}
 .ds-search input:focus{outline:none;border-color:var(--ds-line2);background:var(--ds-surface3)}
 .ds-search input::placeholder{color:var(--ds-muted)}
 .ds-search svg{position:absolute;left:10px;top:9px;width:16px;height:16px;color:var(--ds-muted)}
-.ds-search kbd{
-  position:absolute;right:8px;top:8px;font-size:10px;color:var(--ds-muted);
-  border:1px solid var(--ds-line2);border-radius:4px;padding:1px 5px;pointer-events:none;
-}
-.ds-search input:focus + kbd,.ds-search input:not(:placeholder-shown) + kbd{display:none}
-
+.ds-search kbd{position:absolute;right:8px;top:8px;font-size:10px;color:var(--ds-muted);border:1px solid var(--ds-line2);border-radius:4px;padding:1px 5px;pointer-events:none}
+.ds-search input:focus+kbd,.ds-search input:not(:placeholder-shown)+kbd{display:none}
 .ds-spacer{flex:1 1 auto}
 
-.ds-seg{display:flex;background:var(--ds-surface2);border:1px solid var(--ds-line);border-radius:8px;padding:2px;gap:2px}
-.ds-seg button{
-  padding:5px 11px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--ds-muted);
-  transition:color .14s,background .14s;
-}
+.ds-seg{display:flex;background:var(--ds-surface2);border:1px solid var(--ds-line);border-radius:8px;padding:2px;gap:2px;flex:0 0 auto}
+.ds-seg button{padding:5px 10px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--ds-muted);transition:color .14s,background .14s;white-space:nowrap}
 .ds-seg button:hover{color:var(--ds-text2)}
 .ds-seg button[aria-pressed="true"]{background:var(--ds-surface3);color:var(--ds-text)}
 
-.ds-btn{
-  display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;
-  border-radius:8px;font-size:13px;font-weight:600;
-  background:var(--ds-surface2);border:1px solid var(--ds-line);color:var(--ds-text2);
-  transition:background .14s,border-color .14s,color .14s;white-space:nowrap;
-}
+.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;font-size:13px;font-weight:600;background:var(--ds-surface2);border:1px solid var(--ds-line);color:var(--ds-text2);transition:background .14s,border-color .14s,color .14s;white-space:nowrap;flex:0 0 auto}
 .ds-btn:hover{background:var(--ds-surface3);color:var(--ds-text);border-color:var(--ds-line2)}
 .ds-btn svg{width:15px;height:15px;flex:0 0 auto}
-.ds-btn--primary{background:var(--ds-accent);border-color:transparent;color:#12161B}
-.ds-btn--primary:hover{background:var(--ds-accent);color:#12161B;filter:brightness(1.08)}
-.ds-btn--icon{width:34px;padding:0;justify-content:center}
+.ds-btn--primary{background:var(--ds-accent);border-color:transparent;color:var(--ds-on)}
+.ds-btn--primary:hover{background:var(--ds-accent);color:var(--ds-on);filter:brightness(1.08)}
+.ds-btn--icon{width:34px;padding:0}
 .ds-btn--danger{color:var(--ds-blocked);border-color:color-mix(in srgb,var(--ds-blocked) 34%,transparent)}
 .ds-btn--danger:hover{background:color-mix(in srgb,var(--ds-blocked) 14%,transparent);color:var(--ds-blocked)}
+.ds-btn--sm{height:28px;padding:0 9px;font-size:12px;border-radius:7px}
 .ds-btn[disabled]{opacity:.45;pointer-events:none}
-
-.ds-who{display:flex;align-items:center;gap:8px;padding-left:2px}
-.ds-dot{width:7px;height:7px;border-radius:99px;background:var(--ds-done);box-shadow:0 0 0 3px color-mix(in srgb,var(--ds-done) 20%,transparent)}
+.ds-dot{width:7px;height:7px;border-radius:99px;background:var(--ds-done);box-shadow:0 0 0 3px color-mix(in srgb,var(--ds-done) 20%,transparent);flex:0 0 auto}
 .ds-dot--view{background:var(--ds-muted);box-shadow:0 0 0 3px color-mix(in srgb,var(--ds-muted) 20%,transparent)}
 
 /* ---------- 필터 바 ---------- */
-.ds-filters{
-  flex:0 0 auto;display:flex;align-items:center;gap:6px;overflow-x:auto;
-  padding:8px 14px;background:var(--ds-surface);border-bottom:1px solid var(--ds-line);
-  scrollbar-width:none;
-}
+.ds-filters{flex:0 0 auto;display:flex;align-items:center;gap:6px;overflow-x:auto;padding:7px 12px;background:var(--ds-surface);border-bottom:1px solid var(--ds-line);scrollbar-width:none}
 .ds-filters::-webkit-scrollbar{display:none}
-.ds-chip{
-  display:inline-flex;align-items:center;gap:6px;height:27px;padding:0 10px;
-  border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap;
-  border:1px solid var(--ds-line);background:var(--ds-surface2);color:var(--ds-muted);
-  transition:all .14s;
-}
+.ds-chip{display:inline-flex;align-items:center;gap:6px;height:27px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid var(--ds-line);background:var(--ds-surface2);color:var(--ds-muted);transition:all .14s;flex:0 0 auto}
 .ds-chip:hover{border-color:var(--ds-line2);color:var(--ds-text2)}
 .ds-chip i{width:7px;height:7px;border-radius:2px;background:currentColor;flex:0 0 auto}
 .ds-chip[aria-pressed="true"]{color:var(--ds-text);background:var(--ds-surface3);border-color:var(--ds-line2)}
-.ds-chip[aria-pressed="true"] i{box-shadow:0 0 0 3px color-mix(in srgb,currentColor 22%,transparent)}
-.ds-chip__n{font-size:10.5px;opacity:.6;font-family:'JetBrains Mono',monospace}
-.ds-fdiv{width:1px;height:18px;background:var(--ds-line);flex:0 0 auto;margin:0 4px}
+.ds-chip__n{font-size:10.5px;opacity:.62;font-family:'JetBrains Mono',monospace}
+.ds-fdiv{width:1px;height:18px;background:var(--ds-line);flex:0 0 auto;margin:0 3px}
 
 /* ---------- 보드 ---------- */
 .ds-board{flex:1 1 auto;overflow:auto;position:relative;overscroll-behavior:contain}
 .ds-inner{display:flex;align-items:flex-start;min-height:100%;width:max-content;min-width:100%}
 
-/* 좌측 고정 컬럼 */
-.ds-left{
-  position:sticky;left:0;z-index:20;flex:0 0 var(--ds-side);width:var(--ds-side);
-  background:var(--ds-surface);border-right:1px solid var(--ds-line2);
-}
+.ds-left{position:sticky;left:0;z-index:20;flex:0 0 var(--ds-side);width:var(--ds-side);background:var(--ds-surface);border-right:1px solid var(--ds-line2)}
 html[data-ds-theme="dark"] .ds-left{box-shadow:14px 0 22px -18px rgba(0,0,0,.9)}
 html[data-ds-theme="light"] .ds-left{box-shadow:14px 0 20px -18px rgba(30,44,64,.34)}
-.ds-left__head{
-  position:sticky;top:0;z-index:5;height:var(--ds-head);
-  display:flex;align-items:flex-end;padding:0 14px 9px;
-  background:var(--ds-surface);border-bottom:1px solid var(--ds-line2);
-  font-size:10.5px;font-weight:700;letter-spacing:.13em;color:var(--ds-muted);
-}
+.ds-left__head{position:sticky;top:0;z-index:5;height:var(--ds-head);display:flex;align-items:flex-end;justify-content:space-between;gap:6px;padding:0 10px 8px;background:var(--ds-surface);border-bottom:1px solid var(--ds-line2);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--ds-muted)}
 
-/* 우측 타임라인 */
 .ds-right{position:relative;flex:0 0 auto}
-.ds-right__head{
-  position:sticky;top:0;z-index:15;height:var(--ds-head);
-  background:var(--ds-surface);border-bottom:1px solid var(--ds-line2);
-}
-.ds-months{display:flex;height:28px;align-items:center}
-.ds-month{
-  position:relative;height:28px;display:flex;align-items:center;padding-left:9px;
-  font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--ds-text2);
-  border-left:1px solid var(--ds-line2);overflow:hidden;white-space:nowrap;
-}
+.ds-right__head{position:sticky;top:0;z-index:15;height:var(--ds-head);background:var(--ds-surface);border-bottom:1px solid var(--ds-line2)}
+.ds-months{display:flex;height:27px;align-items:center}
+.ds-month{position:relative;height:27px;display:flex;align-items:center;padding-left:9px;font-size:11px;font-weight:700;color:var(--ds-text2);border-left:1px solid var(--ds-line2);overflow:hidden;white-space:nowrap}
 .ds-month:first-child{border-left:none}
-.ds-ticks{display:flex;height:29px;position:relative}
-.ds-tick{
-  flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-left:1px solid var(--ds-line);color:var(--ds-muted);font-size:10.5px;line-height:1.15;
-  overflow:hidden;
-}
+.ds-ticks{display:flex;height:28px;position:relative}
+.ds-tick{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:1px solid var(--ds-line);color:var(--ds-muted);font-size:10.5px;line-height:1.15;overflow:hidden}
 .ds-tick b{font-weight:600;font-size:11px;color:var(--ds-text2);font-family:'JetBrains Mono',monospace}
-.ds-tick em{font-style:normal;font-size:8.5px;letter-spacing:.04em}
-.ds-tick--we b,.ds-tick--we em{color:var(--ds-muted);opacity:.75}
-.ds-tick--sun b{color:var(--ds-blocked);opacity:.8}
+.ds-tick em{font-style:normal;font-size:8.5px}
+.ds-tick--we b,.ds-tick--we em{opacity:.7}
+.ds-tick--sun b{color:var(--ds-blocked);opacity:.85}
+.ds-tick--today{background:color-mix(in srgb,var(--ds-accent) 13%,transparent)}
 .ds-tick--today b{color:var(--ds-accent)}
-.ds-tick--today{background:color-mix(in srgb,var(--ds-accent) 12%,transparent)}
 
-/* 배경 레이어 */
 .ds-layer{position:absolute;inset:var(--ds-head) 0 0 0;pointer-events:none;z-index:0}
 .ds-band{position:absolute;top:0;bottom:0;background:var(--ds-weekend)}
-.ds-mline{position:absolute;top:0;bottom:0;width:1px;background:var(--ds-line2);opacity:.7}
+.ds-mline{position:absolute;top:0;bottom:0;width:1px;background:var(--ds-line2);opacity:.65}
 
-/* 오늘 라인 */
-.ds-today{
-  position:absolute;top:calc(var(--ds-head) - 29px);bottom:0;width:2px;z-index:12;
-  background:var(--ds-accent);pointer-events:none;
-  box-shadow:0 0 14px color-mix(in srgb,var(--ds-accent) 60%,transparent);
-}
-.ds-today::before{
-  content:'';position:absolute;top:-1px;left:-3px;width:8px;height:8px;border-radius:99px;
-  background:var(--ds-accent);
-}
-.ds-today::after{
-  content:'';position:absolute;top:-6px;left:-8px;width:18px;height:18px;border-radius:99px;
-  background:var(--ds-accent);opacity:.28;animation:ds-pulse 2.4s ease-out infinite;
-}
+.ds-today{position:absolute;top:calc(var(--ds-head) - 28px);bottom:0;width:2px;z-index:12;background:var(--ds-accent);pointer-events:none;box-shadow:0 0 14px color-mix(in srgb,var(--ds-accent) 60%,transparent)}
+.ds-today::before{content:'';position:absolute;top:-1px;left:-3px;width:8px;height:8px;border-radius:99px;background:var(--ds-accent)}
+.ds-today::after{content:'';position:absolute;top:-6px;left:-8px;width:18px;height:18px;border-radius:99px;background:var(--ds-accent);opacity:.28;animation:ds-pulse 2.4s ease-out infinite}
 @keyframes ds-pulse{0%{transform:scale(.5);opacity:.4}70%,100%{transform:scale(1.9);opacity:0}}
 
-/* ---------- 행 ---------- */
-.ds-rows{position:relative;z-index:2}
-.ds-row{display:flex;align-items:center;height:var(--ds-row);border-bottom:1px solid var(--ds-line);position:relative}
-.ds-row--ph{height:var(--ds-phrow);background:var(--ds-surface2);border-bottom:1px solid var(--ds-line2)}
-.ds-row--add{height:34px;border-bottom:1px solid var(--ds-line)}
-.ds-row.is-hot{background:color-mix(in srgb,var(--ds-accent) 7%,transparent)}
-.ds-row.is-sel{background:color-mix(in srgb,var(--ds-active) 11%,transparent)}
+/* ---------- 레인 ---------- */
+.ds-lane{position:relative;border-bottom:1px solid var(--ds-line)}
+.ds-lane--leave{background:color-mix(in srgb,var(--ds-muted) 6%,transparent)}
+.ds-lane--drop{cursor:copy}
 
-/* 좌측 행 내용 */
-.ds-lrow{padding:0 10px 0 8px;gap:8px;overflow:hidden}
-.ds-ph{display:flex;align-items:center;gap:8px;width:100%;padding:0 4px;overflow:hidden}
-.ds-ph__tog{
-  width:20px;height:20px;flex:0 0 auto;display:grid;place-items:center;border-radius:5px;color:var(--ds-muted);
-  transition:background .13s,transform .18s var(--ds-ease);
-}
-.ds-ph__tog:hover{background:var(--ds-surface3);color:var(--ds-text)}
-.ds-ph__tog svg{width:13px;height:13px}
-.ds-ph.is-closed .ds-ph__tog{transform:rotate(-90deg)}
-.ds-ph__sw{width:9px;height:9px;border-radius:3px;flex:0 0 auto}
-.ds-ph__name{
-  font-size:12px;font-weight:700;letter-spacing:.01em;flex:1 1 auto;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:4px;padding:2px 3px;
-}
-.ds-ph__name[contenteditable="true"]:focus{background:var(--ds-surface3);outline:none}
-.ds-ph__n{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;flex:0 0 auto}
-.ds-ph__x{opacity:0;width:22px;height:22px;display:grid;place-items:center;border-radius:5px;color:var(--ds-muted);flex:0 0 auto}
-.ds-row--ph:hover .ds-ph__x{opacity:1}
-.ds-ph__x:hover{background:var(--ds-surface3);color:var(--ds-blocked)}
-.ds-ph__x svg{width:13px;height:13px}
+/* 좌측 레인 헤더 */
+.ds-lh{display:flex;align-items:center;gap:7px;height:100%;padding:0 8px 0 6px;overflow:hidden}
+.ds-lh__tog{width:20px;height:20px;flex:0 0 auto;display:grid;place-items:center;border-radius:5px;color:var(--ds-muted);transition:background .13s,transform .18s var(--ds-ease)}
+.ds-lh__tog:hover{background:var(--ds-surface3);color:var(--ds-text)}
+.ds-lh__tog svg{width:13px;height:13px}
+.ds-lh.is-closed .ds-lh__tog{transform:rotate(-90deg)}
+.ds-lh__sw{width:4px;align-self:stretch;margin:8px 0;border-radius:99px;flex:0 0 auto}
+.ds-lh__b{flex:1 1 auto;min-width:0}
+.ds-lh__name{font-size:12.5px;font-weight:700;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:4px;padding:1px 3px;margin-left:-3px}
+.ds-lh__name[contenteditable="true"]:focus{background:var(--ds-surface3);outline:none}
+.ds-lh__sub{font-size:10px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.ds-lh__acts{display:flex;gap:2px;flex:0 0 auto;opacity:0;transition:opacity .13s}
+.ds-lane:hover .ds-lh__acts,.ds-lh__acts:focus-within{opacity:1}
+.ds-ia{width:24px;height:24px;display:grid;place-items:center;border-radius:6px;color:var(--ds-muted)}
+.ds-ia:hover{background:var(--ds-surface3);color:var(--ds-text)}
+.ds-ia--del:hover{color:var(--ds-blocked)}
+.ds-ia svg{width:14px;height:14px}
+@media (hover:none){.ds-lh__acts{opacity:1}}
 
-.ds-tk{display:flex;align-items:center;gap:9px;width:100%;overflow:hidden;padding-left:22px}
-.ds-tk__st{width:8px;height:8px;border-radius:99px;flex:0 0 auto}
-.ds-tk__body{flex:1 1 auto;min-width:0}
-.ds-tk__title{
-  font-size:13px;font-weight:600;color:var(--ds-text);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;border-radius:4px;padding:1px 3px;margin-left:-3px;
-}
-.ds-tk__title[contenteditable="true"]:focus{background:var(--ds-surface3);outline:none;text-overflow:clip}
-.ds-tk.is-done .ds-tk__title{color:var(--ds-muted);text-decoration:line-through;text-decoration-color:var(--ds-line2)}
-.ds-tk__meta{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--ds-muted);margin-top:1px}
-.ds-tk__who{
-  max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  font-weight:600;color:var(--ds-text2);
-}
-.ds-cbadge{
-  display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;
-  padding:1px 5px;border-radius:99px;background:var(--ds-surface3);color:var(--ds-text2);flex:0 0 auto;
-}
-.ds-cbadge svg{width:9px;height:9px}
-.ds-cbadge--new{background:color-mix(in srgb,var(--ds-accent) 22%,transparent);color:var(--ds-accent)}
-
-.ds-add{
-  display:flex;align-items:center;gap:7px;height:100%;width:100%;padding-left:30px;
-  font-size:12px;font-weight:600;color:var(--ds-muted);transition:color .14s;
-}
-.ds-add:hover{color:var(--ds-accent)}
-.ds-add svg{width:13px;height:13px}
-
-/* ---------- 바 ---------- */
-.ds-rrow{position:relative;width:100%;height:100%}
+/* 바 */
+.ds-track{position:relative;width:100%;height:100%}
 .ds-bar{
-  position:absolute;top:50%;transform:translateY(-50%);height:26px;border-radius:7px;
-  display:flex;align-items:center;gap:6px;padding:0 9px;min-width:16px;
-  color:#0C1016;font-weight:700;font-size:11.5px;overflow:hidden;
-  cursor:grab;user-select:none;touch-action:none;
-  transition:box-shadow .16s,filter .16s,transform .12s var(--ds-ease);
-  box-shadow:0 2px 0 var(--ds-barshade) inset,0 3px 10px -4px rgba(0,0,0,.5);
+  position:absolute;height:var(--ds-bar);border-radius:7px;display:flex;align-items:center;gap:5px;
+  padding:0 8px;min-width:12px;color:var(--ds-on);font-weight:700;font-size:11.5px;overflow:hidden;
+  cursor:grab;user-select:none;touch-action:pan-y;
+  box-shadow:0 2px 0 var(--ds-barshade) inset,0 3px 10px -5px rgba(0,0,0,.5);
+  transition:box-shadow .16s,filter .16s,opacity .16s;
 }
-.ds-bar:hover{filter:brightness(1.09);box-shadow:0 0 0 2px color-mix(in srgb,var(--ds-text) 22%,transparent),0 6px 16px -6px rgba(0,0,0,.6)}
+.ds-bar:hover{filter:brightness(1.09);box-shadow:0 0 0 2px color-mix(in srgb,var(--ds-text) 24%,transparent),0 6px 16px -6px rgba(0,0,0,.6)}
 .ds-bar.is-drag{cursor:grabbing;filter:brightness(1.14);z-index:9;box-shadow:0 0 0 2px var(--ds-accent),0 12px 26px -8px rgba(0,0,0,.7)}
 .ds-bar.is-sel{box-shadow:0 0 0 2px var(--ds-text),0 6px 18px -6px rgba(0,0,0,.6)}
 .ds-bar.is-ro{cursor:pointer}
+.ds-bar.is-done{opacity:.6}
+.ds-bar.is-dim{opacity:.22;filter:grayscale(.7)}
 .ds-bar__fill{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,.3);pointer-events:none}
 .ds-bar__txt{position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:1}
-.ds-bar__cnt{
-  position:relative;z-index:1;flex:0 0 auto;font-size:9.5px;font-weight:800;
-  padding:0 4px;border-radius:99px;background:rgba(0,0,0,.24);
-}
-.ds-bar__h{
-  position:absolute;top:0;bottom:0;width:9px;cursor:ew-resize;z-index:2;
-  opacity:0;transition:opacity .13s;
-}
-.ds-bar__h::after{content:'';position:absolute;top:7px;bottom:7px;left:3px;width:2.5px;border-radius:2px;background:rgba(0,0,0,.42)}
+.ds-bar__cnt{position:relative;z-index:1;flex:0 0 auto;font-size:9.5px;font-weight:800;padding:0 4px;border-radius:99px;background:rgba(0,0,0,.24)}
+.ds-bar__h{position:absolute;top:0;bottom:0;width:10px;cursor:ew-resize;z-index:2;opacity:0;transition:opacity .13s}
+.ds-bar__h::after{content:'';position:absolute;top:7px;bottom:7px;left:3.5px;width:2.5px;border-radius:2px;background:rgba(0,0,0,.42)}
 .ds-bar:hover .ds-bar__h{opacity:1}
-.ds-bar__h--l{left:0}
-.ds-bar__h--r{right:0}
-.ds-bar--milestone{border-radius:99px;padding:0 8px}
-.ds-bar.is-done{opacity:.62}
+.ds-bar__h--l{left:0}.ds-bar__h--r{right:0}
+.ds-bar--tiny{padding:0 3px}
+.ds-bar--tiny .ds-bar__txt,.ds-bar--tiny .ds-bar__cnt{display:none}
 
-.ds-ghost{
-  position:absolute;top:50%;transform:translateY(-50%);height:26px;border-radius:7px;
-  border:1.5px dashed var(--ds-line2);pointer-events:none;
+/* 휴가 바 */
+.ds-leave{
+  position:absolute;height:20px;border-radius:6px;display:flex;align-items:center;gap:5px;
+  padding:0 8px;font-size:10.5px;font-weight:700;overflow:hidden;white-space:nowrap;
+  cursor:pointer;user-select:none;border:1px solid;
 }
+.ds-leave__t{position:relative;z-index:1;overflow:hidden;text-overflow:ellipsis}
+.ds-leave::before{content:'';position:absolute;inset:0;opacity:.5;background-image:repeating-linear-gradient(-45deg,currentColor 0 1.5px,transparent 1.5px 7px)}
 
-.ds-tip{
-  position:fixed;z-index:200;pointer-events:none;padding:6px 9px;border-radius:7px;
-  background:var(--ds-text);color:var(--ds-bg);font-size:11.5px;font-weight:700;
-  font-family:'JetBrains Mono',monospace;white-space:nowrap;box-shadow:var(--ds-shadow);
-  opacity:0;transform:translate(-50%,-140%);transition:opacity .1s;
-}
+/* 접힌 레인 요약 */
+.ds-sum{position:absolute;height:7px;top:50%;transform:translateY(-50%);border-radius:99px;opacity:.4;pointer-events:none}
+
+.ds-tip{position:fixed;z-index:200;pointer-events:none;padding:6px 9px;border-radius:7px;background:var(--ds-text);color:var(--ds-bg);font-size:11.5px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap;box-shadow:var(--ds-shadow);opacity:0;transform:translate(-50%,-150%);transition:opacity .1s}
 .ds-tip.is-on{opacity:1}
 
-/* 단계 요약 바 */
-.ds-phbar{
-  position:absolute;top:50%;transform:translateY(-50%);height:7px;border-radius:99px;
-  opacity:.34;pointer-events:none;
-}
-
 /* ---------- 목록 뷰 ---------- */
-.ds-list{padding:14px;max-width:1180px}
-.ds-lgroup{margin-bottom:22px}
-.ds-lgroup__h{display:flex;align-items:center;gap:9px;margin-bottom:8px;padding:0 2px}
-.ds-lgroup__h span{font-size:12px;font-weight:700;letter-spacing:.02em}
+.ds-list{padding:12px;max-width:1180px}
+.ds-lgroup{margin-bottom:20px}
+.ds-lgroup__h{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:0 2px}
+.ds-lgroup__h span{font-size:12px;font-weight:700}
+.ds-sw{width:9px;height:9px;border-radius:3px;flex:0 0 auto}
 .ds-ltable{width:100%;border-collapse:separate;border-spacing:0;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r);overflow:hidden}
-.ds-ltable th{
-  text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ds-muted);
-  padding:9px 12px;background:var(--ds-surface2);border-bottom:1px solid var(--ds-line);
-}
-.ds-ltable td{padding:10px 12px;border-bottom:1px solid var(--ds-line);font-size:13px;vertical-align:middle}
+.ds-ltable th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--ds-muted);padding:9px 11px;background:var(--ds-surface2);border-bottom:1px solid var(--ds-line)}
+.ds-ltable td{padding:9px 11px;border-bottom:1px solid var(--ds-line);font-size:13px;vertical-align:middle}
 .ds-ltable tr:last-child td{border-bottom:none}
 .ds-ltable tbody tr{cursor:pointer;transition:background .12s}
 .ds-ltable tbody tr:hover{background:var(--ds-surface2)}
-.ds-ltable .ds-c-num{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ds-text2);white-space:nowrap}
-.ds-pill{
-  display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:99px;
-  font-size:11px;font-weight:700;white-space:nowrap;
-}
-.ds-mini{height:5px;border-radius:99px;background:var(--ds-surface3);overflow:hidden;min-width:56px}
+.ds-ltable tbody tr.is-dim{opacity:.42}
+.ds-c-num{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ds-text2);white-space:nowrap}
+.ds-pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}
+.ds-mini{height:5px;border-radius:99px;background:var(--ds-surface3);overflow:hidden;min-width:52px}
 .ds-mini i{display:block;height:100%;border-radius:99px}
 
-/* ---------- 드로어 ---------- */
-.ds-scrim{
-  position:fixed;inset:0;z-index:90;background:rgba(6,9,13,.5);backdrop-filter:blur(2px);
-  opacity:0;pointer-events:none;transition:opacity .22s;
-}
+/* ---------- 드로어 / 시트 ---------- */
+.ds-scrim{position:fixed;inset:0;z-index:90;background:rgba(6,9,13,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .22s}
 .ds-scrim.is-on{opacity:1;pointer-events:auto}
-.ds-drawer{
-  position:fixed;top:0;right:0;bottom:0;z-index:100;width:min(440px,100vw);
-  background:var(--ds-surface);border-left:1px solid var(--ds-line2);
-  display:flex;flex-direction:column;box-shadow:var(--ds-shadow);
-  transform:translateX(101%);transition:transform .28s var(--ds-ease);
-}
-.ds-drawer.is-on{transform:translateX(0)}
-.ds-dr__top{
-  flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 12px 16px;
-  border-bottom:1px solid var(--ds-line);
-}
-.ds-dr__eyebrow{flex:1 1 auto;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
-.ds-dr__body{flex:1 1 auto;overflow-y:auto;padding:16px}
-.ds-dr__title{
-  width:100%;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.32;
-  background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 8px;margin:-6px -8px 14px;
-  resize:none;overflow:hidden;
-}
+.ds-drawer{position:fixed;top:0;right:0;bottom:0;z-index:100;width:min(432px,100vw);background:var(--ds-surface);border-left:1px solid var(--ds-line2);display:flex;flex-direction:column;box-shadow:var(--ds-shadow);transform:translateX(101%);transition:transform .28s var(--ds-ease)}
+.ds-drawer.is-on{transform:none}
+.ds-dr__top{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:11px 11px 11px 15px;border-bottom:1px solid var(--ds-line)}
+.ds-dr__eyebrow{flex:1 1 auto;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-dr__body{flex:1 1 auto;overflow-y:auto;padding:15px;overscroll-behavior:contain}
+.ds-dr__title{width:100%;font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.32;background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 8px;margin:-6px -8px 14px;resize:none;overflow:hidden;font-family:inherit}
 .ds-dr__title:focus{outline:none;background:var(--ds-surface2);border-color:var(--ds-line2)}
-.ds-dr__title[readonly]{cursor:default}
 
-.ds-fld{margin-bottom:15px}
-.ds-fld__lb{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ds-muted);margin-bottom:7px}
-.ds-in{
-  width:100%;height:36px;padding:0 10px;border-radius:8px;background:var(--ds-surface2);
-  border:1px solid var(--ds-line);transition:border-color .14s,background .14s;
-}
-textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line-height:1.6}
+.ds-fld{margin-bottom:14px}
+.ds-fld__lb{display:block;font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--ds-muted);margin-bottom:6px}
+.ds-in{width:100%;height:36px;padding:0 10px;border-radius:8px;background:var(--ds-surface2);border:1px solid var(--ds-line);transition:border-color .14s,background .14s}
+textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line-height:1.6;font-family:inherit}
 .ds-in:focus{outline:none;border-color:var(--ds-line2);background:var(--ds-surface3)}
-.ds-in:disabled{opacity:.65;cursor:not-allowed}
+.ds-in:disabled{opacity:.6;cursor:not-allowed}
 .ds-in::placeholder{color:var(--ds-muted)}
 .ds-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .ds-stats{display:flex;flex-wrap:wrap;gap:6px}
-.ds-stat{
-  display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:8px;
-  font-size:12px;font-weight:700;border:1px solid var(--ds-line);background:var(--ds-surface2);color:var(--ds-muted);
-  transition:all .14s;
-}
+.ds-stat{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:8px;font-size:12px;font-weight:700;border:1px solid var(--ds-line);background:var(--ds-surface2);color:var(--ds-muted);transition:all .14s}
 .ds-stat i{width:8px;height:8px;border-radius:99px;background:currentColor}
-.ds-stat[aria-pressed="true"]{color:#0C1016;border-color:transparent}
+.ds-stat[aria-pressed="true"]{color:var(--ds-on);border-color:transparent}
 .ds-stat[disabled]{pointer-events:none}
 .ds-range{width:100%;accent-color:var(--ds-accent);height:22px}
-.ds-dur{
-  display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ds-muted);
-  font-family:'JetBrains Mono',monospace;margin-top:7px;
-}
+.ds-dur{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;margin-top:7px}
 .ds-quick{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.ds-quick button{
-  height:26px;padding:0 9px;border-radius:6px;font-size:11px;font-weight:600;
-  background:var(--ds-surface2);border:1px solid var(--ds-line);color:var(--ds-muted);
-}
+.ds-quick button{height:26px;padding:0 9px;border-radius:6px;font-size:11px;font-weight:600;background:var(--ds-surface2);border:1px solid var(--ds-line);color:var(--ds-muted)}
 .ds-quick button:hover{color:var(--ds-text);border-color:var(--ds-line2)}
-
-.ds-hr{height:1px;background:var(--ds-line);margin:18px -16px}
+.ds-hr{height:1px;background:var(--ds-line);margin:16px -15px}
+.ds-row2{display:flex;gap:8px;flex-wrap:wrap}
 
 /* 댓글 */
-.ds-cm__h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ds-cm__h{display:flex;align-items:center;gap:8px;margin-bottom:11px}
 .ds-cm__h b{font-size:12.5px;font-weight:700}
 .ds-cm__h span{font-size:11px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
-.ds-cm{display:flex;gap:10px;margin-bottom:14px}
-.ds-av{
-  width:28px;height:28px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;
-  font-size:11.5px;font-weight:800;color:#0C1016;
-}
+.ds-cm{display:flex;gap:9px;margin-bottom:13px}
+.ds-av{width:27px;height:27px;flex:0 0 auto;border-radius:9px;display:grid;place-items:center;font-size:11.5px;font-weight:800;color:var(--ds-on)}
 .ds-cm__b{flex:1 1 auto;min-width:0}
-.ds-cm__meta{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.ds-cm__meta{display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .ds-cm__meta b{font-size:12.5px;font-weight:700}
 .ds-cm__meta time{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
-.ds-tag{font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:color-mix(in srgb,var(--ds-accent) 20%,transparent);color:var(--ds-accent)}
+.ds-tag{font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:1px 5px;border-radius:4px;background:color-mix(in srgb,var(--ds-accent) 20%,transparent);color:var(--ds-accent)}
 .ds-cm__x{opacity:0;margin-left:auto;color:var(--ds-muted);font-size:11px;transition:opacity .13s}
 .ds-cm:hover .ds-cm__x{opacity:1}
 .ds-cm__x:hover{color:var(--ds-blocked)}
 .ds-cm__t{font-size:13px;color:var(--ds-text2);white-space:pre-wrap;word-break:break-word;line-height:1.62}
-.ds-cm__empty{text-align:center;padding:22px 0;font-size:12.5px;color:var(--ds-muted)}
+.ds-cm__empty{text-align:center;padding:20px 0;font-size:12.5px;color:var(--ds-muted)}
 
-.ds-write{
-  position:sticky;bottom:0;background:var(--ds-surface);border-top:1px solid var(--ds-line);
-  padding:11px 16px 14px;flex:0 0 auto;
-}
-.ds-write__me{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:11px;color:var(--ds-muted)}
-.ds-write__me b{color:var(--ds-text2);font-weight:700}
-.ds-write__me button{font-size:11px;color:var(--ds-accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
-.ds-write textarea{
-  width:100%;min-height:60px;max-height:180px;padding:9px 10px;border-radius:9px;resize:none;
-  background:var(--ds-surface2);border:1px solid var(--ds-line);line-height:1.55;
-}
+.ds-write{background:var(--ds-surface);border-top:1px solid var(--ds-line);padding:10px 15px calc(12px + env(safe-area-inset-bottom));flex:0 0 auto}
+.ds-write__me{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.ds-write__me>span{font-size:11px;color:var(--ds-muted);margin-right:2px}
+.ds-pick{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid var(--ds-line);background:var(--ds-surface2);color:var(--ds-muted);transition:all .14s}
+.ds-pick[aria-pressed="true"]{color:var(--ds-on);border-color:transparent}
+.ds-write textarea{width:100%;min-height:56px;max-height:170px;padding:9px 10px;border-radius:9px;resize:none;background:var(--ds-surface2);border:1px solid var(--ds-line);line-height:1.55;font-family:inherit}
 .ds-write textarea:focus{outline:none;border-color:var(--ds-line2);background:var(--ds-surface3)}
 .ds-write__row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px}
 .ds-write__hint{font-size:10.5px;color:var(--ds-muted)}
 
 /* ---------- 모달 ---------- */
-.ds-modal{
-  position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:18px;
-  background:rgba(6,9,13,.62);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s;
-}
+.ds-modal{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:16px;background:rgba(6,9,13,.62);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
 .ds-modal.is-on{opacity:1;pointer-events:auto}
-.ds-modal__card{
-  width:100%;max-width:390px;background:var(--ds-surface);border:1px solid var(--ds-line2);
-  border-radius:16px;padding:24px;box-shadow:var(--ds-shadow);
-  transform:translateY(10px) scale(.985);transition:transform .24s var(--ds-ease);
-}
+.ds-modal__card{width:100%;max-width:400px;max-height:88dvh;overflow-y:auto;background:var(--ds-surface);border:1px solid var(--ds-line2);border-radius:16px;padding:22px;box-shadow:var(--ds-shadow);transform:translateY(10px) scale(.985);transition:transform .24s var(--ds-ease)}
 .ds-modal.is-on .ds-modal__card{transform:none}
 .ds-modal h2{margin:0 0 5px;font-size:17px;font-weight:700;letter-spacing:-.02em}
-.ds-modal p{margin:0 0 18px;font-size:12.5px;color:var(--ds-muted);line-height:1.6}
+.ds-modal p{margin:0 0 16px;font-size:12.5px;color:var(--ds-muted);line-height:1.6}
 .ds-modal p code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--ds-surface3);padding:1px 5px;border-radius:4px}
-.ds-err{
-  font-size:12px;color:var(--ds-blocked);margin-top:10px;min-height:16px;font-weight:600;
-}
+.ds-err{font-size:12px;color:var(--ds-blocked);margin-top:8px;min-height:15px;font-weight:600}
 
-/* ---------- 토스트 ---------- */
-.ds-toasts{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.ds-toast{
-  display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:99px;
-  background:var(--ds-text);color:var(--ds-bg);font-size:12.5px;font-weight:700;
-  box-shadow:var(--ds-shadow);animation:ds-in .3s var(--ds-ease);
-}
+/* 관리자 설정 */
+.ds-tabs{display:flex;gap:2px;background:var(--ds-surface2);border:1px solid var(--ds-line);border-radius:9px;padding:3px;margin-bottom:16px}
+.ds-tabs button{flex:1;padding:6px;border-radius:6px;font-size:12.5px;font-weight:600;color:var(--ds-muted)}
+.ds-tabs button[aria-pressed="true"]{background:var(--ds-surface3);color:var(--ds-text)}
+.ds-mrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--ds-line)}
+.ds-mrow:last-of-type{border-bottom:none}
+.ds-swatch{width:26px;height:26px;border-radius:8px;border:none;padding:0;cursor:pointer;flex:0 0 auto;overflow:hidden}
+.ds-swatch::-webkit-color-swatch-wrapper{padding:0}
+.ds-swatch::-webkit-color-swatch{border:none;border-radius:8px}
+.ds-mrow input[type="text"]{flex:1 1 auto;min-width:0;height:32px;padding:0 9px;border-radius:7px;background:var(--ds-surface2);border:1px solid var(--ds-line)}
+.ds-mrow input[type="text"]:focus{outline:none;border-color:var(--ds-line2)}
+.ds-arch{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--ds-line)}
+.ds-arch__b{flex:1 1 auto;min-width:0}
+.ds-arch__t{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-arch__d{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
+
+/* ---------- 토스트 / 로딩 ---------- */
+.ds-toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;padding:0 12px}
+.ds-toast{display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:99px;background:var(--ds-text);color:var(--ds-bg);font-size:12.5px;font-weight:700;box-shadow:var(--ds-shadow);animation:ds-in .3s var(--ds-ease);text-align:center}
 .ds-toast--bad{background:var(--ds-blocked);color:#fff}
+.ds-toast button{color:inherit;font-weight:800;text-decoration:underline;text-underline-offset:2px;pointer-events:auto}
 .ds-toast.is-out{animation:ds-out .25s var(--ds-ease) forwards}
 @keyframes ds-in{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes ds-out{to{opacity:0;transform:translateY(8px) scale(.96)}}
 
-/* ---------- 빈 화면 / 로딩 ---------- */
-.ds-empty{
-  position:absolute;inset:var(--ds-head) 0 0 0;display:grid;place-items:center;z-index:30;pointer-events:none;
-}
-.ds-empty__in{text-align:center;pointer-events:auto;max-width:330px;padding:20px}
+.ds-empty{position:absolute;inset:var(--ds-head) 0 auto 0;display:grid;place-items:center;padding:40px 20px;z-index:30}
+.ds-empty__in{text-align:center;max-width:330px}
 .ds-empty h3{margin:0 0 6px;font-size:15px;font-weight:700}
-.ds-empty p{margin:0 0 16px;font-size:12.5px;color:var(--ds-muted);line-height:1.65}
+.ds-empty p{margin:0 0 15px;font-size:12.5px;color:var(--ds-muted);line-height:1.65}
 .ds-skel{position:fixed;inset:0;z-index:400;display:grid;place-items:center;background:var(--ds-bg);transition:opacity .3s}
 .ds-skel.is-off{opacity:0;pointer-events:none}
 .ds-skel__b{display:flex;gap:5px}
@@ -500,20 +334,33 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
 .ds-skel__b i:nth-child(4){animation-delay:.36s}
 @keyframes ds-bounce{0%,100%{transform:scaleY(.45);opacity:.4}50%{transform:scaleY(1);opacity:1;background:var(--ds-accent)}}
 
-.ds-hide{display:none !important}
-
 /* ---------- 반응형 ---------- */
-@media (max-width:820px){
-  :root{--ds-side:190px}
+@media (max-width:900px){
+  :root{--ds-side:132px}
   .ds-brand small{display:none}
-  .ds-search{flex-basis:130px}
-  .ds-tk__meta{display:none}
-  .ds-tk{padding-left:14px}
-  .ds-drawer{width:100vw}
 }
-@media (max-width:560px){
-  .ds-brand h1{display:none}
-  .ds-seg button{padding:5px 8px}
+@media (max-width:720px){
+  :root{--ds-side:108px;--ds-slot:28px;--ds-bar:22px}
+  .ds-top{height:auto;flex-wrap:wrap;padding:8px 10px;gap:7px}
+  .ds-brand{order:1}
+  .ds-topact{order:2;margin-left:auto;display:flex;gap:6px}
+  .ds-search{order:3;flex:1 1 100%;max-width:none}
+  .ds-topseg{order:4;flex:1 1 100%;display:flex;gap:6px}
+  .ds-topseg .ds-seg{flex:1 1 auto}
+  .ds-topseg .ds-seg button{flex:1}
+  .ds-lh__name{font-size:11.5px}
+  .ds-lh__sub{display:none}
+  .ds-drawer{
+    top:auto;left:0;right:0;bottom:0;width:100vw;height:92dvh;border-left:none;
+    border-top:1px solid var(--ds-line2);border-radius:18px 18px 0 0;
+    transform:translateY(101%);
+  }
+  .ds-drawer.is-on{transform:none}
+  .ds-dr__top{padding:10px 10px 10px 14px}
+  .ds-dr__top::before{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);width:38px;height:4px;border-radius:99px;background:var(--ds-line2)}
+  .ds-modal__card{max-width:none}
+  .ds-ltable th:nth-child(4),.ds-ltable td:nth-child(4),
+  .ds-ltable th:nth-child(5),.ds-ltable td:nth-child(5){display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
@@ -526,7 +373,6 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
 
 <div class="ds-app">
 
-  <!-- 상단바 -->
   <header class="ds-top">
     <div class="ds-brand">
       <div class="ds-caret"></div>
@@ -534,6 +380,21 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
         <h1>개발 진행 스케줄</h1>
         <small class="ds-mono" id="dsSub">SCHEDULE</small>
       </div>
+    </div>
+
+    <div class="ds-topact">
+      <button class="ds-btn ds-btn--icon ds-hide" id="dsAdmin" title="관리자 설정" aria-label="관리자 설정">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7.5 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1.7a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 3.3 7.5a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1A1.6 1.6 0 0 0 8.7 1.7V1.7a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5h.1a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.4 1Z" transform="translate(1.7 1.7) scale(0.86)"/></svg>
+      </button>
+      <button class="ds-btn ds-btn--icon" id="dsTheme" title="테마 전환" aria-label="테마 전환">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="ds-btn ds-btn--primary ds-hide" id="dsNew" title="새 작업 (N)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="ds-newlb">새 작업</span>
+      </button>
+      <span class="ds-dot ds-dot--view" id="dsDot" style="margin:0 2px"></span>
+      <button class="ds-btn" id="dsAuth">로그인</button>
     </div>
 
     <div class="ds-search">
@@ -544,42 +405,35 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
 
     <div class="ds-spacer"></div>
 
-    <div class="ds-seg" id="dsView" role="group" aria-label="보기 전환">
-      <button data-view="timeline" aria-pressed="true">타임라인</button>
-      <button data-view="list" aria-pressed="false">목록</button>
-    </div>
-
-    <div class="ds-seg ds-zoomseg" id="dsZoom" role="group" aria-label="확대 수준">
-      <button data-zoom="day" aria-pressed="false">일</button>
-      <button data-zoom="week" aria-pressed="true">주</button>
-      <button data-zoom="month" aria-pressed="false">월</button>
-    </div>
-
-    <button class="ds-btn" id="dsToday" title="오늘로 이동 (T)">오늘</button>
-
-    <button class="ds-btn ds-btn--icon" id="dsTheme" title="테마 전환" aria-label="테마 전환">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-    </button>
-
-    <button class="ds-btn ds-btn--primary ds-hide" id="dsNew" title="새 작업 (N)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      새 작업
-    </button>
-
-    <div class="ds-who">
-      <span class="ds-dot ds-dot--view" id="dsDot"></span>
-      <button class="ds-btn" id="dsAuth">로그인</button>
+    <div class="ds-topseg">
+      <div class="ds-seg" id="dsView" role="group" aria-label="보기">
+        <button data-view="timeline" aria-pressed="true">타임라인</button>
+        <button data-view="list" aria-pressed="false">목록</button>
+      </div>
+      <div class="ds-seg" id="dsGroup" role="group" aria-label="묶기 기준">
+        <button data-group="phase" aria-pressed="true">단계</button>
+        <button data-group="member" aria-pressed="false">담당</button>
+      </div>
+      <div class="ds-seg ds-zoomseg" id="dsZoom" role="group" aria-label="확대">
+        <button data-zoom="day" aria-pressed="false">일</button>
+        <button data-zoom="week" aria-pressed="true">주</button>
+        <button data-zoom="month" aria-pressed="false">월</button>
+      </div>
+      <button class="ds-btn" id="dsToday" title="오늘로 이동 (T)">오늘</button>
     </div>
   </header>
 
-  <!-- 필터 -->
   <div class="ds-filters" id="dsFilters"></div>
 
-  <!-- 보드 -->
   <div class="ds-board" id="dsBoard">
     <div class="ds-inner" id="dsInner">
       <aside class="ds-left">
-        <div class="ds-left__head ds-mono">작업</div>
+        <div class="ds-left__head">
+          <span id="dsLeftHead">단계</span>
+          <button class="ds-ia ds-hide" id="dsAddLane" title="단계 추가" aria-label="단계 추가">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
         <div id="dsLeft"></div>
       </aside>
       <div class="ds-right" id="dsRight">
@@ -589,14 +443,14 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
         </div>
         <div class="ds-layer" id="dsLayer"></div>
         <div class="ds-today ds-hide" id="dsTodayLine"></div>
-        <div class="ds-rows" id="dsRowsR"></div>
+        <div id="dsLanes"></div>
       </div>
     </div>
     <div class="ds-list ds-hide" id="dsListView"></div>
     <div class="ds-empty ds-hide" id="dsEmpty">
       <div class="ds-empty__in">
         <h3 id="dsEmptyT">아직 작업이 없습니다</h3>
-        <p id="dsEmptyP">단계를 만들고 첫 작업을 추가하면 여기에 타임라인이 그려집니다.</p>
+        <p id="dsEmptyP">단계를 만들고 빈 곳을 더블클릭하면 그 날짜에 작업이 생깁니다.</p>
         <button class="ds-btn ds-btn--primary ds-hide" id="dsEmptyBtn" style="margin:0 auto">첫 단계 만들기</button>
       </div>
     </div>
@@ -605,12 +459,18 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
 
 <div class="ds-tip ds-mono" id="dsTip"></div>
 
-<!-- 상세 드로어 -->
+<!-- 작업 상세 -->
 <div class="ds-scrim" id="dsScrim"></div>
 <aside class="ds-drawer" id="dsDrawer" aria-hidden="true">
   <div class="ds-dr__top">
     <span class="ds-dr__eyebrow" id="dsDrEyebrow">작업</span>
-    <button class="ds-btn ds-btn--icon ds-btn--danger ds-hide" id="dsDrDel" title="작업 삭제" aria-label="작업 삭제">
+    <button class="ds-btn ds-btn--icon" id="dsDrHide" title="내 화면에서 숨기기" aria-label="숨기기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+    </button>
+    <button class="ds-btn ds-btn--icon ds-hide" id="dsDrArch" title="보관함으로 (모두에게 숨김)" aria-label="보관">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 7h18v3H3zM5 10v10h14V10M10 14h4"/></svg>
+    </button>
+    <button class="ds-btn ds-btn--icon ds-btn--danger ds-hide" id="dsDrDel" title="작업 삭제" aria-label="삭제">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>
     </button>
     <button class="ds-btn ds-btn--icon" id="dsDrClose" title="닫기 (Esc)" aria-label="닫기">
@@ -627,26 +487,15 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
     </div>
 
     <div class="ds-fld ds-2col">
-      <div>
-        <label class="ds-fld__lb" for="dsDrStart">시작</label>
-        <input class="ds-in ds-mono" type="date" id="dsDrStart">
-      </div>
-      <div>
-        <label class="ds-fld__lb" for="dsDrEnd">종료</label>
-        <input class="ds-in ds-mono" type="date" id="dsDrEnd">
-      </div>
+      <div><label class="ds-fld__lb" for="dsDrStart">시작</label><input class="ds-in ds-mono" type="date" id="dsDrStart"></div>
+      <div><label class="ds-fld__lb" for="dsDrEnd">종료</label><input class="ds-in ds-mono" type="date" id="dsDrEnd"></div>
     </div>
     <div class="ds-dur" id="dsDrDur"></div>
     <div class="ds-quick" id="dsDrQuick"></div>
 
-    <div class="ds-fld" style="margin-top:16px">
-      <label class="ds-fld__lb" for="dsDrPhase">단계</label>
-      <select class="ds-in" id="dsDrPhase"></select>
-    </div>
-
-    <div class="ds-fld">
-      <label class="ds-fld__lb" for="dsDrWho">담당</label>
-      <input class="ds-in" id="dsDrWho" placeholder="담당자 이름" autocomplete="off">
+    <div class="ds-fld ds-2col" style="margin-top:15px">
+      <div><label class="ds-fld__lb" for="dsDrPhase">단계</label><select class="ds-in" id="dsDrPhase"></select></div>
+      <div><label class="ds-fld__lb" for="dsDrWho">담당</label><select class="ds-in" id="dsDrWho"></select></div>
     </div>
 
     <div class="ds-fld">
@@ -660,18 +509,12 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
     </div>
 
     <div class="ds-hr"></div>
-
-    <div class="ds-cm__h">
-      <b>댓글</b><span id="dsDrCnt">0</span>
-    </div>
+    <div class="ds-cm__h"><b>댓글</b><span id="dsDrCnt">0</span></div>
     <div id="dsDrComments"></div>
   </div>
 
   <div class="ds-write">
-    <div class="ds-write__me">
-      <span>작성자</span><b id="dsMeName">–</b>
-      <button id="dsMeEdit">이름 바꾸기</button>
-    </div>
+    <div class="ds-write__me"><span>작성자</span><div id="dsPickers" style="display:flex;gap:5px;flex-wrap:wrap"></div></div>
     <textarea id="dsCmBody" rows="2" placeholder="의견을 남겨주세요"></textarea>
     <div class="ds-write__row">
       <span class="ds-write__hint">⌘/Ctrl + Enter 로 등록</span>
@@ -680,53 +523,69 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
   </div>
 </aside>
 
-<!-- 로그인 모달 -->
+<!-- 휴가 편집 -->
+<div class="ds-modal" id="dsLeaveModal">
+  <div class="ds-modal__card" style="max-width:360px">
+    <h2 id="dsLvTitle">휴가 등록</h2>
+    <p>휴가 예정일을 등록하면 해당 기간이 담당자 줄에 표시됩니다.</p>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsLvWho">누구</label><select class="ds-in" id="dsLvWho"></select></div>
+    <div class="ds-fld ds-2col">
+      <div><label class="ds-fld__lb" for="dsLvStart">시작</label><input class="ds-in ds-mono" type="date" id="dsLvStart"></div>
+      <div><label class="ds-fld__lb" for="dsLvEnd">종료</label><input class="ds-in ds-mono" type="date" id="dsLvEnd"></div>
+    </div>
+    <div class="ds-fld"><span class="ds-fld__lb">종류</span><div class="ds-stats" id="dsLvKind"></div></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsLvMemo">메모</label><input class="ds-in" id="dsLvMemo" placeholder="예: 제주도"></div>
+    <div class="ds-err" id="dsLvErr"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="ds-btn ds-btn--danger ds-hide" id="dsLvDel">삭제</button>
+      <button class="ds-btn" id="dsLvCancel" style="flex:1">취소</button>
+      <button class="ds-btn ds-btn--primary" id="dsLvGo" style="flex:1">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 관리자 설정 -->
+<div class="ds-modal" id="dsAdminModal">
+  <div class="ds-modal__card" style="max-width:440px">
+    <h2>관리자 설정</h2>
+    <p>담당자 목록은 작업 배정과 댓글 작성자 선택에 함께 쓰입니다.</p>
+    <div class="ds-tabs" id="dsAdmTabs">
+      <button data-tab="members" aria-pressed="true">담당자</button>
+      <button data-tab="archive" aria-pressed="false">보관함</button>
+    </div>
+    <div id="dsAdmMembers">
+      <div id="dsMemberList"></div>
+      <button class="ds-btn ds-btn--sm" id="dsMemberAdd" style="margin-top:12px;width:100%">담당자 추가</button>
+    </div>
+    <div id="dsAdmArchive" class="ds-hide"><div id="dsArchList"></div></div>
+    <button class="ds-btn" id="dsAdmClose" style="width:100%;margin-top:16px">닫기</button>
+  </div>
+</div>
+
+<!-- 로그인 -->
 <div class="ds-modal" id="dsLoginModal">
   <div class="ds-modal__card">
     <h2>관리자 로그인</h2>
     <p>일정을 수정하려면 로그인하세요. 로그인 없이도 일정 보기와 댓글 작성은 가능합니다.</p>
-    <div class="ds-fld">
-      <label class="ds-fld__lb" for="dsLgEmail">이메일</label>
-      <input class="ds-in" type="email" id="dsLgEmail" autocomplete="username">
-    </div>
-    <div class="ds-fld">
-      <label class="ds-fld__lb" for="dsLgPw">비밀번호</label>
-      <input class="ds-in" type="password" id="dsLgPw" autocomplete="current-password">
-    </div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsLgEmail">이메일</label><input class="ds-in" type="email" id="dsLgEmail" autocomplete="username"></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsLgPw">비밀번호</label><input class="ds-in" type="password" id="dsLgPw" autocomplete="current-password"></div>
     <div class="ds-err" id="dsLgErr"></div>
-    <div style="display:flex;gap:8px;margin-top:14px">
+    <div style="display:flex;gap:8px;margin-top:12px">
       <button class="ds-btn" id="dsLgCancel" style="flex:1">취소</button>
-      <button class="ds-btn ds-btn--primary" id="dsLgGo" style="flex:1;justify-content:center">로그인</button>
+      <button class="ds-btn ds-btn--primary" id="dsLgGo" style="flex:1">로그인</button>
     </div>
   </div>
 </div>
 
-<!-- 이름 모달 -->
-<div class="ds-modal" id="dsNameModal">
-  <div class="ds-modal__card" style="max-width:340px">
-    <h2>이름을 알려주세요</h2>
-    <p>댓글에 표시될 이름입니다. 이 브라우저에 저장되며 언제든 바꿀 수 있습니다.</p>
-    <input class="ds-in" id="dsNameIn" placeholder="예: 김개발" maxlength="20" autocomplete="name">
-    <div class="ds-err" id="dsNameErr"></div>
-    <button class="ds-btn ds-btn--primary" id="dsNameGo" style="width:100%;justify-content:center;margin-top:14px">저장</button>
-  </div>
-</div>
-
-<!-- 설정 모달 (최초 1회) -->
+<!-- 설정 -->
 <div class="ds-modal" id="dsCfgModal">
   <div class="ds-modal__card" style="max-width:430px">
     <h2>Supabase 연결</h2>
-    <p>프로젝트의 <code>Project URL</code>과 <code>anon public</code> 키를 넣어주세요. Supabase 대시보드 → Settings → API 에서 복사할 수 있습니다.</p>
-    <div class="ds-fld">
-      <label class="ds-fld__lb" for="dsCfgUrl">PROJECT URL</label>
-      <input class="ds-in ds-mono" id="dsCfgUrl" placeholder="https://xxxx.supabase.co" style="font-size:12px">
-    </div>
-    <div class="ds-fld">
-      <label class="ds-fld__lb" for="dsCfgKey">ANON PUBLIC KEY</label>
-      <input class="ds-in ds-mono" id="dsCfgKey" placeholder="eyJhbGciOi..." style="font-size:12px">
-    </div>
+    <p><code>Project URL</code>과 <code>anon public</code> 키를 넣어주세요. Settings → API 에서 복사할 수 있습니다.</p>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsCfgUrl">PROJECT URL</label><input class="ds-in ds-mono" id="dsCfgUrl" placeholder="https://xxxx.supabase.co" style="font-size:12px"></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsCfgKey">ANON PUBLIC KEY</label><input class="ds-in ds-mono" id="dsCfgKey" placeholder="eyJhbGciOi..." style="font-size:12px"></div>
     <div class="ds-err" id="dsCfgErr"></div>
-    <button class="ds-btn ds-btn--primary" id="dsCfgGo" style="width:100%;justify-content:center;margin-top:6px">연결하기</button>
+    <button class="ds-btn ds-btn--primary" id="dsCfgGo" style="width:100%;margin-top:4px">연결하기</button>
   </div>
 </div>
 
@@ -735,29 +594,24 @@ textarea.ds-in{height:auto;min-height:88px;padding:9px 10px;resize:vertical;line
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
-/* ============================================================
-   0. 설정
-   여기에 값을 직접 넣어두면 접속하는 모든 사람에게 바로 적용됩니다.
-   비워두면 첫 방문 시 화면에서 입력받아 브라우저에 저장합니다.
-   ============================================================ */
 const CONFIG = {
   SUPABASE_URL: 'https://jjjmpaknnnatalkaxbfn.supabase.co',
   SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impqam1wYWtubm5hdGFsa2F4YmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2ODkzMTgsImV4cCI6MjA2NzI2NTMxOH0.l9HCgcBTrJgnVREWJq9wT4nyvTbfvrIK5TVNZpqPOHk'
 };
 
 /* ---------- 유틸 ---------- */
-const $  = (s, r = document) => r.querySelector(s);
-const el = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+const $ = (s, r = document) => r.querySelector(s);
+const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
 const DAY = 86400000;
-const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-const esc = s => String(s ?? '');
-
-const pd  = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
-const fd  = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const pd = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+const fd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const addD = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const midn = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const diffD = (a, b) => Math.round((midn(b) - midn(a)) / DAY);
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
+const cvar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const npx = v => parseInt(cvar(v)) || 0;
+const dbounce = (fn, ms = 500) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => fn(...a), ms); }; };
 
 const STATUS = [
   { k: 'planned', label: '대기',   v: '--ds-planned' },
@@ -767,58 +621,61 @@ const STATUS = [
   { k: 'blocked', label: '보류',   v: '--ds-blocked' }
 ];
 const statusOf = k => STATUS.find(s => s.k === k) || STATUS[0];
-const cvar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-
+const KINDS = [
+  { k: 'annual', label: '연차' }, { k: 'half', label: '반차' },
+  { k: 'sick', label: '병가' }, { k: 'public', label: '공가' }, { k: 'etc', label: '기타' }
+];
+const kindOf = k => KINDS.find(x => x.k === k) || KINDS[0];
 const ZOOM = { day: 38, week: 14, month: 5 };
+const PALETTE = ['#4C8DFF', '#2FBF71', '#B57BFF', '#FFB020', '#FF6B5A', '#22C7C7', '#F473B9', '#8B9BFF'];
 
 const LS = {
-  get(k, dflt) { try { const v = localStorage.getItem('ds.' + k); return v == null ? dflt : JSON.parse(v); } catch { return dflt; } },
+  get(k, d) { try { const v = localStorage.getItem('ds.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem('ds.' + k, JSON.stringify(v)); } catch {} }
 };
 
 /* ---------- 상태 ---------- */
 const S = {
   sb: null,
-  phases: [], tasks: [], comments: [],
+  phases: [], tasks: [], comments: [], members: [], leaves: [],
   isOwner: false, user: null,
   zoom: LS.get('zoom', 'week'),
   view: LS.get('view', 'timeline'),
+  group: LS.get('group', 'phase'),
   q: '',
   fStatus: new Set(LS.get('fStatus', [])),
   fWho: LS.get('fWho', null),
   closed: new Set(LS.get('closed', [])),
+  hidden: new Set(LS.get('hidden', [])),
+  showHidden: false,
   seen: LS.get('seen', {}),
-  me: LS.get('me', null),
-  sel: null,
+  meId: LS.get('meId', null),
+  sel: null, selLeave: null,
   dragging: false,
   range: { s: null, days: 0 },
   dayW: ZOOM[LS.get('zoom', 'week')] || 14
 };
 
-/* ---------- 토스트 ---------- */
-function toast(msg, bad) {
+function toast(msg, bad, action) {
   const n = el('div', 'ds-toast' + (bad ? ' ds-toast--bad' : ''), msg);
+  if (action) { const b = el('button', null, action.label); b.onclick = () => { action.fn(); n.remove(); }; n.appendChild(b); }
   $('#dsToasts').appendChild(n);
-  setTimeout(() => { n.classList.add('is-out'); setTimeout(() => n.remove(), 260); }, bad ? 4200 : 1900);
+  setTimeout(() => { n.classList.add('is-out'); setTimeout(() => n.remove(), 260); }, bad ? 4500 : action ? 5000 : 1900);
 }
 
 /* ============================================================
-   1. 연결
+   부팅
    ============================================================ */
-function connect(url, key) {
-  S.sb = createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true } });
-}
+function connect(url, key) { S.sb = createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true } }); }
 
 async function boot() {
   const url = CONFIG.SUPABASE_URL || LS.get('cfgUrl', '');
   const key = CONFIG.SUPABASE_ANON_KEY || LS.get('cfgKey', '');
-  if (!url || !key) { $('#dsSkel').classList.add('is-off'); $('#dsCfgModal').classList.add('is-on'); $('#dsCfgUrl').focus(); return; }
-
+  if (!url || !key) { $('#dsSkel').classList.add('is-off'); $('#dsCfgModal').classList.add('is-on'); return; }
   connect(url, key);
   const { data } = await S.sb.auth.getSession();
   setUser(data?.session?.user || null);
-  S.sb.auth.onAuthStateChange((_e, sess) => { setUser(sess?.user || null); render(); });
-
+  S.sb.auth.onAuthStateChange((_e, s) => { setUser(s?.user || null); render(); });
   await loadAll();
   subscribe();
   applyView();
@@ -827,66 +684,48 @@ async function boot() {
   $('#dsSkel').classList.add('is-off');
 }
 
-$('#dsCfgGo').addEventListener('click', async () => {
-  const url = $('#dsCfgUrl').value.trim().replace(/\/+$/, '');
-  const key = $('#dsCfgKey').value.trim();
-  if (!/^https?:\/\/.+/.test(url) || key.length < 20) { $('#dsCfgErr').textContent = 'URL과 키를 다시 확인해주세요.'; return; }
-  $('#dsCfgErr').textContent = '';
-  connect(url, key);
-  const { error } = await S.sb.from('ds_phases').select('id').limit(1);
-  if (error) { $('#dsCfgErr').textContent = '연결 실패: ' + error.message; return; }
-  LS.set('cfgUrl', url); LS.set('cfgKey', key);
-  $('#dsCfgModal').classList.remove('is-on');
-  location.reload();
-});
-$('#dsCfgKey').addEventListener('keydown', e => { if (e.key === 'Enter') $('#dsCfgGo').click(); });
-
 function setUser(u) {
   S.user = u; S.isOwner = !!u;
   $('#dsAuth').textContent = u ? '로그아웃' : '로그인';
-  $('#dsAuth').title = u ? (u.email || '') : '관리자 로그인';
   $('#dsDot').classList.toggle('ds-dot--view', !u);
-  $('#dsNew').classList.toggle('ds-hide', !u);
-  $('#dsDrDel').classList.toggle('ds-hide', !u);
-  if (u && !S.me) { S.me = (u.email || '관리자').split('@')[0]; LS.set('me', S.me); }
+  ['#dsNew', '#dsAdmin', '#dsDrDel', '#dsDrArch'].forEach(s => $(s).classList.toggle('ds-hide', !u));
+  $('#dsAddLane').classList.toggle('ds-hide', !u);
 }
 
-/* ============================================================
-   2. 데이터
-   ============================================================ */
 async function loadAll() {
-  const [p, t, c] = await Promise.all([
+  const [p, t, c, m, l] = await Promise.all([
     S.sb.from('ds_phases').select('*').order('sort').order('created_at'),
-    S.sb.from('ds_tasks').select('*').order('sort').order('start_date'),
-    S.sb.from('ds_comments').select('id,task_id,author,body,is_owner,created_at').order('created_at')
+    S.sb.from('ds_tasks').select('*').order('start_date'),
+    S.sb.from('ds_comments').select('*').order('created_at'),
+    S.sb.from('ds_members').select('*').order('sort').order('created_at'),
+    S.sb.from('ds_leaves').select('*').order('start_date')
   ]);
-  if (p.error || t.error || c.error) {
-    const e = p.error || t.error || c.error;
-    toast('데이터를 불러오지 못했습니다: ' + e.message, true);
+  const err = [p, t, c, m, l].find(r => r.error)?.error;
+  if (err) {
+    toast('데이터를 불러오지 못했습니다: ' + err.message, true);
+    if (/ds_members|ds_leaves|is_archived|member_id/.test(err.message))
+      toast('supabase-migration-v2.sql 을 먼저 실행해주세요', true);
     return;
   }
-  S.phases = p.data || []; S.tasks = t.data || []; S.comments = c.data || [];
+  S.phases = p.data; S.tasks = t.data; S.comments = c.data; S.members = m.data; S.leaves = l.data;
 }
 
-let reloadTimer = null;
+let rt = null;
 function scheduleReload() {
-  clearTimeout(reloadTimer);
-  reloadTimer = setTimeout(async () => {
-    if (S.dragging || document.activeElement?.isContentEditable) { scheduleReload(); return; }
-    await loadAll();
-    render();
-    if (S.sel) renderDrawer();
-  }, 260);
+  clearTimeout(rt);
+  rt = setTimeout(async () => {
+    if (S.dragging || document.activeElement?.isContentEditable) return scheduleReload();
+    await loadAll(); render(); if (S.sel) renderDrawer();
+  }, 280);
 }
-
 function subscribe() {
-  S.sb.channel('ds-board')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'ds_tasks' }, scheduleReload)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'ds_phases' }, scheduleReload)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'ds_comments' }, scheduleReload)
-    .subscribe();
+  const ch = S.sb.channel('ds-board-v2');
+  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_leaves']
+    .forEach(tb => ch.on('postgres_changes', { event: '*', schema: 'public', table: tb }, scheduleReload));
+  ch.subscribe();
 }
 
+/* ---------- CRUD ---------- */
 async function updateTask(id, patch, opts = {}) {
   const t = S.tasks.find(x => x.id === id); if (!t) return;
   const prev = {}; Object.keys(patch).forEach(k => prev[k] = t[k]);
@@ -895,408 +734,422 @@ async function updateTask(id, patch, opts = {}) {
   if (S.sel === id) renderDrawer();
   const { error } = await S.sb.from('ds_tasks').update(patch).eq('id', id);
   if (error) { Object.assign(t, prev); render(); toast('저장 실패: ' + error.message, true); }
-  else if (opts.toast) toast(opts.toast);
+  else if (opts.toast) toast(opts.toast, false, opts.undo);
 }
 
-async function createTask(phaseId) {
-  const start = new Date();
+async function createTask(opts = {}) {
+  const start = opts.start ? pd(opts.start) : new Date();
   const row = {
-    phase_id: phaseId || null, title: '새 작업', status: 'planned',
-    start_date: fd(start), end_date: fd(addD(start, 2)),
-    sort: (S.tasks.filter(t => t.phase_id === phaseId).length || 0) + 1
+    phase_id: opts.phase_id ?? (S.group === 'phase' ? null : S.phases[0]?.id ?? null),
+    assignee_id: opts.assignee_id ?? null,
+    title: '새 작업', status: 'planned',
+    start_date: fd(start), end_date: fd(addD(start, opts.days ? opts.days - 1 : 2))
   };
+  if (row.assignee_id) row.assignee = S.members.find(m => m.id === row.assignee_id)?.name || '';
   const { data, error } = await S.sb.from('ds_tasks').insert(row).select().single();
-  if (error) { toast('작업을 만들지 못했습니다: ' + error.message, true); return; }
-  S.tasks.push(data); render();
-  const node = document.querySelector(`.ds-tk__title[data-id="${data.id}"]`);
-  if (node) { node.focus(); document.execCommand?.('selectAll', false, null); }
-  else openTask(data.id);
+  if (error) return toast('작업을 만들지 못했습니다: ' + error.message, true);
+  S.tasks.push(data); render(); openTask(data.id);
+  setTimeout(() => { $('#dsDrTitle').focus(); $('#dsDrTitle').select(); }, 320);
 }
 
 async function createPhase() {
   const { data, error } = await S.sb.from('ds_phases')
-    .insert({ name: '새 단계', color: ['#4C8DFF', '#2FBF71', '#B57BFF', '#FFB020', '#FF6B5A'][S.phases.length % 5], sort: S.phases.length })
+    .insert({ name: '새 단계', color: PALETTE[S.phases.length % PALETTE.length], sort: S.phases.length })
     .select().single();
-  if (error) { toast('단계를 만들지 못했습니다: ' + error.message, true); return; }
+  if (error) return toast('단계를 만들지 못했습니다: ' + error.message, true);
   S.phases.push(data); render();
-  const node = document.querySelector(`.ds-ph__name[data-id="${data.id}"]`);
-  if (node) { node.focus(); }
+  const n = document.querySelector(`.ds-lh__name[data-pid="${data.id}"]`);
+  if (n) { n.focus(); getSelection().selectAllChildren(n); }
 }
 
 /* ============================================================
-   3. 파생 데이터
+   파생
    ============================================================ */
-function filtered() {
+const live = () => S.tasks.filter(t => !t.is_archived);
+function matches(t) {
   const q = S.q.trim().toLowerCase();
-  return S.tasks.filter(t => {
-    if (S.fStatus.size && !S.fStatus.has(t.status)) return false;
-    if (S.fWho && (t.assignee || '') !== S.fWho) return false;
-    if (q && !(`${t.title} ${t.assignee} ${t.description}`.toLowerCase().includes(q))) return false;
-    return true;
-  });
+  if (S.fStatus.size && !S.fStatus.has(t.status)) return false;
+  if (S.fWho && t.assignee_id !== S.fWho) return false;
+  if (q && !`${t.title} ${t.assignee || ''} ${t.description || ''}`.toLowerCase().includes(q)) return false;
+  return true;
 }
-
-function grouped() {
-  const list = filtered();
-  const groups = S.phases.map(p => ({ phase: p, tasks: list.filter(t => t.phase_id === p.id) }));
-  const loose = list.filter(t => !t.phase_id || !S.phases.some(p => p.id === t.phase_id));
-  if (loose.length) groups.push({ phase: { id: '__none', name: '미분류', color: '#7A879A' }, tasks: loose });
-  return groups;
-}
-
-function cCount(id) { return S.comments.filter(c => c.task_id === id).length; }
-function isNew(id) { const n = cCount(id); return n > (S.seen[id] || 0); }
+const visible = () => live().filter(t => matches(t) && (S.showHidden || !S.hidden.has(t.id)));
+const memberOf = id => S.members.find(m => m.id === id);
+const cCount = id => S.comments.filter(c => c.task_id === id).length;
+const isNew = id => cCount(id) > (S.seen[id] || 0);
 
 function computeRange() {
-  const list = S.tasks;
+  const items = [...live(), ...S.leaves];
   const today = midn(new Date());
   let min = today, max = today;
-  list.forEach(t => {
-    const s = pd(t.start_date), e = pd(t.end_date);
-    if (s < min) min = s; if (e > max) max = e;
-  });
+  items.forEach(t => { const s = pd(t.start_date), e = pd(t.end_date); if (s < min) min = s; if (e > max) max = e; });
   let start = addD(min, -10);
-  start = addD(start, -((start.getDay() + 6) % 7)); // 월요일 시작
-  let end = addD(max, 21);
-  let days = Math.max(diffD(start, end) + 1, 84);
-  days = Math.ceil(days / 7) * 7;
-  S.range = { s: start, days };
+  start = addD(start, -((start.getDay() + 6) % 7));
+  let days = Math.max(diffD(start, addD(max, 21)) + 1, 84);
+  S.range = { s: start, days: Math.ceil(days / 7) * 7 };
+}
+const xOf = s => diffD(S.range.s, pd(s)) * S.dayW;
+const wOf = (a, b) => Math.max((diffD(pd(a), pd(b)) + 1) * S.dayW - 2, 12);
+
+/* 픽셀 기준 그리디 패킹 */
+function pack(items, gap = 6) {
+  const rows = [];
+  items.slice().sort((a, b) => pd(a.start_date) - pd(b.start_date) || pd(b.end_date) - pd(a.end_date))
+    .forEach(it => {
+      const s = xOf(it.start_date), e = s + wOf(it.start_date, it.end_date);
+      let r = 0;
+      for (;;) {
+        if (!rows[r]) rows[r] = [];
+        if (!rows[r].some(x => !(e + gap <= x.s || s >= x.e + gap))) { rows[r].push({ s, e }); it.__row = r; break; }
+        r++;
+      }
+    });
+  return Math.max(rows.length, 1);
 }
 
-const xOf = dateStr => diffD(S.range.s, pd(dateStr)) * S.dayW;
+/* 레인 구성 */
+function buildLanes() {
+  const lanes = [];
+  const tasks = visible();
+
+  if (S.group === 'phase') {
+    if (S.leaves.length) {
+      const order = S.members.map(m => m.id).filter(id => S.leaves.some(l => l.member_id === id));
+      S.leaves.forEach(l => { if (!order.includes(l.member_id)) order.push(l.member_id); });
+      const items = S.leaves.map(l => ({ ...l, __type: 'leave', __row: Math.max(order.indexOf(l.member_id), 0) }));
+      lanes.push({ id: '__leave', name: '휴가', color: cvar('--ds-muted'), kind: 'leave', items, rows: Math.max(order.length, 1) });
+    }
+    S.phases.forEach(p => {
+      const items = tasks.filter(t => t.phase_id === p.id).map(t => ({ ...t, __type: 'task' }));
+      lanes.push({ id: p.id, name: p.name, color: p.color, kind: 'phase', items, rows: pack(items) });
+    });
+    const loose = tasks.filter(t => !t.phase_id || !S.phases.some(p => p.id === t.phase_id)).map(t => ({ ...t, __type: 'task' }));
+    if (loose.length) lanes.push({ id: '__none', name: '미분류', color: cvar('--ds-muted'), kind: 'phase', items: loose, rows: pack(loose) });
+  } else {
+    S.members.filter(m => m.active).forEach(m => {
+      const items = [
+        ...tasks.filter(t => t.assignee_id === m.id).map(t => ({ ...t, __type: 'task' })),
+        ...S.leaves.filter(l => l.member_id === m.id).map(l => ({ ...l, __type: 'leave' }))
+      ];
+      lanes.push({ id: m.id, name: m.name, color: m.color, kind: 'member', items, rows: pack(items) });
+    });
+    const loose = tasks.filter(t => !t.assignee_id || !memberOf(t.assignee_id)).map(t => ({ ...t, __type: 'task' }));
+    if (loose.length) lanes.push({ id: '__none', name: '미배정', color: cvar('--ds-muted'), kind: 'member', items: loose, rows: pack(loose) });
+  }
+  return lanes;
+}
 
 /* ============================================================
-   4. 렌더 — 타임라인 헤더
+   렌더 — 헤더
    ============================================================ */
 function renderHeader() {
   const { s, days } = S.range, w = S.dayW;
   $('#dsRight').style.width = days * w + 'px';
 
-  // 월 라인
-  const months = $('#dsMonths'); months.innerHTML = '';
-  let i = 0;
-  while (i < days) {
-    const d = addD(s, i);
-    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  const M = $('#dsMonths'); M.innerHTML = '';
+  for (let i = 0; i < days;) {
+    const d = addD(s, i), last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
     const span = Math.min(diffD(d, last) + 1, days - i);
     const m = el('div', 'ds-month', `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}월`);
-    m.style.width = span * w + 'px';
-    months.appendChild(m);
-    i += span;
+    m.style.width = span * w + 'px'; M.appendChild(m); i += span;
   }
 
-  // 눈금
-  const ticks = $('#dsTicks'); ticks.innerHTML = '';
+  const T = $('#dsTicks'); T.innerHTML = '';
   const today = fd(new Date());
   if (S.zoom === 'day') {
     for (let k = 0; k < days; k++) {
       const d = addD(s, k), wd = d.getDay();
-      const t = el('div', 'ds-tick' + (wd === 0 || wd === 6 ? ' ds-tick--we' : '') + (wd === 0 ? ' ds-tick--sun' : '') + (fd(d) === today ? ' ds-tick--today' : ''));
+      const t = el('div', 'ds-tick' + (wd % 6 === 0 ? ' ds-tick--we' : '') + (wd === 0 ? ' ds-tick--sun' : '') + (fd(d) === today ? ' ds-tick--today' : ''));
       t.style.width = w + 'px';
       t.appendChild(el('b', null, String(d.getDate())));
       t.appendChild(el('em', null, WD[wd]));
-      ticks.appendChild(t);
+      T.appendChild(t);
     }
   } else {
     for (let k = 0; k < days; k += 7) {
-      const d = addD(s, k);
-      const isNow = diffD(d, midn(new Date())) >= 0 && diffD(d, midn(new Date())) < 7;
-      const t = el('div', 'ds-tick' + (isNow ? ' ds-tick--today' : ''));
+      const d = addD(s, k), off = diffD(d, midn(new Date()));
+      const t = el('div', 'ds-tick' + (off >= 0 && off < 7 ? ' ds-tick--today' : ''));
       t.style.width = 7 * w + 'px';
       t.appendChild(el('b', null, S.zoom === 'week' ? `${d.getMonth() + 1}/${d.getDate()}` : String(d.getDate())));
-      ticks.appendChild(t);
+      T.appendChild(t);
     }
   }
 
-  // 배경
-  const layer = $('#dsLayer'); layer.innerHTML = '';
-  if (w >= 10) {
-    for (let k = 0; k < days; k++) {
-      const d = addD(s, k), wd = d.getDay();
-      if (wd === 0 || wd === 6) {
-        const b = el('div', 'ds-band'); b.style.left = k * w + 'px'; b.style.width = w + 'px'; layer.appendChild(b);
-      }
-    }
-  }
+  const L = $('#dsLayer'); L.innerHTML = '';
   for (let k = 0; k < days; k++) {
     const d = addD(s, k);
-    if (d.getDate() === 1) { const l = el('div', 'ds-mline'); l.style.left = k * w + 'px'; layer.appendChild(l); }
+    if (w >= 10 && d.getDay() % 6 === 0) { const b = el('div', 'ds-band'); b.style.cssText = `left:${k * w}px;width:${w}px`; L.appendChild(b); }
+    if (d.getDate() === 1) { const m = el('div', 'ds-mline'); m.style.left = k * w + 'px'; L.appendChild(m); }
   }
 
-  // 오늘 라인
-  const tl = $('#dsTodayLine');
-  const off = diffD(S.range.s, new Date());
+  const tl = $('#dsTodayLine'), off = diffD(s, new Date());
   if (off >= 0 && off < days) { tl.classList.remove('ds-hide'); tl.style.left = (off * w + w / 2 - 1) + 'px'; }
   else tl.classList.add('ds-hide');
 }
 
 /* ============================================================
-   5. 렌더 — 행
+   렌더 — 레인
    ============================================================ */
-function renderRows() {
-  const L = $('#dsLeft'), R = $('#dsRowsR');
-  L.innerHTML = ''; R.innerHTML = '';
-  const groups = grouped();
+function renderLanes() {
+  const LEFT = $('#dsLeft'), RIGHT = $('#dsLanes');
+  LEFT.innerHTML = ''; RIGHT.innerHTML = '';
+  const PAD = npx('--ds-lpad'), SLOT = npx('--ds-slot'), BAR = npx('--ds-bar');
+  $('#dsLeftHead').textContent = S.group === 'phase' ? '단계' : '담당';
 
-  groups.forEach(g => {
-    const isClosed = S.closed.has(g.phase.id);
+  buildLanes().forEach(lane => {
+    const closed = S.closed.has(lane.id);
+    const isLeaveLane = lane.kind === 'leave';
+    const bh = isLeaveLane ? 20 : BAR, slot = isLeaveLane ? 24 : SLOT;
+    const h = closed ? 34 : PAD * 2 + (lane.rows - 1) * slot + bh;
 
-    /* --- 단계 행 --- */
-    const lp = el('div', 'ds-row ds-row--ph ds-lrow');
-    const ph = el('div', 'ds-ph' + (isClosed ? ' is-closed' : ''));
+    /* 좌측 */
+    const lrow = el('div', 'ds-lane' + (isLeaveLane ? ' ds-lane--leave' : ''));
+    lrow.style.height = h + 'px';
+    const lh = el('div', 'ds-lh' + (closed ? ' is-closed' : ''));
 
-    const tog = el('button', 'ds-ph__tog');
+    const tog = el('button', 'ds-lh__tog');
     tog.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
-    tog.setAttribute('aria-label', '단계 접기');
-    tog.onclick = () => { S.closed.has(g.phase.id) ? S.closed.delete(g.phase.id) : S.closed.add(g.phase.id); LS.set('closed', [...S.closed]); render(); };
-    ph.appendChild(tog);
+    tog.setAttribute('aria-label', '접기/펼치기');
+    tog.onclick = () => { closed ? S.closed.delete(lane.id) : S.closed.add(lane.id); LS.set('closed', [...S.closed]); render(); };
+    lh.appendChild(tog);
 
-    const sw = el('span', 'ds-ph__sw'); sw.style.background = g.phase.color; ph.appendChild(sw);
+    const sw = el('div', 'ds-lh__sw'); sw.style.background = lane.color; lh.appendChild(sw);
 
-    const nm = el('div', 'ds-ph__name', g.phase.name);
-    if (S.isOwner && g.phase.id !== '__none') {
-      nm.contentEditable = 'true'; nm.dataset.id = g.phase.id; nm.spellcheck = false;
+    const b = el('div', 'ds-lh__b');
+    const nm = el('div', 'ds-lh__name', lane.name);
+    if (S.isOwner && lane.kind === 'phase' && lane.id !== '__none') {
+      nm.contentEditable = 'true'; nm.spellcheck = false; nm.dataset.pid = lane.id;
       nm.addEventListener('blur', async () => {
         const v = nm.textContent.trim() || '이름 없음';
-        if (v === g.phase.name) return;
-        g.phase.name = v;
-        const { error } = await S.sb.from('ds_phases').update({ name: v }).eq('id', g.phase.id);
+        const p = S.phases.find(x => x.id === lane.id); if (!p || v === p.name) return;
+        p.name = v;
+        const { error } = await S.sb.from('ds_phases').update({ name: v }).eq('id', lane.id);
         if (error) toast('저장 실패: ' + error.message, true);
       });
-      nm.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.blur(); } });
+      nm.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.blur(); } e.stopPropagation(); });
     }
-    ph.appendChild(nm);
+    b.appendChild(nm);
+    const sub = isLeaveLane
+      ? `${lane.items.length}건`
+      : `${lane.items.filter(t => t.status === 'done').length}/${lane.items.length}`;
+    b.appendChild(el('div', 'ds-lh__sub', sub));
+    lh.appendChild(b);
 
-    const done = g.tasks.filter(t => t.status === 'done').length;
-    ph.appendChild(el('span', 'ds-ph__n', `${done}/${g.tasks.length}`));
-
-    if (S.isOwner && g.phase.id !== '__none') {
-      const x = el('button', 'ds-ph__x');
-      x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>';
-      x.title = '단계 삭제';
-      x.onclick = async () => {
-        if (!confirm(`"${g.phase.name}" 단계를 삭제할까요? 안에 있는 작업은 미분류로 옮겨집니다.`)) return;
-        const { error } = await S.sb.from('ds_phases').delete().eq('id', g.phase.id);
-        if (error) return toast('삭제 실패: ' + error.message, true);
-        S.phases = S.phases.filter(p => p.id !== g.phase.id);
-        S.tasks.forEach(t => { if (t.phase_id === g.phase.id) t.phase_id = null; });
-        render(); toast('단계를 삭제했습니다');
-      };
-      ph.appendChild(x);
-    }
-    lp.appendChild(ph); L.appendChild(lp);
-
-    const rp = el('div', 'ds-row ds-row--ph');
-    const rpi = el('div', 'ds-rrow');
-    if (g.tasks.length) {
-      const s = g.tasks.reduce((a, t) => Math.min(a, +pd(t.start_date)), Infinity);
-      const e = g.tasks.reduce((a, t) => Math.max(a, +pd(t.end_date)), -Infinity);
-      const bar = el('div', 'ds-phbar');
-      bar.style.left = diffD(S.range.s, new Date(s)) * S.dayW + 'px';
-      bar.style.width = (diffD(new Date(s), new Date(e)) + 1) * S.dayW + 'px';
-      bar.style.background = g.phase.color;
-      rpi.appendChild(bar);
-    }
-    rp.appendChild(rpi); R.appendChild(rp);
-
-    if (isClosed) return;
-
-    /* --- 작업 행 --- */
-    g.tasks.forEach(t => {
-      const st = statusOf(t.status), col = cvar(st.v);
-      const sel = S.sel === t.id;
-
-      const lr = el('div', 'ds-row ds-lrow' + (sel ? ' is-sel' : ''));
-      lr.dataset.task = t.id;
-      const tk = el('div', 'ds-tk' + (t.status === 'done' ? ' is-done' : ''));
-      const dot = el('span', 'ds-tk__st'); dot.style.background = col; tk.appendChild(dot);
-
-      const body = el('div', 'ds-tk__body');
-      const title = el('div', 'ds-tk__title', t.title);
-      title.dataset.id = t.id;
-      if (S.isOwner) {
-        title.contentEditable = 'true'; title.spellcheck = false;
-        title.addEventListener('blur', () => {
-          const v = title.textContent.trim() || '이름 없음';
-          if (v !== t.title) updateTask(t.id, { title: v }, { noRender: true });
-        });
-        title.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } e.stopPropagation(); });
-      }
-      body.appendChild(title);
-
-      const meta = el('div', 'ds-tk__meta');
-      if (t.assignee) meta.appendChild(el('span', 'ds-tk__who', t.assignee));
-      meta.appendChild(el('span', 'ds-mono', `${pd(t.start_date).getMonth() + 1}/${pd(t.start_date).getDate()}–${pd(t.end_date).getMonth() + 1}/${pd(t.end_date).getDate()}`));
-      const n = cCount(t.id);
-      if (n) {
-        const b = el('span', 'ds-cbadge' + (isNew(t.id) ? ' ds-cbadge--new' : ''));
-        b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z"/></svg>';
-        b.appendChild(document.createTextNode(String(n)));
-        meta.appendChild(b);
-      }
-      body.appendChild(meta);
-      tk.appendChild(body);
-      lr.appendChild(tk);
-      lr.addEventListener('click', e => { if (e.target.isContentEditable) return; openTask(t.id); });
-      L.appendChild(lr);
-
-      /* 바 */
-      const rr = el('div', 'ds-row' + (sel ? ' is-sel' : ''));
-      rr.dataset.task = t.id;
-      const inner = el('div', 'ds-rrow');
-      const bar = el('div', 'ds-bar' + (S.isOwner ? '' : ' is-ro') + (sel ? ' is-sel' : '') + (t.status === 'done' ? ' is-done' : ''));
-      bar.style.background = col;
-      bar.style.left = xOf(t.start_date) + 'px';
-      const wdays = diffD(pd(t.start_date), pd(t.end_date)) + 1;
-      bar.style.width = Math.max(wdays * S.dayW, 14) + 'px';
-      bar.dataset.id = t.id;
-
-      if (t.progress > 0) { const f = el('div', 'ds-bar__fill'); f.style.width = t.progress + '%'; bar.appendChild(f); }
-      const label = el('span', 'ds-bar__txt', t.title);
-      bar.appendChild(label);
-      if (n) bar.appendChild(el('span', 'ds-bar__cnt', String(n)));
-
-      if (S.isOwner) {
-        const hl = el('div', 'ds-bar__h ds-bar__h--l'); hl.dataset.edge = 'l';
-        const hr = el('div', 'ds-bar__h ds-bar__h--r'); hr.dataset.edge = 'r';
-        bar.appendChild(hl); bar.appendChild(hr);
-        bar.addEventListener('pointerdown', e => startDrag(e, t, bar));
-      }
-      bar.addEventListener('click', e => { if (bar._moved) { bar._moved = false; return; } e.stopPropagation(); openTask(t.id); });
-      bar.title = `${t.title}\n${t.start_date} → ${t.end_date} (${wdays}일)`;
-
-      inner.appendChild(bar); rr.appendChild(inner); R.appendChild(rr);
-    });
-
-    /* --- 작업 추가 행 --- */
     if (S.isOwner) {
-      const la = el('div', 'ds-row ds-row--add');
-      const btn = el('button', 'ds-add');
-      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
-      btn.appendChild(document.createTextNode('작업 추가'));
-      btn.onclick = () => createTask(g.phase.id === '__none' ? null : g.phase.id);
-      la.appendChild(btn); L.appendChild(la);
-      R.appendChild(el('div', 'ds-row ds-row--add'));
+      const acts = el('div', 'ds-lh__acts');
+      const add = el('button', 'ds-ia');
+      add.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+      add.title = isLeaveLane ? '휴가 등록' : '작업 추가';
+      add.onclick = e => {
+        e.stopPropagation();
+        if (isLeaveLane) openLeave(null);
+        else if (S.group === 'phase') createTask({ phase_id: lane.id === '__none' ? null : lane.id });
+        else createTask({ assignee_id: lane.id === '__none' ? null : lane.id });
+      };
+      acts.appendChild(add);
+      if (lane.kind === 'phase' && lane.id !== '__none') {
+        const del = el('button', 'ds-ia ds-ia--del');
+        del.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>';
+        del.title = '단계 삭제';
+        del.onclick = async e => {
+          e.stopPropagation();
+          if (!confirm(`"${lane.name}" 단계를 삭제할까요? 안의 작업은 미분류로 옮겨집니다.`)) return;
+          const { error } = await S.sb.from('ds_phases').delete().eq('id', lane.id);
+          if (error) return toast('삭제 실패: ' + error.message, true);
+          S.phases = S.phases.filter(p => p.id !== lane.id);
+          S.tasks.forEach(t => { if (t.phase_id === lane.id) t.phase_id = null; });
+          render(); toast('단계를 삭제했습니다');
+        };
+        acts.appendChild(del);
+      }
+      lh.appendChild(acts);
     }
-  });
+    lrow.appendChild(lh); LEFT.appendChild(lrow);
 
-  /* --- 단계 추가 --- */
+    /* 우측 */
+    const rrow = el('div', 'ds-lane' + (isLeaveLane ? ' ds-lane--leave' : ''));
+    rrow.style.height = h + 'px';
+    const track = el('div', 'ds-track');
+
+    if (closed) {
+      if (lane.items.length) {
+        const s = Math.min(...lane.items.map(i => xOf(i.start_date)));
+        const e = Math.max(...lane.items.map(i => xOf(i.start_date) + wOf(i.start_date, i.end_date)));
+        const sum = el('div', 'ds-sum');
+        sum.style.cssText = `left:${s}px;width:${e - s}px;background:${lane.color}`;
+        track.appendChild(sum);
+      }
+    } else {
+      lane.items.forEach(it => {
+        const top = PAD + it.__row * slot;
+        track.appendChild(it.__type === 'leave' ? leaveEl(it, top) : barEl(it, top));
+      });
+      if (S.isOwner && !isLeaveLane) {
+        track.addEventListener('dblclick', e => {
+          if (e.target.closest('.ds-bar')) return;
+          const day = Math.floor(e.offsetX / S.dayW);
+          const start = fd(addD(S.range.s, day));
+          if (S.group === 'phase') createTask({ phase_id: lane.id === '__none' ? null : lane.id, start });
+          else createTask({ assignee_id: lane.id === '__none' ? null : lane.id, start });
+        });
+        track.classList.add('ds-lane--drop');
+      }
+      if (S.isOwner && isLeaveLane) {
+        track.addEventListener('dblclick', e => {
+          if (e.target.closest('.ds-leave')) return;
+          openLeave(null, fd(addD(S.range.s, Math.floor(e.offsetX / S.dayW))));
+        });
+      }
+    }
+    rrow.appendChild(track); RIGHT.appendChild(rrow);
+  });
+}
+
+function barEl(t, top) {
+  const col = cvar(statusOf(t.status).v);
+  const w = wOf(t.start_date, t.end_date);
+  const sel = S.sel === t.id, hid = S.hidden.has(t.id), n = cCount(t.id);
+  const bar = el('div', 'ds-bar'
+    + (S.isOwner ? '' : ' is-ro') + (sel ? ' is-sel' : '')
+    + (t.status === 'done' ? ' is-done' : '') + (hid ? ' is-dim' : '')
+    + (w < 46 ? ' ds-bar--tiny' : ''));
+  bar.style.cssText = `left:${xOf(t.start_date)}px;width:${w}px;top:${top}px;background:${col}`;
+  bar.dataset.id = t.id;
+  if (t.progress > 0) { const f = el('div', 'ds-bar__fill'); f.style.width = t.progress + '%'; bar.appendChild(f); }
+  const m = memberOf(t.assignee_id);
+  bar.appendChild(el('span', 'ds-bar__txt', (m ? m.name + ' · ' : '') + t.title));
+  if (n) { const c = el('span', 'ds-bar__cnt', String(n)); if (isNew(t.id)) c.style.background = cvar('--ds-accent'); bar.appendChild(c); }
+  bar.title = `${t.title}\n${t.start_date} → ${t.end_date} (${diffD(pd(t.start_date), pd(t.end_date)) + 1}일)${m ? '\n담당: ' + m.name : ''}`;
+
   if (S.isOwner) {
-    const la = el('div', 'ds-row ds-row--add');
-    const btn = el('button', 'ds-add');
-    btn.style.paddingLeft = '12px';
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
-    btn.appendChild(document.createTextNode('단계 추가'));
-    btn.onclick = createPhase;
-    la.appendChild(btn); L.appendChild(la);
-    R.appendChild(el('div', 'ds-row ds-row--add'));
+    ['l', 'r'].forEach(e2 => { const h = el('div', `ds-bar__h ds-bar__h--${e2}`); h.dataset.edge = e2; bar.appendChild(h); });
+    bar.addEventListener('pointerdown', e => armDrag(e, t, bar));
   }
+  bar.addEventListener('click', e => {
+    if (bar._moved) { bar._moved = false; return; }
+    e.stopPropagation();
+    if (e.altKey) { toggleHide(t.id); return; }
+    openTask(t.id);
+  });
+  return bar;
+}
+
+function leaveEl(l, top) {
+  const m = memberOf(l.member_id);
+  const col = m?.color || cvar('--ds-muted');
+  const w = wOf(l.start_date, l.end_date);
+  const n = el('div', 'ds-leave');
+  n.style.cssText = `left:${xOf(l.start_date)}px;width:${w}px;top:${top}px;color:${col};border-color:${col};background:color-mix(in srgb,${col} 13%,transparent)`;
+  const label = `${m?.name || '?'} · ${kindOf(l.kind).label}${l.memo ? ' · ' + l.memo : ''}`;
+  if (w >= 40) n.appendChild(el('span', 'ds-leave__t', label));
+  n.title = `${label}\n${l.start_date} → ${l.end_date}`;
+  if (S.isOwner) n.onclick = () => openLeave(l);
+  return n;
 }
 
 /* ============================================================
-   6. 드래그 (이동 / 기간 조절)
+   드래그
    ============================================================ */
-function startDrag(e, task, bar) {
+function armDrag(e, task, bar) {
   if (e.button !== 0) return;
   const edge = e.target.dataset?.edge || null;
-  e.preventDefault();
-  bar.setPointerCapture(e.pointerId);
-  S.dragging = true;
-  bar._moved = false;
-
-  const x0 = e.clientX;
+  const x0 = e.clientX, y0 = e.clientY;
   const s0 = pd(task.start_date), e0 = pd(task.end_date);
   const left0 = parseFloat(bar.style.left), w0 = parseFloat(bar.style.width);
   const tip = $('#dsTip');
-  let ns = s0, ne = e0;
+  let started = false, ns = s0, ne = e0;
 
   const move = ev => {
-    const dx = ev.clientX - x0;
+    const dx = ev.clientX - x0, dy = ev.clientY - y0;
+    if (!started) {
+      if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) return;
+      started = true; S.dragging = true; bar._moved = true;
+      bar.classList.add('is-drag');
+      try { bar.setPointerCapture(e.pointerId); } catch {}
+    }
+    ev.preventDefault();
     const dd = Math.round(dx / S.dayW);
-    if (Math.abs(dx) > 3) { bar._moved = true; bar.classList.add('is-drag'); }
     if (edge === 'l') {
-      ns = addD(s0, Math.min(dd, diffD(s0, e0)));
-      ne = e0;
+      ns = addD(s0, Math.min(dd, diffD(s0, e0))); ne = e0;
       bar.style.left = (left0 + diffD(s0, ns) * S.dayW) + 'px';
-      bar.style.width = Math.max((diffD(ns, ne) + 1) * S.dayW, 14) + 'px';
+      bar.style.width = Math.max((diffD(ns, ne) + 1) * S.dayW - 2, 12) + 'px';
     } else if (edge === 'r') {
-      ns = s0;
-      ne = addD(e0, Math.max(dd, -diffD(s0, e0)));
-      bar.style.width = Math.max((diffD(ns, ne) + 1) * S.dayW, 14) + 'px';
+      ns = s0; ne = addD(e0, Math.max(dd, -diffD(s0, e0)));
+      bar.style.width = Math.max((diffD(ns, ne) + 1) * S.dayW - 2, 12) + 'px';
     } else {
       ns = addD(s0, dd); ne = addD(e0, dd);
       bar.style.left = (left0 + dd * S.dayW) + 'px';
     }
-    tip.textContent = `${ns.getMonth() + 1}/${ns.getDate()} → ${ne.getMonth() + 1}/${ne.getDate()}  ·  ${diffD(ns, ne) + 1}일`;
-    tip.style.left = ev.clientX + 'px';
-    tip.style.top = ev.clientY + 'px';
+    tip.textContent = `${ns.getMonth() + 1}/${ns.getDate()} → ${ne.getMonth() + 1}/${ne.getDate()} · ${diffD(ns, ne) + 1}일`;
+    tip.style.left = ev.clientX + 'px'; tip.style.top = ev.clientY + 'px';
     tip.classList.add('is-on');
   };
 
   const up = () => {
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
-    tip.classList.remove('is-on');
-    bar.classList.remove('is-drag');
+    window.removeEventListener('pointercancel', up);
+    tip.classList.remove('is-on'); bar.classList.remove('is-drag');
+    if (!started) return;
     S.dragging = false;
-    if (!bar._moved) return;
-    const a = fd(ns), b = fd(ne);
-    if (a === task.start_date && b === task.end_date) { render(); return; }
-    updateTask(task.id, { start_date: a, end_date: b }, { toast: '일정을 옮겼습니다' });
-    setTimeout(() => { bar._moved = false; }, 60);
+    const a = fd(ns), b2 = fd(ne);
+    if (a === task.start_date && b2 === task.end_date) return render();
+    const old = { start_date: task.start_date, end_date: task.end_date };
+    updateTask(task.id, { start_date: a, end_date: b2 }, {
+      toast: '일정을 옮겼습니다',
+      undo: { label: '되돌리기', fn: () => updateTask(task.id, old) }
+    });
+    setTimeout(() => { bar._moved = false; }, 80);
   };
 
-  window.addEventListener('pointermove', move);
+  window.addEventListener('pointermove', move, { passive: false });
   window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
 }
 
 /* ============================================================
-   7. 목록 뷰
+   목록 뷰
    ============================================================ */
 function renderList() {
   const root = $('#dsListView'); root.innerHTML = '';
-  grouped().forEach(g => {
-    if (!g.tasks.length) return;
+  buildLanes().filter(l => l.kind !== 'leave').forEach(lane => {
+    if (!lane.items.length) return;
     const box = el('div', 'ds-lgroup');
     const h = el('div', 'ds-lgroup__h');
-    const sw = el('span', 'ds-ph__sw'); sw.style.background = g.phase.color;
-    h.appendChild(sw); h.appendChild(el('span', null, g.phase.name));
-    h.appendChild(el('span', 'ds-ph__n', `${g.tasks.filter(t => t.status === 'done').length}/${g.tasks.length}`));
+    const sw = el('span', 'ds-sw'); sw.style.background = lane.color;
+    h.appendChild(sw); h.appendChild(el('span', null, lane.name));
+    h.appendChild(el('span', 'ds-lh__sub', `${lane.items.filter(t => t.status === 'done').length}/${lane.items.length}`));
     box.appendChild(h);
 
     const tb = el('table', 'ds-ltable');
-    tb.innerHTML = `<thead><tr>
-      <th style="width:38%">작업</th><th style="width:80px">상태</th><th style="width:96px">담당</th>
-      <th style="width:150px">기간</th><th style="width:110px">진행</th><th style="width:56px;text-align:right">댓글</th>
-    </tr></thead>`;
+    tb.innerHTML = `<thead><tr><th>작업</th><th style="width:76px">상태</th><th style="width:80px">담당</th>
+      <th style="width:140px">기간</th><th style="width:100px">진행</th><th style="width:50px;text-align:right">댓글</th>
+      <th style="width:34px"></th></tr></thead>`;
     const body = el('tbody');
-    g.tasks.forEach(t => {
-      const st = statusOf(t.status), col = cvar(st.v);
-      const tr = el('tr');
+    lane.items.forEach(t => {
+      const st = statusOf(t.status), col = cvar(st.v), hid = S.hidden.has(t.id);
+      const tr = el('tr' , hid ? 'is-dim' : '');
       tr.onclick = () => openTask(t.id);
-
       const c1 = el('td'); c1.appendChild(el('div', null, t.title));
-      if (t.description) { const d = el('div'); d.style.cssText = 'font-size:11.5px;color:var(--ds-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px'; d.textContent = t.description; c1.appendChild(d); }
+      if (t.description) { const d = el('div'); d.style.cssText = 'font-size:11.5px;color:var(--ds-muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:320px'; d.textContent = t.description; c1.appendChild(d); }
       tr.appendChild(c1);
-
-      const c2 = el('td'); const pill = el('span', 'ds-pill', st.label);
-      pill.style.cssText = `background:color-mix(in srgb,${col} 20%,transparent);color:${col}`;
-      c2.appendChild(pill); tr.appendChild(c2);
-
-      tr.appendChild(el('td', null, t.assignee || '—'));
+      const c2 = el('td'); const p = el('span', 'ds-pill', st.label);
+      p.style.cssText = `background:color-mix(in srgb,${col} 20%,transparent);color:${col}`;
+      c2.appendChild(p); tr.appendChild(c2);
+      tr.appendChild(el('td', null, memberOf(t.assignee_id)?.name || '—'));
       tr.appendChild(el('td', 'ds-c-num', `${t.start_date.slice(5)} → ${t.end_date.slice(5)}`));
-
-      const c5 = el('td');
-      const mini = el('div', 'ds-mini'); const fill = el('i'); fill.style.cssText = `width:${t.progress}%;background:${col}`;
-      mini.appendChild(fill); c5.appendChild(mini);
-      const pc = el('div', 'ds-mono'); pc.style.cssText = 'font-size:10.5px;color:var(--ds-muted);margin-top:3px'; pc.textContent = t.progress + '%';
-      c5.appendChild(pc); tr.appendChild(c5);
-
-      const c6 = el('td', 'ds-c-num'); const n = cCount(t.id);
-      c6.textContent = n || '—';
-      if (n && isNew(t.id)) c6.style.color = 'var(--ds-accent)';
+      const c5 = el('td'); const mini = el('div', 'ds-mini'); const f = el('i');
+      f.style.cssText = `width:${t.progress}%;background:${col}`; mini.appendChild(f); c5.appendChild(mini); tr.appendChild(c5);
+      const c6 = el('td', 'ds-c-num'); const n = cCount(t.id); c6.textContent = n || '—';
+      if (n && isNew(t.id)) c6.style.color = cvar('--ds-accent');
       tr.appendChild(c6);
-
+      const c7 = el('td'); const eye = el('button', 'ds-ia');
+      eye.innerHTML = hid
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 3l18 18M10.6 10.7a2.6 2.6 0 0 0 3.6 3.6M6.8 6.9C4.4 8.4 2 12 2 12s4 7 10 7c1.9 0 3.5-.7 4.9-1.6M14 5.3A9.6 9.6 0 0 0 12 5c-.7 0-1.3.1-1.9.2M21.6 13.5c.3-.5.4-.9.4-1.5 0 0-2.3-4-6-5.9"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+      eye.title = hid ? '다시 보이기' : '내 화면에서 숨기기';
+      eye.onclick = ev => { ev.stopPropagation(); toggleHide(t.id); };
+      c7.appendChild(eye); tr.appendChild(c7);
       body.appendChild(tr);
     });
     tb.appendChild(body); box.appendChild(tb); root.appendChild(box);
@@ -1305,55 +1158,76 @@ function renderList() {
 }
 
 /* ============================================================
-   8. 필터 바
+   필터
    ============================================================ */
 function renderFilters() {
   const bar = $('#dsFilters'); bar.innerHTML = '';
-  const base = S.tasks;
-
+  const base = live();
   STATUS.forEach(s => {
     const n = base.filter(t => t.status === s.k).length;
-    const c = el('button', 'ds-chip');
-    c.style.color = S.fStatus.has(s.k) ? cvar(s.v) : '';
-    c.setAttribute('aria-pressed', S.fStatus.has(s.k));
+    const on = S.fStatus.has(s.k);
+    const c = el('button', 'ds-chip'); c.setAttribute('aria-pressed', on);
+    if (on) c.style.color = cvar(s.v);
     const i = el('i'); i.style.background = cvar(s.v); c.appendChild(i);
     c.appendChild(document.createTextNode(s.label));
     c.appendChild(el('span', 'ds-chip__n', String(n)));
-    c.onclick = () => { S.fStatus.has(s.k) ? S.fStatus.delete(s.k) : S.fStatus.add(s.k); LS.set('fStatus', [...S.fStatus]); render(); };
+    c.onclick = () => { on ? S.fStatus.delete(s.k) : S.fStatus.add(s.k); LS.set('fStatus', [...S.fStatus]); render(); };
     bar.appendChild(c);
   });
 
-  const whos = [...new Set(base.map(t => (t.assignee || '').trim()).filter(Boolean))].sort();
-  if (whos.length) {
+  const act = S.members.filter(m => m.active);
+  if (act.length) {
     bar.appendChild(el('div', 'ds-fdiv'));
-    whos.forEach(w => {
-      const c = el('button', 'ds-chip', w);
-      c.setAttribute('aria-pressed', S.fWho === w);
-      c.onclick = () => { S.fWho = S.fWho === w ? null : w; LS.set('fWho', S.fWho); render(); };
+    act.forEach(m => {
+      const on = S.fWho === m.id;
+      const c = el('button', 'ds-chip'); c.setAttribute('aria-pressed', on);
+      const i = el('i'); i.style.background = m.color; c.appendChild(i);
+      c.appendChild(document.createTextNode(m.name));
+      c.appendChild(el('span', 'ds-chip__n', String(base.filter(t => t.assignee_id === m.id).length)));
+      c.onclick = () => { S.fWho = on ? null : m.id; LS.set('fWho', S.fWho); render(); };
       bar.appendChild(c);
     });
   }
 
+  if (S.hidden.size) {
+    bar.appendChild(el('div', 'ds-fdiv'));
+    const c = el('button', 'ds-chip', `숨긴 작업 ${S.hidden.size}`);
+    c.setAttribute('aria-pressed', S.showHidden);
+    c.onclick = () => { S.showHidden = !S.showHidden; render(); };
+    bar.appendChild(c);
+    if (S.showHidden) {
+      const r = el('button', 'ds-chip', '전부 다시 보이기');
+      r.style.color = cvar('--ds-accent');
+      r.onclick = () => { S.hidden.clear(); LS.set('hidden', []); S.showHidden = false; render(); };
+      bar.appendChild(r);
+    }
+  }
+
   if (S.fStatus.size || S.fWho || S.q) {
     bar.appendChild(el('div', 'ds-fdiv'));
-    const c = el('button', 'ds-chip', '필터 해제');
-    c.style.color = 'var(--ds-accent)';
+    const c = el('button', 'ds-chip', '필터 해제'); c.style.color = cvar('--ds-accent');
     c.onclick = () => { S.fStatus.clear(); S.fWho = null; S.q = ''; $('#dsQ').value = ''; LS.set('fStatus', []); LS.set('fWho', null); render(); };
     bar.appendChild(c);
   }
 
   bar.appendChild(el('div', 'ds-fdiv'));
-  const dl = el('button', 'ds-chip', 'CSV 내려받기');
-  dl.onclick = exportCSV;
-  bar.appendChild(dl);
+  const dl = el('button', 'ds-chip', 'CSV'); dl.onclick = exportCSV; bar.appendChild(dl);
+}
+
+function toggleHide(id) {
+  const was = S.hidden.has(id);
+  was ? S.hidden.delete(id) : S.hidden.add(id);
+  LS.set('hidden', [...S.hidden]);
+  render();
+  if (!was) toast('내 화면에서 숨겼습니다', false, { label: '되돌리기', fn: () => toggleHide(id) });
 }
 
 function exportCSV() {
-  const rows = [['단계', '작업', '상태', '담당', '시작', '종료', '기간(일)', '진행률', '댓글', '메모']];
-  grouped().forEach(g => g.tasks.forEach(t => rows.push([
-    g.phase.name, t.title, statusOf(t.status).label, t.assignee || '',
-    t.start_date, t.end_date, diffD(pd(t.start_date), pd(t.end_date)) + 1,
-    t.progress + '%', cCount(t.id), (t.description || '').replace(/\n/g, ' ')
+  const rows = [['묶음', '작업', '상태', '담당', '시작', '종료', '기간(일)', '진행률', '댓글', '메모']];
+  buildLanes().filter(l => l.kind !== 'leave').forEach(l => l.items.forEach(t => rows.push([
+    l.name, t.title, statusOf(t.status).label, memberOf(t.assignee_id)?.name || '',
+    t.start_date, t.end_date, diffD(pd(t.start_date), pd(t.end_date)) + 1, t.progress + '%', cCount(t.id),
+    (t.description || '').replace(/\n/g, ' ')
   ])));
   const csv = '\uFEFF' + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
   const a = el('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -1362,54 +1236,44 @@ function exportCSV() {
 }
 
 /* ============================================================
-   9. 드로어
+   드로어
    ============================================================ */
 function openTask(id) {
   S.sel = id;
   history.replaceState(null, '', '#t=' + id);
-  $('#dsDrawer').classList.add('is-on');
-  $('#dsDrawer').setAttribute('aria-hidden', 'false');
+  $('#dsDrawer').classList.add('is-on'); $('#dsDrawer').setAttribute('aria-hidden', 'false');
   $('#dsScrim').classList.add('is-on');
   S.seen[id] = cCount(id); LS.set('seen', S.seen);
-  renderDrawer();
-  render();
+  renderDrawer(); render();
 }
 function closeDrawer() {
   S.sel = null;
   history.replaceState(null, '', location.pathname + location.search);
-  $('#dsDrawer').classList.remove('is-on');
-  $('#dsDrawer').setAttribute('aria-hidden', 'true');
-  $('#dsScrim').classList.remove('is-on');
-  render();
+  $('#dsDrawer').classList.remove('is-on'); $('#dsDrawer').setAttribute('aria-hidden', 'true');
+  $('#dsScrim').classList.remove('is-on'); render();
 }
 function openFromHash() {
   const m = location.hash.match(/t=([0-9a-f-]{36})/i);
   if (m && S.tasks.some(t => t.id === m[1])) openTask(m[1]);
 }
 
-const dbounce = (fn, ms = 500) => { let h; return (...a) => { clearTimeout(h); h = setTimeout(() => fn(...a), ms); }; };
-
 function renderDrawer() {
   const t = S.tasks.find(x => x.id === S.sel); if (!t) return closeDrawer();
   const ro = !S.isOwner;
-
-  $('#dsDrEyebrow').textContent = (S.phases.find(p => p.id === t.phase_id)?.name || '미분류').toUpperCase();
+  $('#dsDrEyebrow').textContent = (S.phases.find(p => p.id === t.phase_id)?.name || '미분류')
+    + (t.is_archived ? ' · 보관됨' : '');
 
   const ti = $('#dsDrTitle');
   if (document.activeElement !== ti) ti.value = t.title;
-  ti.readOnly = ro;
-  ti.style.height = 'auto'; ti.style.height = ti.scrollHeight + 'px';
+  ti.readOnly = ro; ti.style.height = 'auto'; ti.style.height = ti.scrollHeight + 'px';
 
-  // 상태
   const sw = $('#dsDrStatus'); sw.innerHTML = '';
   STATUS.forEach(s => {
-    const b = el('button', 'ds-stat', s.label);
     const on = t.status === s.k;
+    const b = el('button', 'ds-stat', s.label);
     b.setAttribute('aria-pressed', on);
     if (on) b.style.background = cvar(s.v);
-    else b.style.color = '';
-    const i = el('i'); i.style.background = on ? '#0C1016' : cvar(s.v);
-    b.prepend(i);
+    const i = el('i'); i.style.background = on ? cvar('--ds-on') : cvar(s.v); b.prepend(i);
     if (ro) b.disabled = true;
     else b.onclick = () => {
       const patch = { status: s.k };
@@ -1421,38 +1285,44 @@ function renderDrawer() {
   });
 
   $('#dsDrStart').value = t.start_date; $('#dsDrStart').disabled = ro;
-  $('#dsDrEnd').value = t.end_date;     $('#dsDrEnd').disabled = ro;
-  const dur = diffD(pd(t.start_date), pd(t.end_date)) + 1;
-  const left = diffD(new Date(), pd(t.end_date));
-  $('#dsDrDur').textContent = `${dur}일` + (t.status === 'done' ? '' : left < 0 ? `  ·  ${-left}일 지남` : left === 0 ? '  ·  오늘 마감' : `  ·  ${left}일 남음`);
-  $('#dsDrDur').style.color = (t.status !== 'done' && left < 0) ? 'var(--ds-blocked)' : '';
+  $('#dsDrEnd').value = t.end_date; $('#dsDrEnd').disabled = ro;
+  const dur = diffD(pd(t.start_date), pd(t.end_date)) + 1, left = diffD(new Date(), pd(t.end_date));
+  $('#dsDrDur').textContent = `${dur}일` + (t.status === 'done' ? '' : left < 0 ? ` · ${-left}일 지남` : left === 0 ? ' · 오늘 마감' : ` · ${left}일 남음`);
+  $('#dsDrDur').style.color = (t.status !== 'done' && left < 0) ? cvar('--ds-blocked') : '';
 
   const q = $('#dsDrQuick'); q.innerHTML = '';
   if (!ro) [['오늘부터', 0], ['3일', 3], ['1주', 7], ['2주', 14], ['1개월', 30]].forEach(([lb, n]) => {
     const b = el('button', null, lb);
     b.onclick = () => {
-      if (n === 0) { const d = diffD(pd(t.start_date), pd(t.end_date)); const s = new Date(); updateTask(t.id, { start_date: fd(s), end_date: fd(addD(s, d)) }); }
+      if (n === 0) { const d = diffD(pd(t.start_date), pd(t.end_date)), s = new Date(); updateTask(t.id, { start_date: fd(s), end_date: fd(addD(s, d)) }); }
       else updateTask(t.id, { end_date: fd(addD(pd(t.start_date), n - 1)) });
     };
     q.appendChild(b);
   });
 
-  const sel = $('#dsDrPhase'); sel.innerHTML = ''; sel.disabled = ro;
-  sel.appendChild(new Option('미분류', ''));
-  S.phases.forEach(p => sel.appendChild(new Option(p.name, p.id)));
-  sel.value = t.phase_id || '';
+  const ph = $('#dsDrPhase'); ph.innerHTML = ''; ph.disabled = ro;
+  ph.appendChild(new Option('미분류', ''));
+  S.phases.forEach(p => ph.appendChild(new Option(p.name, p.id)));
+  ph.value = t.phase_id || '';
 
-  const who = $('#dsDrWho');
-  if (document.activeElement !== who) who.value = t.assignee || '';
-  who.disabled = ro;
+  const who = $('#dsDrWho'); who.innerHTML = ''; who.disabled = ro;
+  who.appendChild(new Option('미배정', ''));
+  S.members.filter(m => m.active || m.id === t.assignee_id).forEach(m => who.appendChild(new Option(m.name, m.id)));
+  who.value = t.assignee_id || '';
 
   $('#dsDrPct').value = t.progress; $('#dsDrPct').disabled = ro;
   $('#dsDrPctLb').textContent = t.progress + '%';
-
   const de = $('#dsDrDesc');
   if (document.activeElement !== de) de.value = t.description || '';
   de.disabled = ro;
 
+  const hid = S.hidden.has(t.id);
+  $('#dsDrHide').title = hid ? '다시 보이기' : '내 화면에서 숨기기';
+  $('#dsDrHide').style.color = hid ? cvar('--ds-accent') : '';
+  $('#dsDrArch').style.color = t.is_archived ? cvar('--ds-accent') : '';
+  $('#dsDrArch').title = t.is_archived ? '보관 해제' : '보관함으로 (모두에게 숨김)';
+
+  renderPickers();
   renderComments(t.id);
 }
 
@@ -1460,19 +1330,19 @@ function renderComments(taskId) {
   const list = S.comments.filter(c => c.task_id === taskId);
   $('#dsDrCnt').textContent = list.length;
   const box = $('#dsDrComments'); box.innerHTML = '';
-  if (!list.length) { box.appendChild(el('div', 'ds-cm__empty', '첫 댓글을 남겨보세요.')); return; }
-
+  if (!list.length) return box.appendChild(el('div', 'ds-cm__empty', '첫 댓글을 남겨보세요.'));
   list.forEach(c => {
     const row = el('div', 'ds-cm');
-    const av = el('div', 'ds-av', (c.author || '?').trim().charAt(0).toUpperCase());
-    av.style.background = c.is_owner ? cvar('--ds-accent') : hue(c.author);
+    const m = memberOf(c.member_id);
+    const av = el('div', 'ds-av', (c.author || '?').trim().charAt(0));
+    av.style.background = c.is_owner ? cvar('--ds-accent') : (m?.color || cvar('--ds-muted'));
     row.appendChild(av);
-
     const b = el('div', 'ds-cm__b');
     const meta = el('div', 'ds-cm__meta');
     meta.appendChild(el('b', null, c.author));
     if (c.is_owner) meta.appendChild(el('span', 'ds-tag', 'OWNER'));
-    const tm = el('time', null, relTime(c.created_at)); tm.title = new Date(c.created_at).toLocaleString('ko-KR');
+    const tm = el('time', null, relTime(c.created_at));
+    tm.title = new Date(c.created_at).toLocaleString('ko-KR');
     meta.appendChild(tm);
     if (S.isOwner) {
       const x = el('button', 'ds-cm__x', '삭제');
@@ -1480,21 +1350,38 @@ function renderComments(taskId) {
         if (!confirm('이 댓글을 삭제할까요?')) return;
         const { error } = await S.sb.from('ds_comments').delete().eq('id', c.id);
         if (error) return toast('삭제 실패: ' + error.message, true);
-        S.comments = S.comments.filter(x2 => x2.id !== c.id);
-        renderDrawer(); render(); toast('댓글을 삭제했습니다');
+        S.comments = S.comments.filter(y => y.id !== c.id);
+        renderDrawer(); render();
       };
       meta.appendChild(x);
     }
-    b.appendChild(meta);
-    b.appendChild(el('div', 'ds-cm__t', c.body));
+    b.appendChild(meta); b.appendChild(el('div', 'ds-cm__t', c.body));
     row.appendChild(b); box.appendChild(row);
   });
 }
 
-function hue(name) {
-  let h = 0; for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) % 360;
-  return `hsl(${h} 62% 66%)`;
+function renderPickers() {
+  const box = $('#dsPickers'); box.innerHTML = '';
+  if (S.isOwner) {
+    const c = el('span', 'ds-pick', '관리자');
+    c.setAttribute('aria-pressed', 'true');
+    c.style.background = cvar('--ds-accent');
+    box.appendChild(c); return;
+  }
+  const act = S.members.filter(m => m.active);
+  if (!act.length) { box.appendChild(el('span', 'ds-write__hint', '관리자가 담당자를 등록해야 댓글을 쓸 수 있습니다')); return; }
+  if (S.meId && !act.some(m => m.id === S.meId)) S.meId = null;
+  act.forEach(m => {
+    const on = S.meId === m.id;
+    const c = el('button', 'ds-pick', m.name);
+    c.setAttribute('aria-pressed', on);
+    if (on) c.style.background = m.color;
+    else c.style.color = m.color;
+    c.onclick = () => { S.meId = m.id; LS.set('meId', m.id); renderPickers(); };
+    box.appendChild(c);
+  });
 }
+
 function relTime(iso) {
   const s = (Date.now() - new Date(iso)) / 1000;
   if (s < 60) return '방금';
@@ -1504,30 +1391,58 @@ function relTime(iso) {
   return new Date(iso).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
 }
 
-/* 드로어 입력 바인딩 */
+async function postComment() {
+  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
+  const body = $('#dsCmBody').value.trim();
+  if (!body) return $('#dsCmBody').focus();
+  let row;
+  if (S.isOwner) row = { task_id: t.id, author: '관리자', body, is_owner: true, member_id: null };
+  else {
+    const m = memberOf(S.meId);
+    if (!m) { toast('작성자를 먼저 선택해주세요', true); return; }
+    row = { task_id: t.id, author: m.name, body, is_owner: false, member_id: m.id };
+  }
+  $('#dsCmSend').disabled = true;
+  const { data, error } = await S.sb.from('ds_comments').insert(row).select().single();
+  $('#dsCmSend').disabled = false;
+  if (error) return toast('댓글 등록 실패: ' + error.message, true);
+  S.comments.push(data); $('#dsCmBody').value = '';
+  S.seen[t.id] = cCount(t.id); LS.set('seen', S.seen);
+  renderDrawer(); render();
+  $('#dsDrBody').scrollTop = $('#dsDrBody').scrollHeight;
+}
+
+/* 드로어 바인딩 */
 $('#dsDrTitle').addEventListener('input', e => {
   e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px';
   saveTitle(e.target.value);
 });
-const saveTitle = dbounce(v => { if (S.sel) updateTask(S.sel, { title: v.trim() || '이름 없음' }, { noRender: false }); });
-$('#dsDrDesc').addEventListener('input', dbounce(e => { if (S.sel) updateTask(S.sel, { description: $('#dsDrDesc').value }, { noRender: true }); }, 700));
-$('#dsDrWho').addEventListener('input', dbounce(() => { if (S.sel) updateTask(S.sel, { assignee: $('#dsDrWho').value.trim() }); }, 600));
-$('#dsDrPct').addEventListener('input', e => { $('#dsDrPctLb').textContent = e.target.value + '%'; });
-$('#dsDrPct').addEventListener('change', e => { if (S.sel) updateTask(S.sel, { progress: +e.target.value }); });
-$('#dsDrPhase').addEventListener('change', e => { if (S.sel) updateTask(S.sel, { phase_id: e.target.value || null }); });
+const saveTitle = dbounce(v => { if (S.sel) updateTask(S.sel, { title: v.trim() || '이름 없음' }); });
+$('#dsDrDesc').addEventListener('input', dbounce(() => { if (S.sel) updateTask(S.sel, { description: $('#dsDrDesc').value }, { noRender: true }); }, 700));
+$('#dsDrPct').addEventListener('input', e => $('#dsDrPctLb').textContent = e.target.value + '%');
+$('#dsDrPct').addEventListener('change', e => S.sel && updateTask(S.sel, { progress: +e.target.value }));
+$('#dsDrPhase').addEventListener('change', e => S.sel && updateTask(S.sel, { phase_id: e.target.value || null }));
+$('#dsDrWho').addEventListener('change', e => {
+  const id = e.target.value || null;
+  S.sel && updateTask(S.sel, { assignee_id: id, assignee: memberOf(id)?.name || '' });
+});
 $('#dsDrStart').addEventListener('change', e => {
-  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
-  const v = e.target.value; if (!v) return;
-  const patch = { start_date: v };
-  if (pd(v) > pd(t.end_date)) patch.end_date = v;
+  const t = S.tasks.find(x => x.id === S.sel); if (!t || !e.target.value) return;
+  const patch = { start_date: e.target.value };
+  if (pd(e.target.value) > pd(t.end_date)) patch.end_date = e.target.value;
   updateTask(t.id, patch);
 });
 $('#dsDrEnd').addEventListener('change', e => {
-  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
-  const v = e.target.value; if (!v) return;
-  const patch = { end_date: v };
-  if (pd(v) < pd(t.start_date)) patch.start_date = v;
+  const t = S.tasks.find(x => x.id === S.sel); if (!t || !e.target.value) return;
+  const patch = { end_date: e.target.value };
+  if (pd(e.target.value) < pd(t.start_date)) patch.start_date = e.target.value;
   updateTask(t.id, patch);
+});
+$('#dsDrHide').addEventListener('click', () => S.sel && toggleHide(S.sel));
+$('#dsDrArch').addEventListener('click', () => {
+  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
+  updateTask(t.id, { is_archived: !t.is_archived }, { toast: t.is_archived ? '보관을 해제했습니다' : '보관함으로 옮겼습니다' });
+  if (!t.is_archived) closeDrawer();
 });
 $('#dsDrDel').addEventListener('click', async () => {
   const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
@@ -1539,44 +1454,6 @@ $('#dsDrDel').addEventListener('click', async () => {
 });
 $('#dsDrClose').addEventListener('click', closeDrawer);
 $('#dsScrim').addEventListener('click', closeDrawer);
-
-/* ---------- 댓글 등록 ---------- */
-function ensureName() {
-  return new Promise(res => {
-    if (S.me) return res(S.me);
-    const m = $('#dsNameModal'); m.classList.add('is-on');
-    const inp = $('#dsNameIn'); inp.value = ''; setTimeout(() => inp.focus(), 60);
-    const go = () => {
-      const v = inp.value.trim();
-      if (v.length < 1) { $('#dsNameErr').textContent = '이름을 입력해주세요.'; return; }
-      S.me = v.slice(0, 20); LS.set('me', S.me);
-      $('#dsMeName').textContent = S.me;
-      m.classList.remove('is-on'); $('#dsNameErr').textContent = '';
-      $('#dsNameGo').removeEventListener('click', go);
-      res(S.me);
-    };
-    $('#dsNameGo').addEventListener('click', go);
-    inp.onkeydown = e => { if (e.key === 'Enter') go(); };
-  });
-}
-$('#dsMeEdit').addEventListener('click', async () => { S.me = null; $('#dsMeName').textContent = '–'; await ensureName(); });
-
-async function postComment() {
-  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
-  const body = $('#dsCmBody').value.trim();
-  if (!body) { $('#dsCmBody').focus(); return; }
-  const name = await ensureName();
-  $('#dsCmSend').disabled = true;
-  const row = { task_id: t.id, author: name, body, is_owner: S.isOwner };
-  const { data, error } = await S.sb.from('ds_comments').insert(row).select().single();
-  $('#dsCmSend').disabled = false;
-  if (error) return toast('댓글 등록 실패: ' + error.message, true);
-  S.comments.push(data);
-  $('#dsCmBody').value = '';
-  S.seen[t.id] = cCount(t.id); LS.set('seen', S.seen);
-  renderDrawer(); render();
-  $('#dsDrBody').scrollTop = $('#dsDrBody').scrollHeight;
-}
 $('#dsCmSend').addEventListener('click', postComment);
 $('#dsCmBody').addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); postComment(); }
@@ -1584,120 +1461,253 @@ $('#dsCmBody').addEventListener('keydown', e => {
 });
 
 /* ============================================================
-   10. 상단 컨트롤
+   휴가
+   ============================================================ */
+let lvKind = 'annual';
+function openLeave(leave, startHint) {
+  S.selLeave = leave?.id || null;
+  $('#dsLvTitle').textContent = leave ? '휴가 수정' : '휴가 등록';
+  const who = $('#dsLvWho'); who.innerHTML = '';
+  S.members.filter(m => m.active || m.id === leave?.member_id).forEach(m => who.appendChild(new Option(m.name, m.id)));
+  who.value = leave?.member_id || S.members[0]?.id || '';
+  const s = leave?.start_date || startHint || fd(new Date());
+  $('#dsLvStart').value = s;
+  $('#dsLvEnd').value = leave?.end_date || s;
+  $('#dsLvMemo').value = leave?.memo || '';
+  lvKind = leave?.kind || 'annual';
+  const kb = $('#dsLvKind'); kb.innerHTML = '';
+  KINDS.forEach(k => {
+    const b = el('button', 'ds-stat', k.label);
+    b.setAttribute('aria-pressed', lvKind === k.k);
+    if (lvKind === k.k) b.style.background = cvar('--ds-accent');
+    b.onclick = () => { lvKind = k.k; openLeaveKinds(); };
+    kb.appendChild(b);
+  });
+  $('#dsLvDel').classList.toggle('ds-hide', !leave);
+  $('#dsLvErr').textContent = '';
+  $('#dsLeaveModal').classList.add('is-on');
+}
+function openLeaveKinds() {
+  [...$('#dsLvKind').children].forEach((b, i) => {
+    const on = KINDS[i].k === lvKind;
+    b.setAttribute('aria-pressed', on);
+    b.style.background = on ? cvar('--ds-accent') : '';
+  });
+}
+$('#dsLvCancel').addEventListener('click', () => $('#dsLeaveModal').classList.remove('is-on'));
+$('#dsLvGo').addEventListener('click', async () => {
+  const member_id = $('#dsLvWho').value;
+  const start_date = $('#dsLvStart').value, end_date = $('#dsLvEnd').value || start_date;
+  if (!member_id) return $('#dsLvErr').textContent = '담당자를 먼저 등록해주세요.';
+  if (!start_date) return $('#dsLvErr').textContent = '날짜를 선택해주세요.';
+  if (pd(end_date) < pd(start_date)) return $('#dsLvErr').textContent = '종료일이 시작일보다 빠릅니다.';
+  const row = { member_id, start_date, end_date, kind: lvKind, memo: $('#dsLvMemo').value.trim() };
+  const q = S.selLeave
+    ? S.sb.from('ds_leaves').update(row).eq('id', S.selLeave).select().single()
+    : S.sb.from('ds_leaves').insert(row).select().single();
+  const { data, error } = await q;
+  if (error) return $('#dsLvErr').textContent = '저장 실패: ' + error.message;
+  if (S.selLeave) S.leaves = S.leaves.map(l => l.id === data.id ? data : l);
+  else S.leaves.push(data);
+  $('#dsLeaveModal').classList.remove('is-on'); render(); toast('휴가를 저장했습니다');
+});
+$('#dsLvDel').addEventListener('click', async () => {
+  if (!S.selLeave || !confirm('이 휴가를 삭제할까요?')) return;
+  const { error } = await S.sb.from('ds_leaves').delete().eq('id', S.selLeave);
+  if (error) return toast('삭제 실패: ' + error.message, true);
+  S.leaves = S.leaves.filter(l => l.id !== S.selLeave);
+  $('#dsLeaveModal').classList.remove('is-on'); render(); toast('휴가를 삭제했습니다');
+});
+
+/* ============================================================
+   관리자 설정
+   ============================================================ */
+$('#dsAdmin').addEventListener('click', () => { renderAdmin(); $('#dsAdminModal').classList.add('is-on'); });
+$('#dsAdmClose').addEventListener('click', () => $('#dsAdminModal').classList.remove('is-on'));
+$('#dsAdmTabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-tab]'); if (!b) return;
+  [...$('#dsAdmTabs').children].forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('#dsAdmMembers').classList.toggle('ds-hide', b.dataset.tab !== 'members');
+  $('#dsAdmArchive').classList.toggle('ds-hide', b.dataset.tab !== 'archive');
+});
+
+function renderAdmin() {
+  const box = $('#dsMemberList'); box.innerHTML = '';
+  S.members.forEach(m => {
+    const row = el('div', 'ds-mrow');
+    const col = el('input', 'ds-swatch'); col.type = 'color'; col.value = m.color;
+    col.onchange = () => saveMember(m.id, { color: col.value });
+    row.appendChild(col);
+    const nm = el('input'); nm.type = 'text'; nm.value = m.name;
+    nm.onchange = () => saveMember(m.id, { name: nm.value.trim() || m.name });
+    row.appendChild(nm);
+    const act = el('button', 'ds-btn ds-btn--sm', m.active ? '사용중' : '중지');
+    act.style.color = m.active ? cvar('--ds-done') : cvar('--ds-muted');
+    act.title = m.active ? '중지하면 담당/댓글 선택지에서 빠집니다' : '다시 사용';
+    act.onclick = () => saveMember(m.id, { active: !m.active });
+    row.appendChild(act);
+    const del = el('button', 'ds-ia ds-ia--del');
+    del.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>';
+    del.title = '삭제';
+    del.onclick = async () => {
+      if (!confirm(`${m.name} 님을 삭제할까요? 이 사람의 휴가 기록도 함께 사라집니다.`)) return;
+      const { error } = await S.sb.from('ds_members').delete().eq('id', m.id);
+      if (error) return toast('삭제 실패: ' + error.message, true);
+      S.members = S.members.filter(x => x.id !== m.id);
+      S.leaves = S.leaves.filter(l => l.member_id !== m.id);
+      renderAdmin(); render();
+    };
+    row.appendChild(del);
+    box.appendChild(row);
+  });
+
+  const arch = $('#dsArchList'); arch.innerHTML = '';
+  const list = S.tasks.filter(t => t.is_archived);
+  if (!list.length) arch.appendChild(el('p', 'ds-cm__empty', '보관된 작업이 없습니다.'));
+  list.forEach(t => {
+    const row = el('div', 'ds-arch');
+    const b = el('div', 'ds-arch__b');
+    b.appendChild(el('div', 'ds-arch__t', t.title));
+    b.appendChild(el('div', 'ds-arch__d', `${t.start_date} → ${t.end_date}`));
+    row.appendChild(b);
+    const back = el('button', 'ds-btn ds-btn--sm', '되돌리기');
+    back.onclick = async () => { await updateTask(t.id, { is_archived: false }); renderAdmin(); };
+    row.appendChild(back);
+    arch.appendChild(row);
+  });
+}
+
+async function saveMember(id, patch) {
+  const m = S.members.find(x => x.id === id); if (!m) return;
+  Object.assign(m, patch);
+  const { error } = await S.sb.from('ds_members').update(patch).eq('id', id);
+  if (error) { toast('저장 실패: ' + error.message, true); await loadAll(); }
+  if (patch.name) S.tasks.filter(t => t.assignee_id === id).forEach(t => t.assignee = patch.name);
+  renderAdmin(); render();
+}
+
+$('#dsMemberAdd').addEventListener('click', async () => {
+  const name = prompt('담당자 이름'); if (!name?.trim()) return;
+  const { data, error } = await S.sb.from('ds_members')
+    .insert({ name: name.trim(), color: PALETTE[S.members.length % PALETTE.length], sort: S.members.length })
+    .select().single();
+  if (error) return toast(/duplicate/.test(error.message) ? '이미 있는 이름입니다' : '추가 실패: ' + error.message, true);
+  S.members.push(data); renderAdmin(); render();
+});
+
+/* ============================================================
+   상단 컨트롤
    ============================================================ */
 $('#dsQ').addEventListener('input', e => { S.q = e.target.value; render(); });
-$('#dsQ').addEventListener('keydown', e => { if (e.key === 'Escape') { e.target.value = ''; S.q = ''; render(); e.target.blur(); } e.stopPropagation(); });
-
-$('#dsZoom').addEventListener('click', e => {
-  const b = e.target.closest('button[data-zoom]'); if (!b) return;
-  setZoom(b.dataset.zoom);
+$('#dsQ').addEventListener('keydown', e => {
+  if (e.key === 'Escape') { e.target.value = ''; S.q = ''; render(); e.target.blur(); }
+  e.stopPropagation();
 });
+$('#dsZoom').addEventListener('click', e => { const b = e.target.closest('button[data-zoom]'); if (b) setZoom(b.dataset.zoom); });
 function setZoom(z) {
   S.zoom = z; S.dayW = ZOOM[z]; LS.set('zoom', z);
   [...$('#dsZoom').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.zoom === z));
   render(); scrollToToday(true);
 }
-
+$('#dsGroup').addEventListener('click', e => {
+  const b = e.target.closest('button[data-group]'); if (!b) return;
+  S.group = b.dataset.group; LS.set('group', S.group);
+  [...$('#dsGroup').children].forEach(x => x.setAttribute('aria-pressed', x.dataset.group === S.group));
+  render();
+});
 $('#dsView').addEventListener('click', e => {
   const b = e.target.closest('button[data-view]'); if (!b) return;
-  S.view = b.dataset.view; LS.set('view', S.view);
-  applyView(); render();
+  S.view = b.dataset.view; LS.set('view', S.view); applyView(); render();
 });
 function applyView() {
   [...$('#dsView').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.view === S.view));
+  [...$('#dsZoom').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.zoom === S.zoom));
+  [...$('#dsGroup').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.group === S.group));
   const tl = S.view === 'timeline';
   $('#dsInner').classList.toggle('ds-hide', !tl);
   $('#dsListView').classList.toggle('ds-hide', tl);
   $('.ds-zoomseg').classList.toggle('ds-hide', !tl);
   $('#dsToday').classList.toggle('ds-hide', !tl);
-  [...$('#dsZoom').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.zoom === S.zoom));
 }
-
 $('#dsToday').addEventListener('click', () => scrollToToday(true));
 function scrollToToday(smooth) {
   if (S.view !== 'timeline' || !S.range.s) return;
-  const board = $('#dsBoard');
-  const x = diffD(S.range.s, new Date()) * S.dayW - board.clientWidth * 0.34;
-  board.scrollTo({ left: Math.max(0, x), behavior: smooth ? 'smooth' : 'auto' });
+  const b = $('#dsBoard');
+  b.scrollTo({ left: Math.max(0, diffD(S.range.s, new Date()) * S.dayW - b.clientWidth * 0.34), behavior: smooth ? 'smooth' : 'auto' });
 }
-
 $('#dsTheme').addEventListener('click', () => {
-  const cur = document.documentElement.dataset.dsTheme;
-  const nxt = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.dsTheme = nxt;
-  LS.set('theme', nxt);
+  const n = document.documentElement.dataset.dsTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.dsTheme = n; LS.set('theme', n);
+  document.querySelector('meta[name="theme-color"]').content = n === 'dark' ? '#0E1116' : '#EEF1F5';
   render();
 });
 document.documentElement.dataset.dsTheme = LS.get('theme', 'dark');
-
-$('#dsNew').addEventListener('click', () => createTask(S.phases[0]?.id || null));
+$('#dsNew').addEventListener('click', () => createTask({}));
 $('#dsEmptyBtn').addEventListener('click', createPhase);
+$('#dsAddLane').addEventListener('click', () => {
+  if (S.group === 'phase') createPhase();
+  else { renderAdmin(); $('#dsAdminModal').classList.add('is-on'); }
+});
 
-/* 로그인 */
 $('#dsAuth').addEventListener('click', async () => {
-  if (S.isOwner) {
-    await S.sb.auth.signOut();
-    toast('로그아웃했습니다');
-    render();
-  } else {
-    $('#dsLoginModal').classList.add('is-on');
-    setTimeout(() => $('#dsLgEmail').focus(), 60);
-  }
+  if (S.isOwner) { await S.sb.auth.signOut(); toast('로그아웃했습니다'); render(); }
+  else { $('#dsLoginModal').classList.add('is-on'); setTimeout(() => $('#dsLgEmail').focus(), 60); }
 });
 $('#dsLgCancel').addEventListener('click', () => $('#dsLoginModal').classList.remove('is-on'));
 $('#dsLgGo').addEventListener('click', async () => {
   const email = $('#dsLgEmail').value.trim(), password = $('#dsLgPw').value;
-  if (!email || !password) { $('#dsLgErr').textContent = '이메일과 비밀번호를 입력해주세요.'; return; }
+  if (!email || !password) return $('#dsLgErr').textContent = '이메일과 비밀번호를 입력해주세요.';
   $('#dsLgGo').disabled = true; $('#dsLgErr').textContent = '';
   const { error } = await S.sb.auth.signInWithPassword({ email, password });
   $('#dsLgGo').disabled = false;
-  if (error) { $('#dsLgErr').textContent = '로그인하지 못했습니다. 이메일과 비밀번호를 확인해주세요.'; return; }
-  $('#dsLoginModal').classList.remove('is-on');
-  $('#dsLgPw').value = '';
-  toast('로그인했습니다');
-  render();
+  if (error) return $('#dsLgErr').textContent = '로그인하지 못했습니다. 이메일과 비밀번호를 확인해주세요.';
+  $('#dsLoginModal').classList.remove('is-on'); $('#dsLgPw').value = '';
+  toast('로그인했습니다'); render();
 });
 $('#dsLgPw').addEventListener('keydown', e => { if (e.key === 'Enter') $('#dsLgGo').click(); });
+$('#dsCfgGo').addEventListener('click', async () => {
+  const url = $('#dsCfgUrl').value.trim().replace(/\/+$/, ''), key = $('#dsCfgKey').value.trim();
+  if (!/^https?:\/\/.+/.test(url) || key.length < 20) return $('#dsCfgErr').textContent = 'URL과 키를 다시 확인해주세요.';
+  LS.set('cfgUrl', url); LS.set('cfgKey', key); location.reload();
+});
 
-/* 단축키 */
 window.addEventListener('keydown', e => {
   const tag = (e.target.tagName || '').toLowerCase();
   if (['input', 'textarea', 'select'].includes(tag) || e.target.isContentEditable) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
   if (e.key === '/') { e.preventDefault(); $('#dsQ').focus(); }
   else if (e.key === 'Escape') { if (S.sel) closeDrawer(); document.querySelectorAll('.ds-modal.is-on').forEach(m => m.classList.remove('is-on')); }
-  else if (e.key.toLowerCase() === 't') scrollToToday(true);
-  else if (e.key.toLowerCase() === 'n' && S.isOwner) { e.preventDefault(); createTask(S.phases[0]?.id || null); }
+  else if (k === 't') scrollToToday(true);
+  else if (k === 'n' && S.isOwner) { e.preventDefault(); createTask({}); }
+  else if (k === 'g') { S.group = S.group === 'phase' ? 'member' : 'phase'; LS.set('group', S.group); applyView(); render(); }
   else if (e.key === '1') setZoom('day');
   else if (e.key === '2') setZoom('week');
   else if (e.key === '3') setZoom('month');
 });
 
 /* ============================================================
-   11. 메인 렌더
+   메인 렌더
    ============================================================ */
 function render() {
   computeRange();
   renderFilters();
-  if (S.view === 'timeline') { renderHeader(); renderRows(); }
+  if (S.view === 'timeline') { renderHeader(); renderLanes(); }
   else renderList();
 
-  const total = S.tasks.length, done = S.tasks.filter(t => t.status === 'done').length;
-  $('#dsSub').textContent = total
-    ? `작업 ${total} · 완료 ${Math.round(done / total * 100)}% · 단계 ${S.phases.length}`
+  const all = live(), done = all.filter(t => t.status === 'done').length;
+  $('#dsSub').textContent = all.length
+    ? `작업 ${all.length} · 완료 ${Math.round(done / all.length * 100)}%`
     : 'SCHEDULE';
 
-  $('#dsMeName').textContent = S.me || '–';
-
-  const empty = $('#dsEmpty');
-  const nothing = S.view === 'timeline' && !S.phases.length && !S.tasks.length;
-  empty.classList.toggle('ds-hide', !nothing);
+  const nothing = !S.phases.length && !live().length;
+  $('#dsEmpty').classList.toggle('ds-hide', !nothing);
   $('#dsEmptyBtn').classList.toggle('ds-hide', !S.isOwner);
   if (nothing && !S.isOwner) {
     $('#dsEmptyT').textContent = '아직 공유된 일정이 없습니다';
     $('#dsEmptyP').textContent = '관리자가 일정을 등록하면 여기에 표시됩니다.';
   }
+  if (S.sel && !S.tasks.some(t => t.id === S.sel)) closeDrawer();
 }
 
 boot();
