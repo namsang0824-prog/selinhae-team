@@ -15,7 +15,7 @@
    개발 진행 스케줄 보드 v3
    ========================================================== */
 :root{
-  --ds-r:10px; --ds-head:56px; --ds-side:200px;
+  --ds-r:10px; --ds-head:56px; --ds-side:200px; --ds-dock:320px;
   --ds-slot:30px; --ds-bar:24px; --ds-lpad:7px;
   --ds-ease:cubic-bezier(.22,.61,.36,1);
   --ds-planned:#7A879A; --ds-active:#4C8DFF; --ds-review:#B57BFF; --ds-done:#2FBF71; --ds-blocked:#FF6B5A;
@@ -115,7 +115,7 @@ html[data-ds-theme="light"] .ds-left{box-shadow:14px 0 20px -18px rgba(30,44,64,
 .ds-left__head{position:sticky;top:0;z-index:5;height:var(--ds-head);display:flex;align-items:flex-end;justify-content:space-between;gap:6px;padding:0 8px 8px 10px;background:var(--ds-surface);border-bottom:1px solid var(--ds-line2);font-size:10px;font-weight:700;letter-spacing:.11em;color:var(--ds-muted)}
 .ds-grip{position:absolute;top:0;right:-3px;width:6px;height:100%;z-index:25;cursor:col-resize;background:transparent;transition:background .12s}
 .ds-grip:hover,.ds-grip.is-on{background:color-mix(in srgb,var(--ds-accent) 55%,transparent)}
-.ds-reopen{position:absolute;top:calc(var(--ds-head) - 30px);left:4px;z-index:30;width:26px;height:26px;border-radius:7px;background:var(--ds-surface3);border:1px solid var(--ds-line2);display:grid;place-items:center;color:var(--ds-muted)}
+.ds-reopen{position:fixed;left:6px;z-index:80;width:26px;height:26px;border-radius:7px;background:var(--ds-surface3);border:1px solid var(--ds-line2);display:grid;place-items:center;color:var(--ds-muted)}
 .ds-reopen:hover{color:var(--ds-text)}
 .ds-reopen svg{width:14px;height:14px}
 
@@ -232,9 +232,47 @@ html[data-ds-theme="light"] .ds-left{box-shadow:14px 0 20px -18px rgba(30,44,64,
 .ds-mini{height:5px;border-radius:99px;background:var(--ds-surface3);overflow:hidden;min-width:52px}
 .ds-mini i{display:block;height:100%;border-radius:99px}
 
+/* 카드 펼침 */
+.ds-rcard__more{margin-top:9px;border-top:1px solid var(--ds-line);padding-top:9px}
+.ds-memo{font-size:12px;color:var(--ds-text2);line-height:1.6;white-space:pre-wrap;background:var(--ds-surface2);border-radius:8px;padding:8px 9px;display:-webkit-box;-webkit-line-clamp:10;-webkit-box-orient:vertical;overflow:hidden}
+.ds-mini-cm{display:flex;gap:7px;margin-top:8px}
+.ds-mini-cm .ds-av{width:19px;height:19px;border-radius:6px;font-size:9.5px}
+.ds-mini-cm__b{flex:1 1 auto;min-width:0}
+.ds-mini-cm__n{font-size:10.5px;font-weight:700;color:var(--ds-text2)}
+.ds-mini-cm__t{font-size:11.5px;color:var(--ds-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ds-morebtn{display:block;width:100%;margin-top:9px;padding:6px;border-radius:7px;font-size:11.5px;font-weight:700;color:var(--ds-muted);background:var(--ds-surface2)}
+.ds-morebtn:hover{color:var(--ds-text);background:var(--ds-surface3)}
+.ds-exp{position:absolute;bottom:9px;right:9px;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;color:var(--ds-muted);background:var(--ds-surface2)}
+.ds-exp:hover{color:var(--ds-text);background:var(--ds-surface3)}
+.ds-exp svg{width:13px;height:13px;transition:transform .18s var(--ds-ease)}
+.ds-exp.is-open svg{transform:rotate(180deg)}
+.ds-orig{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:99px;font-size:10px;font-weight:800;letter-spacing:.02em}
+.ds-orig--req{background:color-mix(in srgb,var(--ds-active) 20%,transparent);color:var(--ds-active)}
+.ds-orig--plan{background:color-mix(in srgb,var(--ds-done) 20%,transparent);color:var(--ds-done)}
+.ds-lock{font-size:10px;color:var(--ds-muted);display:inline-flex;align-items:center;gap:3px}
+
+/* 간단 리스트형 */
+.ds-slist{display:flex;flex-direction:column;gap:1px}
+.ds-srow{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border-radius:8px;text-align:left;transition:background .12s}
+.ds-srow:hover{background:var(--ds-surface2)}
+.ds-srow.is-unread{background:color-mix(in srgb,var(--ds-accent) 9%,transparent)}
+.ds-srow i{width:7px;height:7px;border-radius:99px;flex:0 0 auto}
+.ds-srow__t{flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-srow__m{font-size:10px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;flex:0 0 auto}
+
+/* 답글 */
+.ds-cm--reply{margin-left:34px}
+.ds-cm__acts{display:flex;gap:8px;margin-top:4px}
+.ds-cm__acts button{font-size:10.5px;font-weight:700;color:var(--ds-muted)}
+.ds-cm__acts button:hover{color:var(--ds-accent)}
+.ds-replybox{margin:6px 0 12px 34px;display:flex;gap:6px}
+.ds-replybox textarea{flex:1 1 auto;min-height:38px;max-height:120px;padding:7px 9px;border-radius:8px;resize:none;background:var(--ds-surface2);border:1px solid var(--ds-line2);font-family:inherit;font-size:12.5px;line-height:1.5}
+.ds-replybox textarea:focus{outline:none;border-color:var(--ds-accent)}
+.ds-at{font-weight:700;color:var(--ds-active)}
+
 /* ---------- 드로어 ---------- */
-.ds-scrim{position:fixed;inset:0;z-index:90;background:rgba(6,9,13,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .22s}
-.ds-scrim.is-on{opacity:1;pointer-events:auto}
+.ds-scrim{position:fixed;inset:0;z-index:90;background:rgba(6,9,13,.5);backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,backdrop-filter .2s,visibility 0s linear .2s}
+.ds-scrim.is-on{opacity:1;visibility:visible;pointer-events:auto;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:opacity .2s,backdrop-filter .2s,visibility 0s}
 .ds-drawer{position:fixed;top:0;right:0;bottom:0;z-index:100;width:min(432px,100vw);background:var(--ds-surface);border-left:1px solid var(--ds-line2);display:flex;flex-direction:column;box-shadow:var(--ds-shadow);transform:translateX(101%);transition:transform .28s var(--ds-ease)}
 .ds-drawer.is-on{transform:none}
 .ds-dr__top{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:11px 11px 11px 15px;border-bottom:1px solid var(--ds-line);position:relative}
@@ -355,6 +393,73 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
   .ds-pop{display:none}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+
+/* ---------- 알림 ---------- */
+.ds-bellwrap{position:relative;flex:0 0 auto}
+.ds-badge{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:var(--ds-blocked);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;pointer-events:none;box-shadow:0 0 0 2px var(--ds-surface)}
+.ds-badge--sm{position:static;box-shadow:none;margin-left:5px;background:var(--ds-accent);color:var(--ds-on)}
+.ds-notif{position:fixed;z-index:180;width:340px;max-width:calc(100vw - 16px);max-height:min(460px,70dvh);display:flex;flex-direction:column;background:var(--ds-surface);border:1px solid var(--ds-line2);border-radius:14px;box-shadow:var(--ds-shadow);opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .16s,transform .16s}
+.ds-notif.is-on{opacity:1;pointer-events:auto;transform:none}
+.ds-notif__h{display:flex;align-items:center;gap:8px;padding:11px 13px;border-bottom:1px solid var(--ds-line)}
+.ds-notif__h b{font-size:13px;font-weight:700;flex:1 1 auto}
+.ds-notif__l{flex:1 1 auto;overflow-y:auto;padding:5px}
+.ds-nrow{display:flex;gap:9px;width:100%;padding:9px 9px;border-radius:9px;text-align:left;transition:background .12s}
+.ds-nrow:hover{background:var(--ds-surface2)}
+.ds-nrow__b{flex:1 1 auto;min-width:0}
+.ds-nrow__t{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-nrow__s{font-size:11.5px;color:var(--ds-text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.ds-nrow__d{font-size:10px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+/* ---------- 우측 도크 ---------- */
+.ds-mid{flex:1 1 auto;display:flex;min-height:0;position:relative}
+.ds-mid .ds-board{flex:1 1 auto;min-width:0}
+.ds-dock{position:relative;flex:0 0 var(--ds-dock);width:var(--ds-dock);display:flex;flex-direction:column;background:var(--ds-surface);border-left:1px solid var(--ds-line2);min-height:0}
+.ds-dock.is-off{display:none}
+.ds-dockgrip{position:absolute;left:-3px;top:0;bottom:0;width:6px;z-index:25;cursor:col-resize;transition:background .12s}
+.ds-dockgrip:hover,.ds-dockgrip.is-on{background:color-mix(in srgb,var(--ds-accent) 55%,transparent)}
+.ds-dock__h{flex:0 0 auto;padding:9px 10px;border-bottom:1px solid var(--ds-line);display:flex;flex-direction:column;gap:8px}
+.ds-dock__r{display:flex;align-items:center;gap:6px}
+.ds-dock__l{flex:1 1 auto;overflow-y:auto;padding:10px;overscroll-behavior:contain}
+.ds-qadd{position:relative;flex:1 1 auto}
+.ds-qadd input{width:100%;height:32px;padding:0 30px 0 10px;border-radius:8px;background:var(--ds-surface2);border:1px dashed var(--ds-line2);font-size:12.5px}
+.ds-qadd input:focus{outline:none;border-style:solid;border-color:var(--ds-accent);background:var(--ds-surface3)}
+.ds-qadd input::placeholder{color:var(--ds-muted)}
+.ds-qadd kbd{position:absolute;right:8px;top:8px;font-size:9.5px;color:var(--ds-muted);border:1px solid var(--ds-line2);border-radius:4px;padding:1px 4px;pointer-events:none}
+.ds-qadd input:focus+kbd{display:none}
+.ds-ghostcard{position:fixed;z-index:250;pointer-events:none;padding:7px 11px;border-radius:9px;background:var(--ds-accent);color:var(--ds-on);font-size:12px;font-weight:700;box-shadow:var(--ds-shadow);opacity:0;transform:translate(-50%,-50%);max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-ghostcard.is-on{opacity:.95}
+
+/* ---------- 요청함 ---------- */
+.ds-reqview{padding:14px;max-width:1240px;margin:0 auto}
+.ds-rsec{margin-bottom:22px}
+.ds-rsec__h{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:0 2px}
+.ds-rsec__h b{font-size:12.5px;font-weight:700}
+.ds-rsec__h span{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
+.ds-rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:10px}
+.ds-rcard{position:relative;text-align:left;width:100%;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:13px;padding:13px;transition:border-color .14s,transform .14s,box-shadow .14s}
+.ds-rcard:hover{border-color:var(--ds-line2);transform:translateY(-1px);box-shadow:0 8px 22px -12px rgba(0,0,0,.5)}
+.ds-rcard.is-unread{border-color:color-mix(in srgb,var(--ds-accent) 55%,transparent)}
+.ds-rcard.is-unread::after{content:'';position:absolute;top:10px;right:10px;width:7px;height:7px;border-radius:99px;background:var(--ds-accent)}
+.ds-rcard__top{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.ds-rcard__t{font-size:13.5px;font-weight:700;line-height:1.42;margin-bottom:5px;padding-right:12px}
+.ds-rcard__b{font-size:12px;color:var(--ds-muted);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:9px}
+.ds-rcard__f{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
+.ds-rcard__f .ds-av{width:20px;height:20px;border-radius:7px;font-size:10px}
+.ds-cat{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:99px;font-size:10.5px;font-weight:700;background:var(--ds-surface2);color:var(--ds-text2)}
+.ds-cat i{width:6px;height:6px;border-radius:2px}
+.ds-link{margin-top:9px;padding:9px 10px;border-radius:9px;background:var(--ds-surface2);border:1px solid var(--ds-line)}
+.ds-link__h{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--ds-muted);margin-bottom:6px}
+.ds-link__t{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:6px}
+.ds-link__m{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;margin-top:6px}
+.ds-empty2{text-align:center;padding:44px 20px;color:var(--ds-muted);font-size:13px}
+
+@media (max-width:720px){
+  .ds-notif{width:calc(100vw - 16px)}
+  .ds-rgrid{grid-template-columns:1fr}
+  .ds-dock{position:fixed;left:0;right:0;bottom:0;top:auto;width:100vw;height:76dvh;z-index:95;
+    border-left:none;border-top:1px solid var(--ds-line2);border-radius:16px 16px 0 0;box-shadow:var(--ds-shadow)}
+  .ds-dockgrip{display:none}
+}
 </style>
 </head>
 <body>
@@ -380,6 +485,7 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
       <div class="ds-seg" id="dsView" role="group" aria-label="보기">
         <button data-view="timeline" aria-pressed="true">타임라인</button>
         <button data-view="list" aria-pressed="false">목록</button>
+        <button data-view="request" aria-pressed="false">요청<span class="ds-badge ds-badge--sm ds-hide" id="dsReqBadge">0</span></button>
       </div>
       <div class="ds-seg" id="dsGroup" role="group" aria-label="묶기">
         <button data-group="phase" aria-pressed="true">단계</button>
@@ -403,6 +509,19 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
     </div>
 
     <div class="ds-grp">
+      <span class="ds-bellwrap ds-hide" id="dsBellWrap">
+        <button class="ds-btn ds-btn--icon" id="dsBell" title="알림" aria-label="알림">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7"/><path d="M10.5 20.5a2 2 0 0 0 3 0"/></svg>
+        </button>
+        <span class="ds-badge ds-hide" id="dsBellN">0</span>
+      </span>
+      <button class="ds-btn ds-btn--icon" id="dsDockBtn" title="백로그 패널 (D)" aria-label="백로그 패널">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+      </button>
+      <button class="ds-btn" id="dsNewReq" title="개발 요청 남기기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z"/></svg>
+        <span class="ds-newlb">요청하기</span>
+      </button>
       <button class="ds-btn ds-btn--icon ds-hide" id="dsAdmin" title="관리자 설정" aria-label="관리자 설정">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6v2.2M12 19.2v2.2M21.4 12h-2.2M5.4 12H3.2M18.6 5.4l-1.6 1.6M7 17l-1.6 1.6M18.6 18.6 17 17M7 7 5.4 5.4"/></svg>
       </button>
@@ -421,6 +540,7 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
 
   <div class="ds-filters" id="dsFilters"></div>
 
+  <div class="ds-mid">
   <div class="ds-board" id="dsBoard">
     <div class="ds-inner" id="dsInner">
       <aside class="ds-left" id="dsLeftPane">
@@ -448,10 +568,9 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
         <div id="dsLanes"></div>
       </div>
     </div>
-    <button class="ds-reopen ds-hide" id="dsReopen" title="패널 열기" aria-label="패널 열기">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg>
-    </button>
     <div class="ds-list ds-hide" id="dsListView"></div>
+    <div class="ds-reqview ds-hide" id="dsReqView"></div>
+    <div class="ds-ghostcard" id="dsGhost"></div>
     <div class="ds-empty ds-hide" id="dsEmpty">
       <div class="ds-empty__in">
         <h3 id="dsEmptyT">아직 작업이 없습니다</h3>
@@ -460,6 +579,47 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
       </div>
     </div>
   </div>
+
+  <aside class="ds-dock is-off" id="dsDock" aria-label="백로그">
+    <div class="ds-dockgrip" id="dsDockGrip" title="드래그해서 너비 조절"></div>
+    <div class="ds-dock__h">
+      <div class="ds-dock__r">
+        <div class="ds-seg" id="dsDockTabs" style="flex:1 1 auto">
+          <button data-origin="request" aria-pressed="true" style="flex:1">요청<span class="ds-badge ds-badge--sm ds-hide" id="dsDockNReq">0</span></button>
+          <button data-origin="plan" aria-pressed="false" style="flex:1">내 계획</button>
+        </div>
+        <button class="ds-ia" id="dsDockClose" title="닫기" aria-label="닫기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <div class="ds-dock__r">
+        <div class="ds-qadd">
+          <input id="dsQAdd" placeholder="한 줄로 적고 Enter" autocomplete="off" maxlength="120">
+          <kbd>R</kbd>
+        </div>
+        <button class="ds-ia" id="dsDockDensity" title="표시 방식 전환" aria-label="표시 방식">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <button class="ds-ia" id="dsDockExpand" title="전체 펼치기 / 접기" aria-label="전체 펼치기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 9 5 5 5-5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="ds-dock__l" id="dsDockList"></div>
+  </aside>
+  </div>
+</div>
+
+<button class="ds-reopen ds-hide" id="dsReopen" title="패널 열기 (B)" aria-label="패널 열기">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg>
+</button>
+
+<div class="ds-notif" id="dsNotif">
+  <div class="ds-notif__h">
+    <b>알림</b>
+    <button class="ds-btn ds-btn--sm" id="dsNotifAll">모두 읽음</button>
+  </div>
+  <div class="ds-notif__l" id="dsNotifList"></div>
 </div>
 
 <div class="ds-tip ds-mono" id="dsTip"></div>
@@ -518,6 +678,61 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
     </div>
   </div>
 </aside>
+
+<!-- 요청 상세 -->
+<aside class="ds-drawer" id="dsReqDrawer" aria-hidden="true">
+  <div class="ds-dr__top">
+    <span class="ds-dr__eyebrow" id="dsReqEyebrow">요청</span>
+    <button class="ds-btn ds-btn--sm ds-hide" id="dsReqConvert">일정에 넣기</button>
+    <button class="ds-btn ds-btn--icon ds-btn--danger ds-hide" id="dsReqDel" title="요청 삭제" aria-label="삭제">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>
+    </button>
+    <button class="ds-btn ds-btn--icon" id="dsReqClose" title="닫기 (Esc)" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="ds-dr__body" id="dsReqBody">
+    <textarea class="ds-dr__title" id="dsReqTitle" rows="1" placeholder="요청 제목"></textarea>
+    <div class="ds-fld"><span class="ds-fld__lb">우선순위</span><div class="ds-stats" id="dsReqPrio"></div><div class="ds-dur" id="dsReqWish"></div></div>
+    <div class="ds-fld"><span class="ds-fld__lb">처리 상태</span><div class="ds-stats" id="dsReqStatus"></div></div>
+    <div class="ds-fld ds-2col">
+      <div><label class="ds-fld__lb" for="dsReqCat">카테고리</label><select class="ds-in" id="dsReqCat"></select></div>
+      <div><span class="ds-fld__lb">공개 범위</span><div class="ds-stats" id="dsReqVis"></div></div>
+    </div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsReqDesc">내용</label><textarea class="ds-in" id="dsReqDesc" placeholder="어떤 걸 만들어드릴까요?"></textarea></div>
+    <div id="dsReqLink"></div>
+    <div class="ds-hr"></div>
+    <div class="ds-cm__h"><b>댓글</b><span id="dsReqCnt">0</span></div>
+    <div id="dsReqComments"></div>
+  </div>
+  <div class="ds-write">
+    <div class="ds-write__me"><span>작성자</span><b id="dsReqWriteMe">–</b></div>
+    <textarea id="dsReqCmBody" rows="2" placeholder="의견을 남겨주세요"></textarea>
+    <div class="ds-write__row">
+      <span class="ds-write__hint">⌘/Ctrl + Enter 로 등록</span>
+      <button class="ds-btn ds-btn--primary" id="dsReqCmSend">댓글 등록</button>
+    </div>
+  </div>
+</aside>
+
+<!-- 새 요청 -->
+<div class="ds-modal" id="dsNewReqModal">
+  <div class="ds-modal__card" style="max-width:420px">
+    <h2>개발 요청 남기기</h2>
+    <p>필요한 기능이나 고쳤으면 하는 걸 적어주세요. 요청함에서 진행 상황을 확인할 수 있습니다.</p>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsNrTitle">한 줄 요약</label><input class="ds-in" id="dsNrTitle" placeholder="예: 주문 목록에 엑셀 내보내기" maxlength="120"></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsNrBody">자세한 내용</label><textarea class="ds-in" id="dsNrBody" placeholder="어떤 상황에서 왜 필요한지 적어주시면 더 빠릅니다"></textarea></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsNrCat">카테고리</label><select class="ds-in" id="dsNrCat"></select></div>
+    <div class="ds-fld"><span class="ds-fld__lb">희망 우선순위</span><div class="ds-stats" id="dsNrPrio"></div></div>
+    <div class="ds-fld ds-hide" id="dsNrVisWrap"><span class="ds-fld__lb">공개 범위</span><div class="ds-stats" id="dsNrVis"></div></div>
+    <div class="ds-write__me" style="margin-bottom:0"><span>작성자</span><b id="dsNrMe">–</b><button id="dsNrChange">변경</button></div>
+    <div class="ds-err" id="dsNrErr"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="ds-btn" id="dsNrCancel" style="flex:1">취소</button>
+      <button class="ds-btn ds-btn--primary" id="dsNrGo" style="flex:1">요청 등록</button>
+    </div>
+  </div>
+</div>
 
 <!-- 내가 누구인지 -->
 <div class="ds-modal" id="dsWhoModal">
@@ -661,6 +876,22 @@ const STATUS = [
 const statusOf = k => STATUS.find(s => s.k === k) || STATUS[0];
 const KINDS = [{ k: 'annual', label: '연차' }, { k: 'half', label: '반차' }, { k: 'sick', label: '병가' }, { k: 'public', label: '공가' }, { k: 'etc', label: '기타' }];
 const kindOf = k => KINDS.find(x => x.k === k) || KINDS[0];
+const PRIO = [
+  { k: 'urgent', label: '긴급', v: '--ds-blocked' },
+  { k: 'high',   label: '높음', v: '--ds-accent'  },
+  { k: 'normal', label: '보통', v: '--ds-active'  },
+  { k: 'low',    label: '낮음', v: '--ds-planned' }
+];
+const prioOf = k => PRIO.find(p => p.k === k) || PRIO[2];
+const prioIx = k => Math.max(PRIO.findIndex(p => p.k === k), 2);
+const RSTATUS = [
+  { k: 'new',       label: '접수' },
+  { k: 'reviewing', label: '검토중' },
+  { k: 'planned',   label: '일정 반영' },
+  { k: 'done',      label: '완료' },
+  { k: 'rejected',  label: '반려' }
+];
+const rstatusOf = k => RSTATUS.find(r => r.k === k) || RSTATUS[0];
 const PALETTE = ['#4C8DFF', '#2FBF71', '#B57BFF', '#FFB020', '#FF6B5A', '#22C7C7', '#F473B9', '#8B9BFF'];
 const ZMIN = 3, ZMAX = 80;
 const DEFAULTS = { dayW: 22, view: 'timeline', group: 'phase', sideW: 200 };
@@ -673,7 +904,7 @@ const LS = {
 /* ---------- 상태 ---------- */
 const S = {
   sb: null,
-  phases: [], tasks: [], comments: [], members: [], viewers: [], leaves: [],
+  phases: [], tasks: [], comments: [], members: [], viewers: [], leaves: [], requests: [],
   def: { ...DEFAULTS },
   isOwner: false, user: null,
   dayW: DEFAULTS.dayW, view: DEFAULTS.view, group: DEFAULTS.group,
@@ -686,7 +917,11 @@ const S = {
   showHidden: false,
   seen: LS.get('seen', {}),
   viewerId: LS.get('viewerId', null),
-  sel: null, selLeave: null, dragging: false,
+  sel: null, selLeave: null, reqSel: null, dragging: false, nrPrio: 'normal', nrPublic: true,
+  dockOpen: LS.get('dockOpen', false), dockW: LS.get('dockW', 320),
+  dockTab: LS.get('dockTab', 'request'), density: LS.get('density', 'card'),
+  reqTab: LS.get('reqTab', 'request'),
+  expandAll: false, expanded: new Set(), replyTo: null,
   range: { s: null, days: 0 }
 };
 
@@ -709,7 +944,7 @@ async function boot() {
   S.dayW = clamp(S.def.dayW, ZMIN, ZMAX);
   S.view = S.def.view; S.group = S.def.group;
   if (S.sideW == null) S.sideW = S.def.sideW;
-  applySide(); applyView(); syncZoomUI(); render();
+  applySide(); applyDock(); applyView(); syncZoomUI(); render();
   requestAnimationFrame(() => { scrollToToday(false); openFromHash(); });
   $('#dsSkel').classList.add('is-off');
   if (!S.isOwner && !viewerOf(S.viewerId) && S.viewers.filter(v => v.active).length) setTimeout(openWho, 500);
@@ -721,6 +956,9 @@ function setUser(u) {
   $('#dsDot').classList.toggle('ds-dot--view', !u);
   ['#dsNew', '#dsAdmin', '#dsDrDel', '#dsDrArch', '#dsAddLane'].forEach(s => $(s).classList.toggle('ds-hide', !u));
   $('#dsMe').classList.toggle('ds-hide', !!u);
+  const nr = $('#dsNewReq');
+  nr.querySelector('.ds-newlb').textContent = u ? '계획 추가' : '요청하기';
+  nr.title = u ? '개발 계획 추가' : '개발 요청 남기기';
   syncMe();
 }
 
@@ -732,17 +970,19 @@ async function loadAll() {
     S.sb.from('ds_members').select('*').order('sort').order('created_at'),
     S.sb.from('ds_viewers').select('*').order('sort').order('created_at'),
     S.sb.from('ds_leaves').select('*').order('start_date'),
-    S.sb.from('ds_settings').select('*').eq('key', 'board').maybeSingle()
+    S.sb.from('ds_settings').select('*').eq('key', 'board').maybeSingle(),
+    S.sb.from('ds_requests').select('*').order('created_at', { ascending: false })
   ];
-  const [p, t, c, m, v, l, st] = await Promise.all(q);
-  const err = [p, t, c, m, v, l].find(r => r.error)?.error;
+  const [p, t, c, m, v, l, st, rq] = await Promise.all(q);
+  const err = [p, t, c, m, v, l, rq].find(r => r.error)?.error;
   if (err) {
     toast('데이터를 불러오지 못했습니다: ' + err.message, true);
-    if (/ds_viewers|ds_settings|viewer_id/.test(err.message)) toast('supabase-migration-v3.sql 을 먼저 실행해주세요', true);
+    if (/ds_requests|request_id|read_by_owner/.test(err.message)) toast('supabase-migration-v4.sql 을 먼저 실행해주세요', true);
+    else if (/ds_viewers|ds_settings|viewer_id/.test(err.message)) toast('supabase-migration-v3.sql 을 먼저 실행해주세요', true);
     return;
   }
   S.phases = p.data; S.tasks = t.data; S.comments = c.data;
-  S.members = m.data; S.viewers = v.data; S.leaves = l.data;
+  S.members = m.data; S.viewers = v.data; S.leaves = l.data; S.requests = rq.data;
   S.def = { ...DEFAULTS, ...(st?.data?.value || {}) };
 }
 
@@ -751,12 +991,12 @@ function scheduleReload() {
   clearTimeout(rt);
   rt = setTimeout(async () => {
     if (S.dragging || document.activeElement?.isContentEditable) return scheduleReload();
-    await loadAll(); render(); if (S.sel) renderDrawer();
+    await loadAll(); render(); if (S.sel) renderDrawer(); if (S.reqSel) renderReqDrawer();
   }, 280);
 }
 function subscribe() {
   const ch = S.sb.channel('ds-board-v3');
-  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings']
+  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings', 'ds_requests']
     .forEach(tb => ch.on('postgres_changes', { event: '*', schema: 'public', table: tb }, scheduleReload));
   ch.subscribe();
 }
@@ -771,6 +1011,16 @@ async function updateTask(id, patch, opts = {}) {
   const { error } = await S.sb.from('ds_tasks').update(patch).eq('id', id);
   if (error) { Object.assign(t, prev); render(); toast('저장 실패: ' + error.message, true); }
   else if (opts.toast) toast(opts.toast, false, opts.undo);
+  if (patch.status) {
+    const r = S.requests.find(x => x.task_id === id);
+    if (r) {
+      const want = patch.status === 'done' ? 'done' : 'planned';
+      if (r.status !== want && r.status !== 'rejected') {
+        r.status = want;
+        S.sb.from('ds_requests').update({ status: want }).eq('id', r.id);
+      }
+    }
+  }
 }
 
 async function createTask(o = {}) {
@@ -806,7 +1056,26 @@ const live = () => S.tasks.filter(t => !t.is_archived);
 const memberOf = id => S.members.find(m => m.id === id);
 const viewerOf = id => S.viewers.find(v => v.id === id);
 const cCount = id => S.comments.filter(c => c.task_id === id).length;
-const isNew = id => cCount(id) > (S.seen[id] || 0);
+const unreadTask = id => S.isOwner
+  ? S.comments.filter(c => c.task_id === id && !c.is_owner && !c.read_by_owner).length
+  : Math.max(cCount(id) - (S.seen[id] || 0), 0);
+const isNew = id => unreadTask(id) > 0;
+const reqOf = id => S.requests.find(r => r.id === id);
+const rCount = id => S.comments.filter(c => c.request_id === id).length;
+const unreadReq = id => S.isOwner
+  ? S.comments.filter(c => c.request_id === id && !c.is_owner && !c.read_by_owner).length + (reqOf(id)?.read_by_owner === false ? 1 : 0)
+  : Math.max(rCount(id) - (S.seen['r' + id] || 0), 0);
+const backlog = origin => S.requests.filter(r => (r.origin || 'request') === origin && (S.isOwner || r.is_public !== false));
+const isExp = id => S.expanded.has(id) !== S.expandAll;
+function toggleExp(id) { S.expanded.has(id) ? S.expanded.delete(id) : S.expanded.add(id); render(); }
+function setExpandAll(v) { S.expandAll = v; S.expanded.clear(); render(); }
+/* 요청 표시 상태: 연결된 작업이 있으면 작업 상태를 따라감 */
+function reqStatus(r) {
+  if (r.status === 'rejected') return 'rejected';
+  const t = r.task_id && S.tasks.find(x => x.id === r.task_id);
+  if (t) return t.status === 'done' ? 'done' : 'planned';
+  return r.status;
+}
 function matches(t) {
   const q = S.q.trim().toLowerCase();
   if (S.fStatus.size && !S.fStatus.has(t.status)) return false;
@@ -1435,22 +1704,25 @@ function exportCSV() {
    드로어
    ============================================================ */
 function openTask(id) {
-  S.sel = id; hidePop();
+  S.sel = id; hidePop(); closeReq(true);
   history.replaceState(null, '', '#t=' + id);
   $('#dsDrawer').classList.add('is-on'); $('#dsDrawer').setAttribute('aria-hidden', 'false');
   $('#dsScrim').classList.add('is-on');
   S.seen[id] = cCount(id); LS.set('seen', S.seen);
+  markTaskRead(id);
   renderDrawer(); render();
 }
-function closeDrawer() {
+function closeDrawer(silent) {
   S.sel = null;
-  history.replaceState(null, '', location.pathname + location.search);
+  if (!silent) history.replaceState(null, '', location.pathname + location.search);
   $('#dsDrawer').classList.remove('is-on'); $('#dsDrawer').setAttribute('aria-hidden', 'true');
-  $('#dsScrim').classList.remove('is-on'); render();
+  if (!silent) { $('#dsScrim').classList.remove('is-on'); render(); }
 }
 function openFromHash() {
-  const m = location.hash.match(/t=([0-9a-f-]{36})/i);
-  if (m && S.tasks.some(t => t.id === m[1])) openTask(m[1]);
+  const t = location.hash.match(/t=([0-9a-f-]{36})/i);
+  if (t && S.tasks.some(x => x.id === t[1])) return openTask(t[1]);
+  const r = location.hash.match(/r=([0-9a-f-]{36})/i);
+  if (r && reqOf(r[1])) { S.view = 'request'; applyView(); openRequest(r[1]); }
 }
 
 function renderDrawer() {
@@ -1522,33 +1794,7 @@ function renderComments(taskId) {
   $('#dsDrCnt').textContent = list.length;
   const box = $('#dsDrComments'); box.innerHTML = '';
   if (!list.length) return box.appendChild(el('div', 'ds-cm__empty', '첫 댓글을 남겨보세요.'));
-  list.forEach(c => {
-    const row = el('div', 'ds-cm');
-    const v = viewerOf(c.viewer_id);
-    const av = el('div', 'ds-av', (c.author || '?').trim().charAt(0));
-    av.style.background = c.is_owner ? cvar('--ds-accent') : (v?.color || cvar('--ds-muted'));
-    row.appendChild(av);
-    const b = el('div', 'ds-cm__b');
-    const meta = el('div', 'ds-cm__meta');
-    meta.appendChild(el('b', null, c.author));
-    if (c.is_owner) meta.appendChild(el('span', 'ds-tag', 'OWNER'));
-    const tm = el('time', null, relTime(c.created_at));
-    tm.title = new Date(c.created_at).toLocaleString('ko-KR');
-    meta.appendChild(tm);
-    if (S.isOwner) {
-      const x = el('button', 'ds-cm__x', '삭제');
-      x.onclick = async () => {
-        if (!confirm('이 댓글을 삭제할까요?')) return;
-        const { error } = await S.sb.from('ds_comments').delete().eq('id', c.id);
-        if (error) return toast('삭제 실패: ' + error.message, true);
-        S.comments = S.comments.filter(y => y.id !== c.id);
-        renderDrawer(); render();
-      };
-      meta.appendChild(x);
-    }
-    b.appendChild(meta); b.appendChild(el('div', 'ds-cm__t', c.body));
-    row.appendChild(b); box.appendChild(row);
-  });
+  renderThread(box, list, { task_id: taskId }, () => renderDrawer());
 }
 
 function relTime(iso) {
@@ -1655,7 +1901,7 @@ $('#dsDrDel').addEventListener('click', async () => {
   closeDrawer(); toast('작업을 삭제했습니다');
 });
 $('#dsDrClose').addEventListener('click', closeDrawer);
-$('#dsScrim').addEventListener('click', closeDrawer);
+$('#dsScrim').addEventListener('click', () => { if (S.reqSel) closeReq(); else closeDrawer(); });
 $('#dsCmSend').addEventListener('click', postComment);
 $('#dsCmBody').addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); postComment(); }
@@ -1834,7 +2080,11 @@ function applySide() {
   const pane = $('#dsLeftPane');
   pane.classList.toggle('is-collapsed', S.sideCollapsed);
   $('#dsReopen').classList.toggle('ds-hide', !S.sideCollapsed || S.view !== 'timeline');
-  if (!S.sideCollapsed) document.documentElement.style.setProperty('--ds-side', S.sideW + 'px');
+  if (!S.sideCollapsed) {
+    const w = innerWidth <= 720 ? Math.min(S.sideW, 116) : S.sideW;
+    document.documentElement.style.setProperty('--ds-side', w + 'px');
+  }
+  placeReopen();
 }
 $('#dsCollapse').addEventListener('click', () => { S.sideCollapsed = true; LS.set('sideCollapsed', true); applySide(); });
 $('#dsReopen').addEventListener('click', () => { S.sideCollapsed = false; LS.set('sideCollapsed', false); applySide(); });
@@ -1920,12 +2170,20 @@ $('#dsView').addEventListener('click', e => {
 function applyView() {
   [...$('#dsView').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.view === S.view));
   [...$('#dsGroup').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.group === S.group));
-  const tl = S.view === 'timeline';
+  const tl = S.view === 'timeline', rq = S.view === 'request';
   $('#dsInner').classList.toggle('ds-hide', !tl);
-  $('#dsListView').classList.toggle('ds-hide', tl);
+  $('#dsListView').classList.toggle('ds-hide', S.view !== 'list');
+  $('#dsReqView').classList.toggle('ds-hide', !rq);
   document.querySelector('.ds-zoomwrap').classList.toggle('ds-hide', !tl);
+  $('#dsGroup').classList.toggle('ds-hide', rq);
   $('#dsReopen').classList.toggle('ds-hide', !tl || !S.sideCollapsed);
+  placeReopen();
 }
+function placeReopen() {
+  const b = $('#dsBoard').getBoundingClientRect();
+  $('#dsReopen').style.top = (b.top + 8) + 'px';
+}
+addEventListener('resize', () => { placeReopen(); applySide(); applyDock(); });
 $('#dsToday').addEventListener('click', () => scrollToToday(true));
 function scrollToToday(smooth) {
   if (S.view !== 'timeline' || !S.range.s) return;
@@ -1969,7 +2227,13 @@ window.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = e.key.toLowerCase();
   if (e.key === '/') { e.preventDefault(); $('#dsQ').focus(); }
-  else if (e.key === 'Escape') { closeMenu(); if (S.sel) closeDrawer(); document.querySelectorAll('.ds-modal.is-on').forEach(m => m.classList.remove('is-on')); }
+  else if (e.key === 'Escape') { closeMenu(); closeNotif(); if (S.reqSel) closeReq(); else if (S.sel) closeDrawer(); document.querySelectorAll('.ds-modal.is-on').forEach(m => m.classList.remove('is-on')); }
+  else if (k === 'r' && !e.shiftKey) {
+    e.preventDefault();
+    if (!S.dockOpen) toggleDock(true); else $('#dsQAdd').focus();
+  }
+  else if (k === 'd') { e.preventDefault(); toggleDock(); }
+  else if (k === 'e') { e.preventDefault(); setExpandAll(!S.expandAll); }
   else if (k === 't') scrollToToday(true);
   else if (k === 'n' && S.isOwner) { e.preventDefault(); createTask({ phase_id: S.phases[0]?.id || null }); }
   else if (k === 'g') { S.group = S.group === 'phase' ? 'member' : 'phase'; applyView(); render(); }
@@ -1982,22 +2246,825 @@ window.addEventListener('keydown', e => {
 });
 
 /* ============================================================
+   요청함
+   ============================================================ */
+async function updateRequest(id, patch, msg) {
+  const r = reqOf(id); if (!r) return;
+  const prev = {}; Object.keys(patch).forEach(k => prev[k] = r[k]);
+  Object.assign(r, patch);
+  render(); if (S.reqSel === id) renderReqDrawer();
+  const { error } = await S.sb.from('ds_requests').update(patch).eq('id', id);
+  if (error) { Object.assign(r, prev); render(); toast('저장 실패: ' + error.message, true); }
+  else if (msg) toast(msg);
+}
+
+function catOf(id) { return S.phases.find(p => p.id === id); }
+
+function renderRequests() {
+  const root = $('#dsReqView'); root.innerHTML = '';
+
+  const bar = el('div', 'ds-rsec__h');
+  bar.style.cssText = 'margin-bottom:14px;gap:8px';
+  const tabs = el('div', 'ds-seg');
+  [['request', '직원 요청'], ['plan', '내 계획']].forEach(([k, lb]) => {
+    const b = el('button', null, lb);
+    b.setAttribute('aria-pressed', S.reqTab === k);
+    const n = backlog(k).length;
+    if (n) b.appendChild(el('span', 'ds-chip__n', ' ' + n));
+    b.onclick = () => { S.reqTab = k; LS.set('reqTab', k); render(); };
+    tabs.appendChild(b);
+  });
+  bar.appendChild(tabs);
+  const sp = el('div'); sp.style.flex = '1'; bar.appendChild(sp);
+  const dn = el('button', 'ds-btn ds-btn--sm', S.density === 'card' ? '간단히 보기' : '카드로 보기');
+  dn.onclick = () => { S.density = S.density === 'card' ? 'list' : 'card'; LS.set('density', S.density); render(); };
+  bar.appendChild(dn);
+  const ex = el('button', 'ds-btn ds-btn--sm', S.expandAll ? '전체 접기' : '전체 펼치기');
+  ex.onclick = () => setExpandAll(!S.expandAll);
+  bar.appendChild(ex);
+  root.appendChild(bar);
+
+  const q = S.q.trim().toLowerCase();
+  const all = backlog(S.reqTab).filter(r => !q || `${r.title} ${r.body} ${r.author}`.toLowerCase().includes(q));
+  if (!all.length) {
+    root.appendChild(el('div', 'ds-empty2', S.reqTab === 'plan'
+      ? '아직 등록한 계획이 없습니다. 우측 백로그 패널에서 한 줄로 추가해보세요.'
+      : '아직 요청이 없습니다. 상단의 "요청하기"로 첫 요청을 남겨보세요.'));
+    return;
+  }
+  RSTATUS.forEach(st => {
+    const list = all.filter(r => reqStatus(r) === st.k)
+      .sort((a, b) => prioIx(a.priority) - prioIx(b.priority) || new Date(b.created_at) - new Date(a.created_at));
+    if (!list.length) return;
+    const sec = el('div', 'ds-rsec');
+    const h = el('div', 'ds-rsec__h');
+    h.appendChild(el('b', null, st.label));
+    h.appendChild(el('span', null, String(list.length)));
+    sec.appendChild(h);
+    if (S.density === 'list') {
+      const sl = el('div', 'ds-slist');
+      list.forEach(r => sl.appendChild(reqRow(r)));
+      sec.appendChild(sl);
+    } else {
+      const grid = el('div', 'ds-rgrid');
+      list.forEach(r => grid.appendChild(reqCard(r)));
+      sec.appendChild(grid);
+    }
+    root.appendChild(sec);
+  });
+}
+
+function reqCard(r) {
+  const pr = prioOf(r.priority), cat = catOf(r.phase_id);
+  const un = unreadReq(r.id);
+  const card = el('button', 'ds-rcard' + (un ? ' is-unread' : ''));
+  card.onclick = () => { if (card._moved) { card._moved = false; return; } openRequest(r.id); };
+  if (S.isOwner && !r.task_id) card.addEventListener('pointerdown', e => armCardDrag(e, r, card));
+  card.addEventListener('contextmenu', e => { e.preventDefault(); reqMenu(e, r); });
+
+  const top = el('div', 'ds-rcard__top');
+  const p = el('span', 'ds-pill', pr.label);
+  const pc = cvar(pr.v);
+  p.style.cssText = `background:color-mix(in srgb,${pc} 20%,transparent);color:${pc}`;
+  top.appendChild(p);
+  const c = el('span', 'ds-cat');
+  const ci = el('i'); ci.style.background = cat?.color || cvar('--ds-muted'); c.appendChild(ci);
+  c.appendChild(document.createTextNode(cat?.name || '미분류'));
+  top.appendChild(c);
+  const og = (r.origin || 'request');
+  top.appendChild(el('span', 'ds-orig ds-orig--' + (og === 'plan' ? 'plan' : 'req'), og === 'plan' ? '내 계획' : '요청'));
+  if (r.is_public === false) top.appendChild(el('span', 'ds-lock', '🔒 비공개'));
+  card.appendChild(top);
+
+  card.appendChild(el('div', 'ds-rcard__t', r.title));
+  if (r.body.trim()) card.appendChild(el('div', 'ds-rcard__b', r.body));
+
+  const t = r.task_id && S.tasks.find(x => x.id === r.task_id);
+  if (t) {
+    const box = el('div', 'ds-link');
+    const hd = el('div', 'ds-link__h');
+    const stt = statusOf(t.status), sc = cvar(stt.v);
+    hd.appendChild(el('span', null, '연결된 작업'));
+    const sp = el('span', 'ds-pill', stt.label);
+    sp.style.cssText = `background:color-mix(in srgb,${sc} 20%,transparent);color:${sc};height:18px;font-size:10px;margin-left:auto`;
+    hd.appendChild(sp);
+    box.appendChild(hd);
+    box.appendChild(el('div', 'ds-link__t', t.title));
+    const mini = el('div', 'ds-mini'); const f = el('i');
+    f.style.cssText = `width:${t.progress}%;background:${sc}`; mini.appendChild(f); box.appendChild(mini);
+    const m = el('div', 'ds-link__m');
+    m.appendChild(el('span', null, `${t.start_date.slice(5)} → ${t.end_date.slice(5)}`));
+    m.appendChild(el('span', null, t.progress + '%'));
+    box.appendChild(m);
+    card.appendChild(box);
+  }
+
+  /* 펼친 내용 */
+  const open = isExp(r.id);
+  const cms = S.comments.filter(x => x.request_id === r.id);
+  if (open && (r.body.trim() || cms.length)) {
+    const more = el('div', 'ds-rcard__more');
+    if (r.body.trim()) more.appendChild(el('div', 'ds-memo', r.body));
+    threads(cms).slice(-3).forEach(({ root: rc, replies }) => {
+      const row = el('div', 'ds-mini-cm');
+      const vv = viewerOf(rc.viewer_id);
+      const av2 = el('div', 'ds-av', (rc.author || '?').charAt(0));
+      av2.style.background = rc.is_owner ? cvar('--ds-accent') : (vv?.color || cvar('--ds-muted'));
+      row.appendChild(av2);
+      const bb = el('div', 'ds-mini-cm__b');
+      bb.appendChild(el('div', 'ds-mini-cm__n', rc.author + (replies.length ? ` · 답글 ${replies.length}` : '')));
+      bb.appendChild(el('div', 'ds-mini-cm__t', rc.body.replace(/\n/g, ' ')));
+      row.appendChild(bb); more.appendChild(row);
+    });
+    if (cms.length > 3 || r.body.length > 400) {
+      const mb = el('button', 'ds-morebtn', `전체 보기 · 댓글 ${cms.length}`);
+      mb.onclick = e => { e.stopPropagation(); openRequest(r.id); };
+      more.appendChild(mb);
+    }
+    card.appendChild(more);
+  }
+  if (r.body.trim() || cms.length) {
+    const eb = el('button', 'ds-exp' + (open ? ' is-open' : ''));
+    eb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    eb.title = open ? '접기' : '메모·댓글 펼치기';
+    eb.onclick = e => { e.stopPropagation(); toggleExp(r.id); };
+    card.appendChild(eb);
+  }
+
+  const f2 = el('div', 'ds-rcard__f');
+  f2.style.paddingRight = '30px';
+  const v = viewerOf(r.viewer_id);
+  const av = el('div', 'ds-av', (r.author || '?').charAt(0));
+  av.style.background = v?.color || cvar('--ds-muted');
+  f2.appendChild(av);
+  f2.appendChild(el('span', null, r.author || '익명'));
+  f2.appendChild(el('span', null, relTime(r.created_at)));
+  const n = rCount(r.id);
+  if (n) { const cb = el('span', null, '💬 ' + n); cb.style.marginLeft = 'auto'; f2.appendChild(cb); }
+  card.appendChild(f2);
+  return card;
+}
+
+function reqRow(r) {
+  const pr = prioOf(r.priority);
+  const row = el('button', 'ds-srow' + (unreadReq(r.id) ? ' is-unread' : ''));
+  const i = el('i'); i.style.background = cvar(pr.v); row.appendChild(i);
+  row.appendChild(el('span', 'ds-srow__t', r.title));
+  if (r.is_public === false) row.appendChild(el('span', 'ds-srow__m', '🔒'));
+  const n = rCount(r.id);
+  if (n) row.appendChild(el('span', 'ds-srow__m', '💬' + n));
+  const t = r.task_id && S.tasks.find(x => x.id === r.task_id);
+  if (t) row.appendChild(el('span', 'ds-srow__m', t.progress + '%'));
+  row.onclick = () => openRequest(r.id);
+  row.addEventListener('contextmenu', e => { e.preventDefault(); reqMenu(e, r); });
+  if (S.isOwner && !t) row.addEventListener('pointerdown', e => armCardDrag(e, r, row));
+  return row;
+}
+
+function reqMenu(e, r) {
+  const items = [{ label: '요청 열기', icon: ICON.open, fn: () => openRequest(r.id) }];
+  if (S.isOwner) {
+    if (!r.task_id) items.push({ label: '일정에 넣기', icon: ICON.plus, fn: () => convertRequest(r) });
+    else items.push({ label: '연결된 작업 열기', icon: ICON.open, fn: () => openTask(r.task_id) });
+    items.push({ sep: true });
+    PRIO.forEach(pr => { if (pr.k !== r.priority) items.push({ label: `우선순위 → ${pr.label}`, fn: () => updateRequest(r.id, { priority: pr.k }) }); });
+    items.push({ sep: true });
+    items.push({ label: '요청 삭제', icon: ICON.trash, danger: true, fn: () => delRequest(r) });
+  }
+  showMenu(e, items);
+}
+
+async function delRequest(r) {
+  if (!confirm(`"${r.title}" 요청과 댓글을 삭제할까요?`)) return;
+  const { error } = await S.sb.from('ds_requests').delete().eq('id', r.id);
+  if (error) return toast('삭제 실패: ' + error.message, true);
+  S.requests = S.requests.filter(x => x.id !== r.id);
+  S.comments = S.comments.filter(c => c.request_id !== r.id);
+  if (S.reqSel === r.id) closeReq();
+  render(); toast('요청을 삭제했습니다');
+}
+
+async function convertRequest(r) {
+  const t = await createTask({ phase_id: r.phase_id, title: r.title, description: r.body, start: fd(new Date()), days: 3, silent: true });
+  if (!t) return;
+  await updateRequest(r.id, { task_id: t.id, status: 'planned' });
+  closeReq();
+  S.view = 'timeline'; applyView(); render();
+  openTask(t.id);
+  toast('일정에 반영했습니다. 날짜를 조정해주세요');
+}
+
+/* ---------- 요청 상세 ---------- */
+function openRequest(id) {
+  S.reqSel = id; closeDrawer(true);
+  history.replaceState(null, '', '#r=' + id);
+  $('#dsReqDrawer').classList.add('is-on'); $('#dsReqDrawer').setAttribute('aria-hidden', 'false');
+  $('#dsScrim').classList.add('is-on');
+  markReqRead(id);
+  renderReqDrawer(); render();
+}
+function closeReq(silent) {
+  S.reqSel = null;
+  if (!silent) history.replaceState(null, '', location.pathname + location.search);
+  $('#dsReqDrawer').classList.remove('is-on'); $('#dsReqDrawer').setAttribute('aria-hidden', 'true');
+  if (!silent) { $('#dsScrim').classList.remove('is-on'); render(); }
+}
+
+function renderReqDrawer() {
+  const r = reqOf(S.reqSel); if (!r) return closeReq();
+  const ro = !S.isOwner;
+  $('#dsReqEyebrow').textContent = (catOf(r.phase_id)?.name || '미분류') + ' · ' + rstatusOf(reqStatus(r)).label;
+  const ti = $('#dsReqTitle');
+  if (document.activeElement !== ti) ti.value = r.title;
+  ti.readOnly = ro; ti.style.height = 'auto'; ti.style.height = ti.scrollHeight + 'px';
+
+  const pb = $('#dsReqPrio'); pb.innerHTML = '';
+  PRIO.forEach(pr => {
+    const on = r.priority === pr.k;
+    const b = el('button', 'ds-stat', pr.label);
+    b.setAttribute('aria-pressed', on);
+    if (on) b.style.background = cvar(pr.v);
+    const i = el('i'); i.style.background = on ? cvar('--ds-on') : cvar(pr.v); b.prepend(i);
+    if (ro) b.disabled = true; else b.onclick = () => updateRequest(r.id, { priority: pr.k });
+    pb.appendChild(b);
+  });
+  $('#dsReqWish').textContent = `요청자 희망: ${prioOf(r.wish_priority).label}`;
+
+  const sb2 = $('#dsReqStatus'); sb2.innerHTML = '';
+  const cur = reqStatus(r), locked = !!r.task_id;
+  RSTATUS.forEach(st => {
+    const on = cur === st.k;
+    const b = el('button', 'ds-stat', st.label);
+    b.setAttribute('aria-pressed', on);
+    if (on) b.style.background = cvar('--ds-accent');
+    if (ro || (locked && ['new', 'reviewing'].includes(st.k))) b.disabled = true;
+    else b.onclick = () => updateRequest(r.id, { status: st.k });
+    sb2.appendChild(b);
+  });
+
+  const cat = $('#dsReqCat'); cat.innerHTML = ''; cat.disabled = ro;
+  cat.appendChild(new Option('미분류', ''));
+  S.phases.forEach(p => cat.appendChild(new Option(p.name, p.id)));
+  cat.value = r.phase_id || '';
+
+  const vis = $('#dsReqVis'); vis.innerHTML = '';
+  [[true, '공개'], [false, '비공개']].forEach(([k, lb]) => {
+    const on = (r.is_public !== false) === k;
+    const b = el('button', 'ds-stat', lb);
+    b.setAttribute('aria-pressed', on);
+    if (on) b.style.background = cvar(k ? '--ds-done' : '--ds-planned');
+    if (ro) b.disabled = true; else b.onclick = () => updateRequest(r.id, { is_public: k });
+    vis.appendChild(b);
+  });
+
+  const de = $('#dsReqDesc');
+  if (document.activeElement !== de) de.value = r.body || '';
+  de.disabled = ro;
+
+  const link = $('#dsReqLink'); link.innerHTML = '';
+  const t = r.task_id && S.tasks.find(x => x.id === r.task_id);
+  if (t) {
+    const stt = statusOf(t.status), sc = cvar(stt.v);
+    const box = el('div', 'ds-link');
+    const hd = el('div', 'ds-link__h');
+    hd.appendChild(el('span', null, '연결된 작업'));
+    const sp = el('span', 'ds-pill', stt.label);
+    sp.style.cssText = `background:color-mix(in srgb,${sc} 20%,transparent);color:${sc};height:18px;font-size:10px;margin-left:auto`;
+    hd.appendChild(sp); box.appendChild(hd);
+    box.appendChild(el('div', 'ds-link__t', t.title));
+    const mini = el('div', 'ds-mini'); const f = el('i');
+    f.style.cssText = `width:${t.progress}%;background:${sc}`; mini.appendChild(f); box.appendChild(mini);
+    const m = el('div', 'ds-link__m');
+    m.appendChild(el('span', null, `${t.start_date} → ${t.end_date}`));
+    m.appendChild(el('span', null, t.progress + '%'));
+    box.appendChild(m);
+    const go = el('button', 'ds-btn ds-btn--sm', '작업 열기');
+    go.style.cssText = 'width:100%;margin-top:9px';
+    go.onclick = () => { closeReq(true); openTask(t.id); };
+    box.appendChild(go);
+    if (S.isOwner) {
+      const un = el('button', 'ds-btn ds-btn--sm', '연결 해제');
+      un.style.cssText = 'width:100%;margin-top:6px';
+      un.onclick = () => updateRequest(r.id, { task_id: null, status: 'reviewing' }, '연결을 해제했습니다');
+      box.appendChild(un);
+    }
+    link.appendChild(box);
+  }
+  $('#dsReqConvert').classList.toggle('ds-hide', !S.isOwner || !!t);
+  $('#dsReqDel').classList.toggle('ds-hide', !S.isOwner);
+  $('#dsReqWriteMe').textContent = S.isOwner ? '관리자' : (viewerOf(S.viewerId)?.name || '선택 안 됨');
+  renderReqComments(r.id);
+}
+
+function renderReqComments(id) {
+  const list = S.comments.filter(c => c.request_id === id);
+  $('#dsReqCnt').textContent = list.length;
+  const box = $('#dsReqComments'); box.innerHTML = '';
+  if (!list.length) return box.appendChild(el('div', 'ds-cm__empty', '첫 댓글을 남겨보세요.'));
+  renderThread(box, list, { request_id: id }, () => renderReqDrawer());
+}
+
+function threads(list) {
+  const byId = Object.fromEntries(list.map(c => [c.id, c]));
+  const roots = list.filter(c => !c.parent_id);
+  const kids = {};
+  list.filter(c => c.parent_id).forEach(c => {
+    let p = byId[c.parent_id], g = 0;
+    while (p && p.parent_id && g++ < 12) p = byId[p.parent_id];
+    if (!p) return;
+    (kids[p.id] = kids[p.id] || []).push({ ...c, _to: byId[c.parent_id]?.author });
+  });
+  return roots.map(r => ({ root: r, replies: (kids[r.id] || []).sort((a, b) => new Date(a.created_at) - new Date(b.created_at)) }));
+}
+
+function renderThread(box, list, ctx, after) {
+  threads(list).forEach(({ root, replies }) => {
+    box.appendChild(commentRow(root, after, ctx));
+    replies.forEach(rp => box.appendChild(commentRow(rp, after, ctx, true)));
+    if (S.replyTo === root.id) box.appendChild(replyBox(root, ctx, after));
+  });
+}
+
+function replyBox(root, ctx, after) {
+  const wrap = el('div', 'ds-replybox');
+  const ta = el('textarea');
+  ta.placeholder = `${root.author} 님에게 답글`;
+  ta.rows = 2;
+  ta.addEventListener('input', () => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; });
+  ta.addEventListener('keydown', e => {
+    e.stopPropagation();
+    if (e.key === 'Escape') { S.replyTo = null; after && after(); }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') send();
+  });
+  const btn = el('button', 'ds-btn ds-btn--sm ds-btn--primary', '등록');
+  const send = async () => {
+    const v = ta.value.trim(); if (!v) return;
+    btn.disabled = true;
+    const ok = await sendComment({ ...ctx, parent_id: root.id, body: v });
+    btn.disabled = false;
+    if (ok) { S.replyTo = null; after && after(); render(); }
+  };
+  btn.onclick = send;
+  wrap.appendChild(ta); wrap.appendChild(btn);
+  setTimeout(() => ta.focus(), 30);
+  return wrap;
+}
+
+async function sendComment({ task_id = null, request_id = null, parent_id = null, body }) {
+  let row;
+  if (S.isOwner) row = { task_id, request_id, parent_id, author: '관리자', body, is_owner: true, viewer_id: null, read_by_owner: true };
+  else {
+    const v = viewerOf(S.viewerId);
+    if (!v || !v.active) { openWho(); return false; }
+    row = { task_id, request_id, parent_id, author: v.name, body, is_owner: false, viewer_id: v.id };
+  }
+  const { data, error } = await S.sb.from('ds_comments').insert(row).select().single();
+  if (error) { toast('댓글 등록 실패: ' + error.message, true); return false; }
+  S.comments.push(data);
+  return true;
+}
+
+function commentRow(c, after, ctx, isReply) {
+  const row = el('div', 'ds-cm' + (isReply ? ' ds-cm--reply' : ''));
+  const v = viewerOf(c.viewer_id);
+  const av = el('div', 'ds-av', (c.author || '?').trim().charAt(0));
+  av.style.background = c.is_owner ? cvar('--ds-accent') : (v?.color || cvar('--ds-muted'));
+  row.appendChild(av);
+  const b = el('div', 'ds-cm__b');
+  const meta = el('div', 'ds-cm__meta');
+  meta.appendChild(el('b', null, c.author));
+  if (c.is_owner) meta.appendChild(el('span', 'ds-tag', 'OWNER'));
+  const tm = el('time', null, relTime(c.created_at));
+  tm.title = new Date(c.created_at).toLocaleString('ko-KR');
+  meta.appendChild(tm);
+  if (S.isOwner) {
+    const x = el('button', 'ds-cm__x', '삭제');
+    x.onclick = async () => {
+      if (!confirm('이 댓글을 삭제할까요?')) return;
+      const { error } = await S.sb.from('ds_comments').delete().eq('id', c.id);
+      if (error) return toast('삭제 실패: ' + error.message, true);
+      S.comments = S.comments.filter(y => y.id !== c.id);
+      after && after(); render();
+    };
+    meta.appendChild(x);
+  }
+  b.appendChild(meta);
+  const txt = el('div', 'ds-cm__t');
+  if (c._to) { const at = el('span', 'ds-at', '@' + c._to + ' '); txt.appendChild(at); }
+  txt.appendChild(document.createTextNode(c.body));
+  b.appendChild(txt);
+  if (ctx) {
+    const acts = el('div', 'ds-cm__acts');
+    const rb = el('button', null, S.replyTo === (c.parent_id ? null : c.id) ? '답글 취소' : '답글');
+    rb.onclick = () => {
+      const target = c.parent_id || c.id;
+      S.replyTo = S.replyTo === target ? null : target;
+      after && after();
+    };
+    acts.appendChild(rb);
+    b.appendChild(acts);
+  }
+  row.appendChild(b);
+  return row;
+}
+
+async function postReqComment() {
+  const r = reqOf(S.reqSel); if (!r) return;
+  const body = $('#dsReqCmBody').value.trim();
+  if (!body) return $('#dsReqCmBody').focus();
+  let row;
+  if (S.isOwner) row = { request_id: r.id, task_id: null, author: '관리자', body, is_owner: true, viewer_id: null, read_by_owner: true };
+  else {
+    const v = viewerOf(S.viewerId);
+    if (!v || !v.active) return openWho();
+    row = { request_id: r.id, task_id: null, author: v.name, body, is_owner: false, viewer_id: v.id };
+  }
+  $('#dsReqCmSend').disabled = true;
+  const { data, error } = await S.sb.from('ds_comments').insert(row).select().single();
+  $('#dsReqCmSend').disabled = false;
+  if (error) return toast('댓글 등록 실패: ' + error.message, true);
+  S.comments.push(data); $('#dsReqCmBody').value = '';
+  S.seen['r' + r.id] = rCount(r.id); LS.set('seen', S.seen);
+  renderReqDrawer(); render();
+  $('#dsReqBody').scrollTop = $('#dsReqBody').scrollHeight;
+}
+
+$('#dsReqClose').addEventListener('click', () => closeReq());
+$('#dsReqCmSend').addEventListener('click', postReqComment);
+$('#dsReqCmBody').addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); postReqComment(); }
+  e.stopPropagation();
+});
+$('#dsReqTitle').addEventListener('input', e => {
+  e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px';
+  saveReqTitle(e.target.value);
+});
+const saveReqTitle = dbounce(v => { if (S.reqSel) updateRequest(S.reqSel, { title: v.trim() || '제목 없음' }); });
+$('#dsReqDesc').addEventListener('input', dbounce(() => { if (S.reqSel) updateRequest(S.reqSel, { body: $('#dsReqDesc').value }); }, 700));
+$('#dsReqCat').addEventListener('change', e => S.reqSel && updateRequest(S.reqSel, { phase_id: e.target.value || null }));
+$('#dsReqConvert').addEventListener('click', () => { const r = reqOf(S.reqSel); if (r) convertRequest(r); });
+$('#dsReqDel').addEventListener('click', () => { const r = reqOf(S.reqSel); if (r) delRequest(r); });
+
+/* ---------- 새 요청 ---------- */
+function openNewReq() {
+  if (!S.isOwner && !viewerOf(S.viewerId)) { openWho(); return; }
+  $('#dsNrTitle').value = ''; $('#dsNrBody').value = ''; $('#dsNrErr').textContent = '';
+  S.nrPrio = 'normal';
+  const cat = $('#dsNrCat'); cat.innerHTML = '';
+  cat.appendChild(new Option('미분류', ''));
+  S.phases.forEach(p => cat.appendChild(new Option(p.name, p.id)));
+  cat.value = '';
+  const pb = $('#dsNrPrio'); pb.innerHTML = '';
+  PRIO.forEach(pr => {
+    const b = el('button', 'ds-stat', pr.label);
+    b.onclick = () => { S.nrPrio = pr.k; syncNrPrio(); };
+    pb.appendChild(b);
+  });
+  syncNrPrio();
+  S.nrPublic = !S.isOwner;
+  $('#dsNrVisWrap').classList.toggle('ds-hide', !S.isOwner);
+  const vb = $('#dsNrVis'); vb.innerHTML = '';
+  [[true, '공개'], [false, '나만 보기']].forEach(([k, lb]) => {
+    const b = el('button', 'ds-stat', lb);
+    b.onclick = () => { S.nrPublic = k; syncNrVis(); };
+    vb.appendChild(b);
+  });
+  syncNrVis();
+  $('#dsNrMe').textContent = S.isOwner ? '관리자' : (viewerOf(S.viewerId)?.name || '–');
+  $('#dsNrChange').classList.toggle('ds-hide', S.isOwner);
+  const card = $('#dsNewReqModal .ds-modal__card');
+  card.querySelector('h2').textContent = S.isOwner ? '개발 계획 추가' : '개발 요청 남기기';
+  card.querySelector('p').textContent = S.isOwner
+    ? '앞으로 만들 것을 백로그에 담아두세요. 나중에 카드를 타임라인으로 끌어다 놓으면 일정이 됩니다.'
+    : '필요한 기능이나 고쳤으면 하는 걸 적어주세요. 요청함에서 진행 상황을 확인할 수 있습니다.';
+  $('#dsNewReqModal').classList.add('is-on');
+  setTimeout(() => $('#dsNrTitle').focus(), 80);
+}
+function syncNrVis() {
+  [...$('#dsNrVis').children].forEach((b, i) => {
+    const on = (i === 0) === S.nrPublic;
+    b.setAttribute('aria-pressed', on);
+    b.style.background = on ? cvar(i === 0 ? '--ds-done' : '--ds-planned') : '';
+  });
+}
+function syncNrPrio() {
+  [...$('#dsNrPrio').children].forEach((b, i) => {
+    const on = PRIO[i].k === S.nrPrio;
+    b.setAttribute('aria-pressed', on);
+    b.style.background = on ? cvar(PRIO[i].v) : '';
+  });
+}
+$('#dsNewReq').addEventListener('click', openNewReq);
+$('#dsNrCancel').addEventListener('click', () => $('#dsNewReqModal').classList.remove('is-on'));
+$('#dsNrChange').addEventListener('click', openWho);
+$('#dsNrGo').addEventListener('click', async () => {
+  const title = $('#dsNrTitle').value.trim();
+  if (!title) return $('#dsNrErr').textContent = '한 줄 요약을 입력해주세요.';
+  const v = viewerOf(S.viewerId);
+  if (!S.isOwner && !v) return openWho();
+  const row = {
+    title, body: $('#dsNrBody').value.trim(),
+    phase_id: $('#dsNrCat').value || null,
+    wish_priority: S.nrPrio, priority: S.nrPrio,
+    viewer_id: v?.id || null, author: S.isOwner ? '관리자' : v.name,
+    status: 'new',
+    origin: S.isOwner ? 'plan' : 'request',
+    is_public: S.isOwner ? S.nrPublic : true
+  };
+  if (S.isOwner) row.read_by_owner = true;
+  $('#dsNrGo').disabled = true;
+  const { data, error } = await S.sb.from('ds_requests').insert(row).select().single();
+  $('#dsNrGo').disabled = false;
+  if (error) return $('#dsNrErr').textContent = '등록 실패: ' + error.message;
+  S.requests.unshift(data);
+  $('#dsNewReqModal').classList.remove('is-on');
+  S.reqTab = row.origin; S.view = 'request'; applyView(); render();
+  toast('요청을 등록했습니다');
+});
+
+/* ============================================================
+   우측 백로그 도크
+   ============================================================ */
+function applyDock() {
+  const d = $('#dsDock');
+  d.classList.toggle('is-off', !S.dockOpen);
+  const w = innerWidth <= 720 ? innerWidth : clamp(S.dockW, 240, 560);
+  document.documentElement.style.setProperty('--ds-dock', w + 'px');
+  $('#dsDockBtn').style.color = S.dockOpen ? cvar('--ds-accent') : '';
+  placeReopen();
+}
+function toggleDock(v) {
+  S.dockOpen = v == null ? !S.dockOpen : v;
+  LS.set('dockOpen', S.dockOpen);
+  applyDock(); render();
+  if (S.dockOpen) setTimeout(() => $('#dsQAdd').focus(), 120);
+}
+$('#dsDockBtn').addEventListener('click', () => toggleDock());
+$('#dsDockClose').addEventListener('click', () => toggleDock(false));
+$('#dsDockTabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-origin]'); if (!b) return;
+  S.dockTab = b.dataset.origin; LS.set('dockTab', S.dockTab); render();
+});
+$('#dsDockDensity').addEventListener('click', () => {
+  S.density = S.density === 'card' ? 'list' : 'card'; LS.set('density', S.density); render();
+});
+$('#dsDockExpand').addEventListener('click', () => setExpandAll(!S.expandAll));
+$('#dsDockGrip').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  const g = $('#dsDockGrip'); g.classList.add('is-on');
+  const x0 = e.clientX, w0 = S.dockW;
+  const mv = ev => { S.dockW = clamp(Math.round(w0 - (ev.clientX - x0)), 240, 560); applyDock(); };
+  const up = () => {
+    g.classList.remove('is-on');
+    window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+    LS.set('dockW', S.dockW);
+  };
+  window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+});
+
+function renderDock() {
+  if (!S.dockOpen) return;
+  [...$('#dsDockTabs').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.origin === S.dockTab));
+  const nr = S.isOwner ? S.requests.filter(r => (r.origin || 'request') === 'request' && !r.read_by_owner).length : 0;
+  const nb = $('#dsDockNReq'); nb.textContent = String(nr); nb.classList.toggle('ds-hide', !nr);
+  $('#dsDockExpand').style.color = S.expandAll ? cvar('--ds-accent') : '';
+  $('#dsQAdd').placeholder = S.dockTab === 'plan' ? '만들 것을 한 줄로 적고 Enter' : '요청을 한 줄로 적고 Enter';
+
+  const box = $('#dsDockList'); box.innerHTML = '';
+  const q = S.q.trim().toLowerCase();
+  const list = backlog(S.dockTab)
+    .filter(r => !q || `${r.title} ${r.body}`.toLowerCase().includes(q))
+    .filter(r => !['done', 'rejected'].includes(reqStatus(r)));
+  if (!list.length) {
+    box.appendChild(el('div', 'ds-cm__empty', S.dockTab === 'plan' ? '아직 계획이 없습니다.' : '대기 중인 요청이 없습니다.'));
+  } else {
+    RSTATUS.filter(st => !['done', 'rejected'].includes(st.k)).forEach(st => {
+      const sub = list.filter(r => reqStatus(r) === st.k)
+        .sort((a, b) => prioIx(a.priority) - prioIx(b.priority) || new Date(b.created_at) - new Date(a.created_at));
+      if (!sub.length) return;
+      const h = el('div', 'ds-rsec__h');
+      h.appendChild(el('b', null, st.label));
+      h.appendChild(el('span', null, String(sub.length)));
+      box.appendChild(h);
+      if (S.density === 'list') {
+        const sl = el('div', 'ds-slist'); sl.style.marginBottom = '14px';
+        sub.forEach(r => sl.appendChild(reqRow(r)));
+        box.appendChild(sl);
+      } else {
+        const g = el('div'); g.style.cssText = 'display:flex;flex-direction:column;gap:9px;margin-bottom:14px';
+        sub.forEach(r => g.appendChild(reqCard(r)));
+        box.appendChild(g);
+      }
+    });
+  }
+  const done = backlog(S.dockTab).filter(r => ['done', 'rejected'].includes(reqStatus(r))).length;
+  if (done) {
+    const b = el('button', 'ds-morebtn', `완료·반려 ${done}건 보기`);
+    b.onclick = () => { S.view = 'request'; S.reqTab = S.dockTab; applyView(); render(); };
+    box.appendChild(b);
+  }
+}
+
+/* 한 줄 빠른 추가 */
+$('#dsQAdd').addEventListener('keydown', async e => {
+  e.stopPropagation();
+  if (e.key === 'Escape') { e.target.value = ''; e.target.blur(); return; }
+  if (e.key !== 'Enter') return;
+  const title = e.target.value.trim(); if (!title) return;
+  const isPlan = S.dockTab === 'plan';
+  if (!S.isOwner && isPlan) return;
+  const v = viewerOf(S.viewerId);
+  if (!S.isOwner && !v) return openWho();
+  const row = {
+    title, body: '', phase_id: null, wish_priority: 'normal', priority: 'normal',
+    origin: isPlan ? 'plan' : 'request', is_public: isPlan ? false : true,
+    viewer_id: v?.id || null, author: S.isOwner ? '관리자' : v.name, status: 'new'
+  };
+  if (S.isOwner) row.read_by_owner = true;
+  e.target.value = '';
+  const { data, error } = await S.sb.from('ds_requests').insert(row).select().single();
+  if (error) return toast('등록 실패: ' + error.message, true);
+  S.requests.unshift(data); render();
+  toast(isPlan ? '계획에 추가했습니다' : '요청을 등록했습니다', false,
+    { label: '자세히', fn: () => openRequest(data.id) });
+});
+
+/* 카드를 타임라인으로 끌어다 놓기 */
+function armCardDrag(e, r, node) {
+  if (e.button !== 0 || S.view !== 'timeline') return;
+  const x0 = e.clientX, y0 = e.clientY;
+  const ghost = $('#dsGhost');
+  let started = false, lastLane = null;
+  node._moved = false;
+
+  const mv = ev => {
+    if (!started) {
+      if (Math.abs(ev.clientX - x0) < 7 && Math.abs(ev.clientY - y0) < 7) return;
+      started = true; node._moved = true;
+      ghost.textContent = r.title; ghost.classList.add('is-on');
+    }
+    ev.preventDefault();
+    ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px';
+    const lane = laneAt(ev.clientX, ev.clientY);
+    if (lastLane && lastLane !== lane) lastLane.classList.remove('is-target');
+    if (lane) lane.classList.add('is-target');
+    lastLane = lane;
+  };
+  const up = async ev => {
+    window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+    ghost.classList.remove('is-on');
+    if (lastLane) lastLane.classList.remove('is-target');
+    if (!started) return;
+    const lane = laneAt(ev.clientX, ev.clientY);
+    if (!lane) return;
+    const track = lane.querySelector('.ds-track');
+    const rect = track.getBoundingClientRect();
+    const day = Math.max(0, Math.floor((ev.clientX - rect.left) / S.dayW));
+    const start = fd(addD(S.range.s, day));
+    const laneId = lane.dataset.lane === '__none' ? null : lane.dataset.lane;
+    const opts = { title: r.title, description: r.body, start, days: 3, silent: true };
+    if (S.group === 'phase') opts.phase_id = laneId ?? r.phase_id;
+    else { opts.assignee_id = laneId; opts.phase_id = r.phase_id; }
+    const t = await createTask(opts);
+    if (!t) return;
+    await updateRequest(r.id, { task_id: t.id, status: 'planned' });
+    toast('일정에 넣었습니다', false, { label: '작업 열기', fn: () => openTask(t.id) });
+    setTimeout(() => { node._moved = false; }, 90);
+  };
+  window.addEventListener('pointermove', mv, { passive: false });
+  window.addEventListener('pointerup', up);
+}
+function laneAt(x, y) {
+  return [...document.querySelectorAll('#dsLanes > .ds-lane')].find(n => {
+    if (n.dataset.kind === 'leave') return false;
+    const r = n.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }) || null;
+}
+
+/* ============================================================
+   알림
+   ============================================================ */
+function unreadList() {
+  if (!S.isOwner) return [];
+  const items = [];
+  S.requests.filter(r => !r.read_by_owner && (r.origin || 'request') === 'request').forEach(r => items.push({
+    kind: 'request', at: r.created_at, id: r.id,
+    title: '새 요청 · ' + prioOf(r.priority).label, sub: r.title, who: r.author
+  }));
+  S.comments.filter(c => !c.is_owner && !c.read_by_owner).forEach(c => {
+    const t = c.task_id && S.tasks.find(x => x.id === c.task_id);
+    const r = c.request_id && reqOf(c.request_id);
+    if (!t && !r) return;
+    items.push({
+      kind: c.task_id ? 'task' : 'reqcomment', at: c.created_at,
+      id: c.task_id || c.request_id,
+      title: (t ? t.title : r.title), sub: c.body.replace(/\n/g, ' '), who: c.author
+    });
+  });
+  return items.sort((a, b) => new Date(b.at) - new Date(a.at));
+}
+
+function renderBell() {
+  $('#dsBellWrap').classList.toggle('ds-hide', !S.isOwner);
+  const items = unreadList();
+  const b = $('#dsBellN');
+  b.textContent = items.length > 99 ? '99+' : String(items.length);
+  b.classList.toggle('ds-hide', !items.length);
+  const rb = $('#dsReqBadge');
+  const rn = S.isOwner ? S.requests.filter(r => !r.read_by_owner).length : 0;
+  rb.textContent = String(rn); rb.classList.toggle('ds-hide', !rn);
+
+  const box = $('#dsNotifList'); box.innerHTML = '';
+  if (!items.length) { box.appendChild(el('div', 'ds-cm__empty', '새로운 소식이 없습니다.')); return; }
+  items.slice(0, 40).forEach(it => {
+    const row = el('button', 'ds-nrow');
+    const av = el('div', 'ds-av', (it.who || '?').charAt(0));
+    const v = S.viewers.find(x => x.name === it.who);
+    av.style.background = v?.color || cvar('--ds-muted');
+    row.appendChild(av);
+    const bb = el('div', 'ds-nrow__b');
+    bb.appendChild(el('div', 'ds-nrow__t', it.title));
+    bb.appendChild(el('div', 'ds-nrow__s', it.sub));
+    bb.appendChild(el('div', 'ds-nrow__d', `${it.who} · ${relTime(it.at)}`));
+    row.appendChild(bb);
+    row.onclick = () => {
+      closeNotif();
+      if (it.kind === 'task') openTask(it.id);
+      else { S.view = 'request'; applyView(); openRequest(it.id); }
+    };
+    box.appendChild(row);
+  });
+}
+
+function openNotif() {
+  renderBell();
+  const n = $('#dsNotif'), r = $('#dsBell').getBoundingClientRect();
+  n.classList.add('is-on');
+  const nr = n.getBoundingClientRect();
+  n.style.left = clamp(r.right - nr.width, 8, innerWidth - nr.width - 8) + 'px';
+  n.style.top = (r.bottom + 8) + 'px';
+}
+function closeNotif() { $('#dsNotif').classList.remove('is-on'); }
+$('#dsBell').addEventListener('click', e => {
+  e.stopPropagation();
+  $('#dsNotif').classList.contains('is-on') ? closeNotif() : openNotif();
+});
+window.addEventListener('pointerdown', e => {
+  if (!e.target.closest('#dsNotif') && !e.target.closest('#dsBell')) closeNotif();
+}, true);
+
+async function markTaskRead(id) {
+  if (!S.isOwner) return;
+  const ids = S.comments.filter(c => c.task_id === id && !c.is_owner && !c.read_by_owner).map(c => c.id);
+  if (!ids.length) return;
+  ids.forEach(i => { const c = S.comments.find(x => x.id === i); if (c) c.read_by_owner = true; });
+  renderBell();
+  await S.sb.from('ds_comments').update({ read_by_owner: true }).in('id', ids);
+}
+async function markReqRead(id) {
+  if (!S.isOwner) { S.seen['r' + id] = rCount(id); LS.set('seen', S.seen); return; }
+  const ids = S.comments.filter(c => c.request_id === id && !c.is_owner && !c.read_by_owner).map(c => c.id);
+  ids.forEach(i => { const c = S.comments.find(x => x.id === i); if (c) c.read_by_owner = true; });
+  const r = reqOf(id); const wasNew = r && !r.read_by_owner;
+  if (r) r.read_by_owner = true;
+  renderBell();
+  if (ids.length) await S.sb.from('ds_comments').update({ read_by_owner: true }).in('id', ids);
+  if (wasNew) await S.sb.from('ds_requests').update({ read_by_owner: true }).eq('id', id);
+}
+$('#dsNotifAll').addEventListener('click', async () => {
+  const cids = S.comments.filter(c => !c.is_owner && !c.read_by_owner).map(c => c.id);
+  const rids = S.requests.filter(r => !r.read_by_owner).map(r => r.id);
+  S.comments.forEach(c => c.read_by_owner = true);
+  S.requests.forEach(r => r.read_by_owner = true);
+  renderBell(); render();
+  if (cids.length) await S.sb.from('ds_comments').update({ read_by_owner: true }).in('id', cids);
+  if (rids.length) await S.sb.from('ds_requests').update({ read_by_owner: true }).in('id', rids);
+  toast('모두 읽음으로 표시했습니다');
+});
+
+/* ============================================================
    메인 렌더
    ============================================================ */
 function render() {
   computeRange();
   renderFilters();
-  if (S.view === 'timeline') { renderHeader(); renderLanes(); } else renderList();
+  renderBell();
+  renderDock();
+  if (S.view === 'timeline') { renderHeader(); renderLanes(); }
+  else if (S.view === 'request') renderRequests();
+  else renderList();
   const all = live(), done = all.filter(t => t.status === 'done').length;
   $('#dsSub').textContent = all.length ? `작업 ${all.length} · 완료 ${Math.round(done / all.length * 100)}%` : 'SCHEDULE';
   const nothing = !S.phases.length && !all.length;
-  $('#dsEmpty').classList.toggle('ds-hide', !nothing);
   $('#dsEmptyBtn').classList.toggle('ds-hide', !S.isOwner);
   if (nothing && !S.isOwner) {
     $('#dsEmptyT').textContent = '아직 공유된 일정이 없습니다';
     $('#dsEmptyP').textContent = '관리자가 일정을 등록하면 여기에 표시됩니다.';
   }
+  $('#dsEmpty').classList.toggle('ds-hide', !(nothing && S.view === 'timeline'));
   if (S.sel && !S.tasks.some(t => t.id === S.sel)) closeDrawer();
+  if (S.reqSel && !reqOf(S.reqSel)) closeReq();
 }
 
 boot().then(subscribe);
