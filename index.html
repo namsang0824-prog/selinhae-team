@@ -295,6 +295,20 @@ html[data-ds-theme="light"] .ds-left{box-shadow:14px 0 20px -18px rgba(30,44,64,
 .ds-rel__t{font-size:12.5px;font-weight:600}
 .ds-rel__d{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
 
+/* 작업 중단 구간 */
+.ds-brk{position:absolute;top:0;bottom:0;z-index:0;pointer-events:none;
+  background-image:repeating-linear-gradient(-45deg,rgba(0,0,0,.42) 0 2px,rgba(0,0,0,0) 2px 6px);
+  background-color:color-mix(in srgb,var(--ds-bg) 55%,transparent);
+  box-shadow:inset 1px 0 0 rgba(0,0,0,.25),inset -1px 0 0 rgba(0,0,0,.25)}
+.ds-brow{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--ds-line)}
+.ds-brow:last-of-type{border-bottom:none}
+.ds-brow__d{font-size:11.5px;font-family:'JetBrains Mono',monospace;color:var(--ds-text2);flex:0 0 auto}
+.ds-brow__r{flex:1 1 auto;min-width:0;font-size:12px;color:var(--ds-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ds-brkadd{display:flex;gap:5px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.ds-brkadd input[type=date]{flex:1 1 118px;min-width:0;height:32px;padding:0 7px;border-radius:7px;background:var(--ds-surface2);border:1px solid var(--ds-line);font-size:12px}
+.ds-brkadd input[type=text]{flex:1 1 100%;height:32px;padding:0 9px;border-radius:7px;background:var(--ds-surface2);border:1px solid var(--ds-line);font-size:12.5px}
+.ds-brkadd input:focus{outline:none;border-color:var(--ds-accent)}
+
 /* 로그 줄 편집 */
 .ds-logadd{position:relative;margin-top:4px}
 .ds-logadd input{width:100%;height:34px;padding:0 10px;border-radius:8px;background:var(--ds-surface2);border:1px dashed var(--ds-line2);font-size:12.5px}
@@ -711,6 +725,16 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
     </div>
     <div class="ds-dur" id="dsDrDur"></div>
     <div class="ds-quick" id="dsDrQuick"></div>
+    <div class="ds-fld" id="dsBrkWrap" style="margin-top:14px">
+      <span class="ds-fld__lb">중단 구간 <b class="ds-mono" id="dsBrkCnt" style="color:var(--ds-text2)"></b></span>
+      <div id="dsBrkList"></div>
+      <div class="ds-brkadd ds-hide" id="dsBrkAdd">
+        <input type="date" id="dsBrkS" class="ds-mono" aria-label="중단 시작">
+        <input type="date" id="dsBrkE" class="ds-mono" aria-label="중단 종료">
+        <input type="text" id="dsBrkR" placeholder="사유 (선택) — Enter 로 추가" maxlength="100">
+        <button class="ds-btn ds-btn--sm" id="dsBrkGo" style="flex:0 0 auto">구간 추가</button>
+      </div>
+    </div>
     <div class="ds-fld ds-2col" style="margin-top:15px">
       <div><label class="ds-fld__lb" for="dsDrPhase">단계</label><select class="ds-in" id="dsDrPhase"></select></div>
       <div><label class="ds-fld__lb" for="dsDrWho">담당</label><select class="ds-in" id="dsDrWho"></select></div>
@@ -1036,7 +1060,7 @@ const S = {
   dockTab: LS.get('dockTab', 'request'), density: LS.get('density', 'card'),
   reqTab: LS.get('reqTab', 'request'),
   expandAll: false, expanded: new Set(), replyTo: null,
-  releases: [], relSel: null, relKind: 'feature', relStatus: 'done',
+  releases: [], relSel: null, relKind: 'feature', relStatus: 'done', breaks: [],
   range: { s: null, days: 0 }
 };
 
@@ -1087,20 +1111,22 @@ async function loadAll() {
     S.sb.from('ds_leaves').select('*').order('start_date'),
     S.sb.from('ds_settings').select('*').eq('key', 'board').maybeSingle(),
     S.sb.from('ds_requests').select('*').order('created_at', { ascending: false }),
-    S.sb.from('ds_releases').select('*').order('released_on', { ascending: false }).order('created_at', { ascending: false })
+    S.sb.from('ds_releases').select('*').order('released_on', { ascending: false }).order('created_at', { ascending: false }),
+    S.sb.from('ds_breaks').select('*').order('start_date')
   ];
-  const [p, t, c, m, v, l, st, rq, rl] = await Promise.all(q);
-  const err = [p, t, c, m, v, l, rq, rl].find(r => r.error)?.error;
+  const [p, t, c, m, v, l, st, rq, rl, bk] = await Promise.all(q);
+  const err = [p, t, c, m, v, l, rq, rl, bk].find(r => r.error)?.error;
   if (err) {
     toast('데이터를 불러오지 못했습니다: ' + err.message, true);
-    if (/ds_releases/.test(err.message)) toast('supabase-migration-v6.sql 을 먼저 실행해주세요', true);
+    if (/ds_breaks/.test(err.message)) toast('supabase-migration-v8.sql 을 먼저 실행해주세요', true);
+    else if (/ds_releases/.test(err.message)) toast('supabase-migration-v6.sql 을 먼저 실행해주세요', true);
     else if (/origin|is_public|parent_id/.test(err.message)) toast('supabase-migration-v5.sql 을 먼저 실행해주세요', true);
     else if (/ds_requests|request_id|read_by_owner/.test(err.message)) toast('supabase-migration-v4.sql 을 먼저 실행해주세요', true);
     else if (/ds_viewers|ds_settings|viewer_id/.test(err.message)) toast('supabase-migration-v3.sql 을 먼저 실행해주세요', true);
     return;
   }
   S.phases = p.data; S.tasks = t.data; S.comments = c.data;
-  S.members = m.data; S.viewers = v.data; S.leaves = l.data; S.requests = rq.data; S.releases = rl.data;
+  S.members = m.data; S.viewers = v.data; S.leaves = l.data; S.requests = rq.data; S.releases = rl.data; S.breaks = bk.data;
   S.def = { ...DEFAULTS, ...(st?.data?.value || {}) };
 }
 
@@ -1114,7 +1140,7 @@ function scheduleReload() {
 }
 function subscribe() {
   const ch = S.sb.channel('ds-board-v3');
-  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings', 'ds_requests', 'ds_releases']
+  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings', 'ds_requests', 'ds_releases', 'ds_breaks']
     .forEach(tb => ch.on('postgres_changes', { event: '*', schema: 'public', table: tb }, scheduleReload));
   ch.subscribe();
 }
@@ -1171,6 +1197,29 @@ async function createPhase() {
    파생
    ============================================================ */
 const live = () => S.tasks.filter(t => !t.is_archived);
+function brksOf(t) {
+  const s0 = pd(t.start_date), e0 = pd(t.end_date);
+  return S.breaks.filter(b => b.task_id === t.id)
+    .map(b => {
+      const s = pd(b.start_date) < s0 ? s0 : pd(b.start_date);
+      const e = pd(b.end_date) > e0 ? e0 : pd(b.end_date);
+      return diffD(s, e) >= 0 ? { ...b, _s: fd(s), _e: fd(e) } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a._s.localeCompare(b._s));
+}
+function breakDays(t) {
+  let n = 0, last = null;
+  brksOf(t).forEach(b => {
+    let s = pd(b._s);
+    if (last && pd(b._s) <= last) s = addD(last, 1);
+    const e = pd(b._e);
+    if (diffD(s, e) >= 0) { n += diffD(s, e) + 1; last = e; }
+    else if (!last || e > last) last = e;
+  });
+  return n;
+}
+const workDays = t => Math.max(diffD(pd(t.start_date), pd(t.end_date)) + 1 - breakDays(t), 0);
 const memberOf = id => S.members.find(m => m.id === id);
 const viewerOf = id => S.viewers.find(v => v.id === id);
 const cCount = id => S.comments.filter(c => c.task_id === id).length;
@@ -1424,6 +1473,15 @@ function barEl(t, top) {
   bar.style.cssText = `left:${xOf(t.start_date)}px;width:${w}px;top:${top}px;background:${col}`;
   bar.dataset.id = t.id;
   if (t.progress > 0) { const f = el('div', 'ds-bar__fill'); f.style.width = t.progress + '%'; bar.appendChild(f); }
+  const bx0 = xOf(t.start_date);
+  brksOf(t).forEach(b => {
+    const bl = Math.max(xOf(b._s) - bx0, 0);
+    const bw = Math.min((diffD(pd(b._s), pd(b._e)) + 1) * S.dayW, w - bl);
+    if (bw > 0) { const o = el('div', 'ds-brk'); o.style.cssText = `left:${bl}px;width:${bw}px`; bar.appendChild(o); }
+  });
+  const bdz = breakDays(t);
+  bar.title = `${t.title}\n${t.start_date} → ${t.end_date} · ${diffD(pd(t.start_date), pd(t.end_date)) + 1}일`
+    + (bdz ? ` (실작업 ${workDays(t)}일)` : '');
   bar.appendChild(el('span', 'ds-bar__txt', t.title));
   if ((t.description || '').trim()) { const i = el('span', 'ds-bar__ic'); i.innerHTML = ICON.note; bar.appendChild(i); }
   if (n) { const c = el('span', 'ds-bar__cnt', String(n)); if (isNew(t.id)) c.style.background = cvar('--ds-accent'); bar.appendChild(c); }
@@ -1489,6 +1547,7 @@ function showPop(t, bar) {
   p.style.cssText = `background:color-mix(in srgb,${col} 20%,transparent);color:${col};height:19px;font-size:10px`;
   meta.appendChild(p);
   meta.appendChild(el('span', null, `${t.start_date.slice(5)} → ${t.end_date.slice(5)}`));
+  if (breakDays(t)) meta.appendChild(el('span', null, `중단 ${breakDays(t)}일`));
   if (m) meta.appendChild(el('span', null, m.name));
   if (t.progress) meta.appendChild(el('span', null, t.progress + '%'));
   pop.appendChild(meta);
@@ -1884,7 +1943,9 @@ function renderDrawer() {
   $('#dsDrStart').value = t.start_date; $('#dsDrStart').disabled = ro;
   $('#dsDrEnd').value = t.end_date; $('#dsDrEnd').disabled = ro;
   const dur = diffD(pd(t.start_date), pd(t.end_date)) + 1, left = diffD(new Date(), pd(t.end_date));
-  $('#dsDrDur').textContent = `${dur}일` + (t.status === 'done' ? '' : left < 0 ? ` · ${-left}일 지남` : left === 0 ? ' · 오늘 마감' : ` · ${left}일 남음`);
+  const bdn = breakDays(t);
+  $('#dsDrDur').textContent = `${dur}일` + (bdn ? ` · 실작업 ${workDays(t)}일` : '')
+    + (t.status === 'done' ? '' : left < 0 ? ` · ${-left}일 지남` : left === 0 ? ' · 오늘 마감' : ` · ${left}일 남음`);
   $('#dsDrDur').style.color = (t.status !== 'done' && left < 0) ? cvar('--ds-blocked') : '';
 
   const q = $('#dsDrQuick'); q.innerHTML = '';
@@ -1916,6 +1977,7 @@ function renderDrawer() {
   $('#dsDrHide').title = hid ? '다시 보이기' : '내 화면에서 숨기기';
   $('#dsDrHide').style.color = hid ? cvar('--ds-accent') : '';
   $('#dsDrArch').style.color = t.is_archived ? cvar('--ds-accent') : '';
+  renderBreaks(t);
   syncMe();
   renderRelList(t.id);
   renderComments(t.id);
@@ -3081,6 +3143,62 @@ function laneAt(x, y) {
     return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
   }) || null;
 }
+
+/* ============================================================
+   작업 중단 구간
+   ============================================================ */
+function renderBreaks(t) {
+  const list = brksOf(t);
+  $('#dsBrkCnt').textContent = list.length ? `${breakDays(t)}일` : '';
+  $('#dsBrkAdd').classList.toggle('ds-hide', !S.isOwner);
+  $('#dsBrkWrap').classList.toggle('ds-hide', !S.isOwner && !list.length);
+  const box = $('#dsBrkList'); box.innerHTML = '';
+  if (!list.length) {
+    if (S.isOwner) box.appendChild(el('div', 'ds-rel__d', '긴 작업 중간에 멈추는 기간이 있으면 추가하세요. 바에 빗금으로 표시됩니다.'));
+    return;
+  }
+  list.forEach(b => {
+    const row = el('div', 'ds-brow');
+    const days = diffD(pd(b._s), pd(b._e)) + 1;
+    row.appendChild(el('span', 'ds-brow__d', `${b._s.slice(5)} → ${b._e.slice(5)}`));
+    row.appendChild(el('span', 'ds-rel__d', `${days}일`));
+    row.appendChild(el('span', 'ds-brow__r', b.reason || ''));
+    if (S.isOwner) {
+      const x = el('button', 'ds-ia ds-ia--del'); x.innerHTML = ICON.trash; x.title = '삭제';
+      x.onclick = async () => {
+        const { error } = await S.sb.from('ds_breaks').delete().eq('id', b.id);
+        if (error) return toast('삭제 실패: ' + error.message, true);
+        S.breaks = S.breaks.filter(y => y.id !== b.id);
+        renderDrawer(); render();
+      };
+      row.appendChild(x);
+    }
+    box.appendChild(row);
+  });
+}
+
+async function addBreak() {
+  const t = S.tasks.find(x => x.id === S.sel); if (!t) return;
+  const a = $('#dsBrkS').value, b = $('#dsBrkE').value || a;
+  if (!a) { $('#dsBrkS').focus(); return toast('중단 시작일을 골라주세요', true); }
+  if (pd(b) < pd(a)) return toast('종료일이 시작일보다 빠릅니다', true);
+  if (pd(b) < pd(t.start_date) || pd(a) > pd(t.end_date)) return toast('작업 기간 밖의 날짜입니다', true);
+  const row = { task_id: t.id, start_date: a, end_date: b, reason: $('#dsBrkR').value.trim() };
+  const { data, error } = await S.sb.from('ds_breaks').insert(row).select().single();
+  if (error) return toast('추가 실패: ' + error.message, true);
+  S.breaks.push(data);
+  $('#dsBrkR').value = '';
+  $('#dsBrkS').value = fd(addD(pd(b), 1));
+  $('#dsBrkE').value = '';
+  renderDrawer(); render();
+  toast(`중단 ${diffD(pd(a), pd(b)) + 1}일을 추가했습니다`);
+}
+$('#dsBrkGo').addEventListener('click', addBreak);
+['dsBrkR', 'dsBrkE'].forEach(id => $('#' + id).addEventListener('keydown', e => {
+  e.stopPropagation();
+  if (e.key === 'Enter') { e.preventDefault(); addBreak(); }
+}));
+$('#dsBrkS').addEventListener('keydown', e => e.stopPropagation());
 
 /* ============================================================
    변경 기록 (체인지로그)
