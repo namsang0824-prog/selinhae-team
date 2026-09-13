@@ -270,6 +270,46 @@ html[data-ds-theme="light"] .ds-left{box-shadow:14px 0 20px -18px rgba(30,44,64,
 .ds-replybox textarea:focus{outline:none;border-color:var(--ds-accent)}
 .ds-at{font-weight:700;color:var(--ds-active)}
 
+/* ---------- 체인지로그 ---------- */
+.ds-clog{padding:16px;max-width:820px;margin:0 auto}
+.ds-cgroup{position:relative;padding-left:22px;padding-bottom:26px}
+.ds-cgroup::before{content:'';position:absolute;left:5px;top:9px;bottom:-4px;width:2px;background:var(--ds-line)}
+.ds-cgroup:last-child::before{bottom:auto;height:14px}
+.ds-cgroup::after{content:'';position:absolute;left:0;top:5px;width:12px;height:12px;border-radius:99px;background:var(--ds-accent);box-shadow:0 0 0 3px var(--ds-bg)}
+.ds-cgroup__h{display:flex;align-items:baseline;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+.ds-cgroup__v{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.ds-cgroup__d{font-size:11px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
+.ds-citem{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--ds-line)}
+.ds-citem:last-child{border-bottom:none}
+.ds-citem__b{flex:1 1 auto;min-width:0}
+.ds-citem__t{font-size:13.5px;font-weight:600;line-height:1.5}
+.ds-citem__x{font-size:12px;color:var(--ds-muted);line-height:1.6;white-space:pre-wrap;margin-top:3px}
+.ds-citem__l{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace;margin-top:4px;display:inline-flex;align-items:center;gap:5px}
+.ds-citem__l:hover{color:var(--ds-accent)}
+.ds-kind{flex:0 0 auto;height:21px;padding:0 8px;border-radius:6px;font-size:10.5px;font-weight:800;display:inline-flex;align-items:center;margin-top:2px}
+.ds-cacts{display:flex;gap:3px;opacity:0;transition:opacity .13s;flex:0 0 auto}
+.ds-citem:hover .ds-cacts{opacity:1}
+.ds-rel{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--ds-line)}
+.ds-rel:last-of-type{border-bottom:none}
+.ds-rel__b{flex:1 1 auto;min-width:0}
+.ds-rel__t{font-size:12.5px;font-weight:600}
+.ds-rel__d{font-size:10.5px;color:var(--ds-muted);font-family:'JetBrains Mono',monospace}
+
+/* 레인 순서 변경 */
+.ds-lh__grab{width:15px;flex:0 0 auto;display:grid;place-items:center;color:var(--ds-muted);cursor:grab;opacity:0;transition:opacity .13s;touch-action:none}
+.ds-lane:hover .ds-lh__grab{opacity:.75}
+.ds-lh__grab svg{width:12px;height:12px}
+.ds-lane.is-over{box-shadow:inset 0 2px 0 var(--ds-accent)}
+.ds-lane.is-over-b{box-shadow:inset 0 -2px 0 var(--ds-accent)}
+.ds-lane.is-lifting{opacity:.42}
+@media (hover:none){.ds-lh__grab{opacity:.7}}
+
+/* 단축키 도움말 */
+.ds-keys{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.ds-keyrow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ds-text2)}
+.ds-keyrow kbd{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;border:1px solid var(--ds-line2);background:var(--ds-surface2);border-radius:5px;padding:2px 6px;min-width:24px;text-align:center;flex:0 0 auto}
+@media (max-width:720px){.ds-keys{grid-template-columns:1fr}}
+
 /* ---------- 드로어 ---------- */
 .ds-scrim{position:fixed;inset:0;z-index:90;background:rgba(6,9,13,.5);backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,backdrop-filter .2s,visibility 0s linear .2s}
 .ds-scrim.is-on{opacity:1;visibility:visible;pointer-events:auto;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:opacity .2s,backdrop-filter .2s,visibility 0s}
@@ -486,6 +526,7 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
         <button data-view="timeline" aria-pressed="true">타임라인</button>
         <button data-view="list" aria-pressed="false">목록</button>
         <button data-view="request" aria-pressed="false">요청<span class="ds-badge ds-badge--sm ds-hide" id="dsReqBadge">0</span></button>
+        <button data-view="clog" aria-pressed="false">변경</button>
       </div>
       <div class="ds-seg" id="dsGroup" role="group" aria-label="묶기">
         <button data-group="phase" aria-pressed="true">단계</button>
@@ -570,6 +611,7 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
     </div>
     <div class="ds-list ds-hide" id="dsListView"></div>
     <div class="ds-reqview ds-hide" id="dsReqView"></div>
+    <div class="ds-clog ds-hide" id="dsClogView"></div>
     <div class="ds-ghostcard" id="dsGhost"></div>
     <div class="ds-empty ds-hide" id="dsEmpty">
       <div class="ds-empty__in">
@@ -666,6 +708,13 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
       <textarea class="ds-in" id="dsDrDesc" placeholder="무엇을 만드는지, 막힌 건 없는지 적어두세요"></textarea>
     </div>
     <div class="ds-hr"></div>
+    <div class="ds-cm__h">
+      <b>이번에 바뀐 것</b><span id="dsRelCnt">0</span>
+      <button class="ds-btn ds-btn--sm ds-hide" id="dsRelAdd" style="margin-left:auto">항목 추가</button>
+    </div>
+    <div id="dsRelList"></div>
+
+    <div class="ds-hr"></div>
     <div class="ds-cm__h"><b>댓글</b><span id="dsDrCnt">0</span></div>
     <div id="dsDrComments"></div>
   </div>
@@ -742,6 +791,38 @@ textarea.ds-in{height:auto;min-height:84px;padding:9px 10px;resize:vertical;line
     <div class="ds-who" id="dsWhoList"></div>
     <div class="ds-err" id="dsWhoErr"></div>
     <button class="ds-btn" id="dsWhoSkip" style="width:100%;margin-top:14px">나중에 고르기</button>
+  </div>
+</div>
+
+<!-- 변경 항목 -->
+<div class="ds-modal" id="dsRelModal">
+  <div class="ds-modal__card" style="max-width:420px">
+    <h2 id="dsRelT">변경 항목 추가</h2>
+    <p>업데이트·버그 수정처럼 실제로 바뀐 것을 적어두면 변경 탭에 날짜순으로 쌓입니다.</p>
+    <div class="ds-fld"><span class="ds-fld__lb">유형</span><div class="ds-stats" id="dsRelKind"></div></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsRelTitle">한 줄 요약</label><input class="ds-in" id="dsRelTitle" placeholder="예: 주문 목록 정렬이 뒤집히던 문제 수정" maxlength="200"></div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsRelBody">자세히 (선택)</label><textarea class="ds-in" id="dsRelBody" style="min-height:64px" placeholder="어디가 어떻게 바뀌었는지"></textarea></div>
+    <div class="ds-fld ds-2col">
+      <div><label class="ds-fld__lb" for="dsRelDate">날짜</label><input class="ds-in ds-mono" type="date" id="dsRelDate"></div>
+      <div><label class="ds-fld__lb" for="dsRelVer">버전 (선택)</label><input class="ds-in ds-mono" id="dsRelVer" placeholder="v1.2.0" maxlength="30"></div>
+    </div>
+    <div class="ds-fld"><label class="ds-fld__lb" for="dsRelTask">연결할 작업 (선택)</label><select class="ds-in" id="dsRelTask"></select></div>
+    <div class="ds-err" id="dsRelErr"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="ds-btn ds-btn--danger ds-hide" id="dsRelDel">삭제</button>
+      <button class="ds-btn" id="dsRelCancel" style="flex:1">취소</button>
+      <button class="ds-btn ds-btn--primary" id="dsRelGo" style="flex:1">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 단축키 -->
+<div class="ds-modal" id="dsKeysModal">
+  <div class="ds-modal__card" style="max-width:460px">
+    <h2>단축키</h2>
+    <p>입력창에 포커스가 없을 때 동작합니다.</p>
+    <div class="ds-keys" id="dsKeysList"></div>
+    <button class="ds-btn" id="dsKeysClose" style="width:100%;margin-top:16px">닫기</button>
   </div>
 </div>
 
@@ -892,6 +973,14 @@ const RSTATUS = [
   { k: 'rejected',  label: '반려' }
 ];
 const rstatusOf = k => RSTATUS.find(r => r.k === k) || RSTATUS[0];
+const RKINDS = [
+  { k: 'feature',  label: '기능 추가', v: '--ds-done'    },
+  { k: 'improve',  label: '개선',     v: '--ds-active'  },
+  { k: 'fix',      label: '버그 수정', v: '--ds-blocked' },
+  { k: 'breaking', label: '주의',     v: '--ds-review'  },
+  { k: 'chore',    label: '기타',     v: '--ds-planned' }
+];
+const rkindOf = k => RKINDS.find(x => x.k === k) || RKINDS[0];
 const PALETTE = ['#4C8DFF', '#2FBF71', '#B57BFF', '#FFB020', '#FF6B5A', '#22C7C7', '#F473B9', '#8B9BFF'];
 const ZMIN = 3, ZMAX = 80;
 const DEFAULTS = { dayW: 22, view: 'timeline', group: 'phase', sideW: 200 };
@@ -922,6 +1011,7 @@ const S = {
   dockTab: LS.get('dockTab', 'request'), density: LS.get('density', 'card'),
   reqTab: LS.get('reqTab', 'request'),
   expandAll: false, expanded: new Set(), replyTo: null,
+  releases: [], relSel: null, relKind: 'feature',
   range: { s: null, days: 0 }
 };
 
@@ -971,18 +1061,21 @@ async function loadAll() {
     S.sb.from('ds_viewers').select('*').order('sort').order('created_at'),
     S.sb.from('ds_leaves').select('*').order('start_date'),
     S.sb.from('ds_settings').select('*').eq('key', 'board').maybeSingle(),
-    S.sb.from('ds_requests').select('*').order('created_at', { ascending: false })
+    S.sb.from('ds_requests').select('*').order('created_at', { ascending: false }),
+    S.sb.from('ds_releases').select('*').order('released_on', { ascending: false }).order('created_at', { ascending: false })
   ];
-  const [p, t, c, m, v, l, st, rq] = await Promise.all(q);
-  const err = [p, t, c, m, v, l, rq].find(r => r.error)?.error;
+  const [p, t, c, m, v, l, st, rq, rl] = await Promise.all(q);
+  const err = [p, t, c, m, v, l, rq, rl].find(r => r.error)?.error;
   if (err) {
     toast('데이터를 불러오지 못했습니다: ' + err.message, true);
-    if (/ds_requests|request_id|read_by_owner/.test(err.message)) toast('supabase-migration-v4.sql 을 먼저 실행해주세요', true);
+    if (/ds_releases/.test(err.message)) toast('supabase-migration-v6.sql 을 먼저 실행해주세요', true);
+    else if (/origin|is_public|parent_id/.test(err.message)) toast('supabase-migration-v5.sql 을 먼저 실행해주세요', true);
+    else if (/ds_requests|request_id|read_by_owner/.test(err.message)) toast('supabase-migration-v4.sql 을 먼저 실행해주세요', true);
     else if (/ds_viewers|ds_settings|viewer_id/.test(err.message)) toast('supabase-migration-v3.sql 을 먼저 실행해주세요', true);
     return;
   }
   S.phases = p.data; S.tasks = t.data; S.comments = c.data;
-  S.members = m.data; S.viewers = v.data; S.leaves = l.data; S.requests = rq.data;
+  S.members = m.data; S.viewers = v.data; S.leaves = l.data; S.requests = rq.data; S.releases = rl.data;
   S.def = { ...DEFAULTS, ...(st?.data?.value || {}) };
 }
 
@@ -996,7 +1089,7 @@ function scheduleReload() {
 }
 function subscribe() {
   const ch = S.sb.channel('ds-board-v3');
-  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings', 'ds_requests']
+  ['ds_tasks', 'ds_phases', 'ds_comments', 'ds_members', 'ds_viewers', 'ds_leaves', 'ds_settings', 'ds_requests', 'ds_releases']
     .forEach(tb => ch.on('postgres_changes', { event: '*', schema: 'public', table: tb }, scheduleReload));
   ch.subscribe();
 }
@@ -1080,7 +1173,10 @@ function matches(t) {
   const q = S.q.trim().toLowerCase();
   if (S.fStatus.size && !S.fStatus.has(t.status)) return false;
   if (S.fWho && t.assignee_id !== S.fWho) return false;
-  if (q && !`${t.title} ${t.description || ''}`.toLowerCase().includes(q)) return false;
+  if (q) {
+    const rel = S.releases.filter(r => r.task_id === t.id).map(r => r.title + ' ' + r.body).join(' ');
+    if (!`${t.title} ${t.description || ''} ${rel}`.toLowerCase().includes(q)) return false;
+  }
   return true;
 }
 const visible = () => live().filter(t => matches(t) && (S.showHidden || !S.hidden.has(t.id)));
@@ -1213,6 +1309,13 @@ function renderLanes() {
     const lrow = el('div', 'ds-lane' + (isLeave ? ' ds-lane--leave' : ''));
     lrow.style.height = h + 'px';
     const lh = el('div', 'ds-lh' + (closed ? ' is-closed' : ''));
+    if (S.isOwner && lane.id !== '__leave' && lane.id !== '__none') {
+      const gr = el('div', 'ds-lh__grab');
+      gr.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
+      gr.title = '끌어서 순서 변경';
+      gr.addEventListener('pointerdown', ev => armLaneDrag(ev, lane, gr));
+      lh.appendChild(gr);
+    }
     const tog = el('button', 'ds-lh__tog');
     tog.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
     tog.setAttribute('aria-label', '접기/펼치기');
@@ -1745,7 +1848,10 @@ function renderDrawer() {
       const patch = { status: s.k };
       if (s.k === 'done' && t.progress < 100) patch.progress = 100;
       if (s.k === 'active' && t.progress === 0) patch.progress = 10;
+      const wasDone = t.status === 'done';
       updateTask(t.id, patch);
+      if (s.k === 'done' && !wasDone && !relOf(t.id).length)
+        toast('완료했습니다', false, { label: '변경 항목 남기기', fn: () => openRel(null, t.id) });
     };
     sw.appendChild(b);
   });
@@ -1786,6 +1892,7 @@ function renderDrawer() {
   $('#dsDrHide').style.color = hid ? cvar('--ds-accent') : '';
   $('#dsDrArch').style.color = t.is_archived ? cvar('--ds-accent') : '';
   syncMe();
+  renderRelList(t.id);
   renderComments(t.id);
 }
 
@@ -1984,6 +2091,11 @@ function peopleRow(p, table, list) {
   const nm = el('input'); nm.type = 'text'; nm.value = p.name;
   nm.onchange = () => savePerson(table, p.id, { name: nm.value.trim() || p.name }, list);
   row.appendChild(nm);
+  const up = el('button', 'ds-ia'); up.textContent = '↑'; up.title = '위로';
+  up.onclick = () => movePerson(table, list, p.id, -1);
+  const dn = el('button', 'ds-ia'); dn.textContent = '↓'; dn.title = '아래로';
+  dn.onclick = () => movePerson(table, list, p.id, 1);
+  row.appendChild(up); row.appendChild(dn);
   const act = el('button', 'ds-btn ds-btn--sm', p.active ? '사용중' : '중지');
   act.style.color = p.active ? cvar('--ds-done') : cvar('--ds-muted');
   act.onclick = () => savePerson(table, p.id, { active: !p.active }, list);
@@ -2174,6 +2286,7 @@ function applyView() {
   $('#dsInner').classList.toggle('ds-hide', !tl);
   $('#dsListView').classList.toggle('ds-hide', S.view !== 'list');
   $('#dsReqView').classList.toggle('ds-hide', !rq);
+  $('#dsClogView').classList.toggle('ds-hide', S.view !== 'clog');
   document.querySelector('.ds-zoomwrap').classList.toggle('ds-hide', !tl);
   $('#dsGroup').classList.toggle('ds-hide', rq);
   $('#dsReopen').classList.toggle('ds-hide', !tl || !S.sideCollapsed);
@@ -2234,6 +2347,8 @@ window.addEventListener('keydown', e => {
   }
   else if (k === 'd') { e.preventDefault(); toggleDock(); }
   else if (k === 'e') { e.preventDefault(); setExpandAll(!S.expandAll); }
+  else if (e.key === '?') { e.preventDefault(); openKeys(); }
+  else if (k === 'c' && S.isOwner) { e.preventDefault(); openRel(null, S.sel); }
   else if (k === 't') scrollToToday(true);
   else if (k === 'n' && S.isOwner) { e.preventDefault(); createTask({ phase_id: S.phases[0]?.id || null }); }
   else if (k === 'g') { S.group = S.group === 'phase' ? 'member' : 'phase'; applyView(); render(); }
@@ -2943,6 +3058,288 @@ function laneAt(x, y) {
 }
 
 /* ============================================================
+   변경 기록 (체인지로그)
+   ============================================================ */
+function relOf(taskId) { return S.releases.filter(r => r.task_id === taskId); }
+
+function releaseGroups() {
+  const sorted = [...S.releases].sort((a, b) =>
+    b.released_on.localeCompare(a.released_on) || new Date(b.created_at) - new Date(a.created_at));
+  const out = [];
+  sorted.forEach(r => {
+    const ver = (r.version || '').trim();
+    const key = ver ? 'v:' + ver : 'd:' + r.released_on;
+    let g = out.find(x => x.key === key);
+    if (!g) { g = { key, version: ver, date: r.released_on, items: [] }; out.push(g); }
+    g.items.push(r);
+    if (r.released_on > g.date) g.date = r.released_on;
+  });
+  return out;
+}
+
+function renderClog() {
+  const root = $('#dsClogView'); root.innerHTML = '';
+  const bar = el('div', 'ds-rsec__h');
+  bar.style.cssText = 'margin-bottom:18px;gap:8px';
+  bar.appendChild(el('b', null, '변경 기록'));
+  bar.appendChild(el('span', null, `${S.releases.length}건`));
+  const sp = el('div'); sp.style.flex = '1'; bar.appendChild(sp);
+  if (S.isOwner) {
+    const add = el('button', 'ds-btn ds-btn--sm ds-btn--primary', '항목 추가');
+    add.onclick = () => openRel(null);
+    bar.appendChild(add);
+  }
+  const dl = el('button', 'ds-btn ds-btn--sm', '마크다운 복사');
+  dl.onclick = copyClog;
+  bar.appendChild(dl);
+  root.appendChild(bar);
+
+  const q = S.q.trim().toLowerCase();
+  const groups = releaseGroups()
+    .map(g => ({ ...g, items: g.items.filter(r => !q || `${r.title} ${r.body} ${r.version}`.toLowerCase().includes(q)) }))
+    .filter(g => g.items.length);
+
+  if (!groups.length) {
+    root.appendChild(el('div', 'ds-empty2', S.releases.length
+      ? '조건에 맞는 기록이 없습니다.'
+      : '아직 기록이 없습니다. 작업 상세의 "이번에 바뀐 것"에서 항목을 추가해보세요.'));
+    return;
+  }
+
+  groups.forEach(g => {
+    const box = el('div', 'ds-cgroup');
+    const h = el('div', 'ds-cgroup__h');
+    if (g.version) h.appendChild(el('div', 'ds-cgroup__v', g.version));
+    else h.appendChild(el('div', 'ds-cgroup__v', g.date.replace(/-/g, '. ')));
+    if (g.version) h.appendChild(el('div', 'ds-cgroup__d', g.date));
+    h.appendChild(el('div', 'ds-cgroup__d', `${g.items.length}건`));
+    box.appendChild(h);
+    g.items.forEach(r => box.appendChild(clogItem(r)));
+    root.appendChild(box);
+  });
+}
+
+function clogItem(r) {
+  const k = rkindOf(r.kind), col = cvar(k.v);
+  const row = el('div', 'ds-citem');
+  const kd = el('span', 'ds-kind', k.label);
+  kd.style.cssText = `background:color-mix(in srgb,${col} 20%,transparent);color:${col}`;
+  row.appendChild(kd);
+  const b = el('div', 'ds-citem__b');
+  b.appendChild(el('div', 'ds-citem__t', r.title));
+  if (r.body.trim()) b.appendChild(el('div', 'ds-citem__x', r.body));
+  const t = r.task_id && S.tasks.find(x => x.id === r.task_id);
+  if (t) {
+    const l = el('button', 'ds-citem__l', '↳ ' + t.title);
+    l.onclick = () => openTask(t.id);
+    b.appendChild(l);
+  }
+  row.appendChild(b);
+  if (S.isOwner) {
+    const acts = el('div', 'ds-cacts');
+    const ed = el('button', 'ds-ia'); ed.innerHTML = ICON.pen; ed.title = '수정';
+    ed.onclick = () => openRel(r);
+    const dl = el('button', 'ds-ia ds-ia--del'); dl.innerHTML = ICON.trash; dl.title = '삭제';
+    dl.onclick = () => delRel(r);
+    acts.appendChild(ed); acts.appendChild(dl);
+    row.appendChild(acts);
+  }
+  return row;
+}
+
+function copyClog() {
+  const md = releaseGroups().map(g => {
+    const head = g.version ? `## ${g.version} — ${g.date}` : `## ${g.date}`;
+    const lines = g.items.map(r => `- **${rkindOf(r.kind).label}** ${r.title}${r.body.trim() ? '\n  ' + r.body.replace(/\n/g, '\n  ') : ''}`);
+    return head + '\n' + lines.join('\n');
+  }).join('\n\n');
+  navigator.clipboard?.writeText(md).then(
+    () => toast('마크다운으로 복사했습니다'),
+    () => toast('복사에 실패했습니다', true));
+}
+
+/* 작업 드로어 안의 목록 */
+function renderRelList(taskId) {
+  const list = relOf(taskId);
+  $('#dsRelCnt').textContent = list.length;
+  $('#dsRelAdd').classList.toggle('ds-hide', !S.isOwner);
+  const box = $('#dsRelList'); box.innerHTML = '';
+  if (!list.length) {
+    box.appendChild(el('div', 'ds-cm__empty', S.isOwner
+      ? '업데이트·버그 수정이라면 항목을 남겨보세요.'
+      : '기록된 변경 사항이 없습니다.'));
+    return;
+  }
+  list.forEach(r => {
+    const k = rkindOf(r.kind), col = cvar(k.v);
+    const row = el('div', 'ds-rel');
+    const kd = el('span', 'ds-kind', k.label);
+    kd.style.cssText = `background:color-mix(in srgb,${col} 20%,transparent);color:${col}`;
+    row.appendChild(kd);
+    const b = el('div', 'ds-rel__b');
+    b.appendChild(el('div', 'ds-rel__t', r.title));
+    b.appendChild(el('div', 'ds-rel__d', r.released_on + (r.version ? ' · ' + r.version : '')));
+    row.appendChild(b);
+    if (S.isOwner) {
+      const ed = el('button', 'ds-ia'); ed.innerHTML = ICON.pen; ed.title = '수정';
+      ed.onclick = () => openRel(r);
+      row.appendChild(ed);
+    }
+    box.appendChild(row);
+  });
+}
+
+function openRel(rel, taskId) {
+  S.relSel = rel?.id || null;
+  $('#dsRelT').textContent = rel ? '변경 항목 수정' : '변경 항목 추가';
+  S.relKind = rel?.kind || 'feature';
+  const kb = $('#dsRelKind'); kb.innerHTML = '';
+  RKINDS.forEach(k => {
+    const b = el('button', 'ds-stat', k.label);
+    b.onclick = () => { S.relKind = k.k; syncRelKind(); };
+    kb.appendChild(b);
+  });
+  syncRelKind();
+  $('#dsRelTitle').value = rel?.title || '';
+  $('#dsRelBody').value = rel?.body || '';
+  $('#dsRelDate').value = rel?.released_on || fd(new Date());
+  $('#dsRelVer').value = rel?.version || lastVersion();
+  const sel = $('#dsRelTask'); sel.innerHTML = '';
+  sel.appendChild(new Option('연결 안 함', ''));
+  [...S.tasks].sort((a, b) => b.start_date.localeCompare(a.start_date))
+    .forEach(t => sel.appendChild(new Option(t.title, t.id)));
+  sel.value = rel?.task_id || taskId || '';
+  $('#dsRelDel').classList.toggle('ds-hide', !rel);
+  $('#dsRelErr').textContent = '';
+  $('#dsRelModal').classList.add('is-on');
+  setTimeout(() => $('#dsRelTitle').focus(), 80);
+}
+function syncRelKind() {
+  [...$('#dsRelKind').children].forEach((b, i) => {
+    const on = RKINDS[i].k === S.relKind;
+    b.setAttribute('aria-pressed', on);
+    b.style.background = on ? cvar(RKINDS[i].v) : '';
+  });
+}
+function lastVersion() {
+  const v = S.releases.map(r => (r.version || '').trim()).filter(Boolean);
+  return v[0] || '';
+}
+$('#dsRelCancel').addEventListener('click', () => $('#dsRelModal').classList.remove('is-on'));
+$('#dsRelAdd').addEventListener('click', () => openRel(null, S.sel));
+$('#dsRelGo').addEventListener('click', async () => {
+  const title = $('#dsRelTitle').value.trim();
+  if (!title) return $('#dsRelErr').textContent = '한 줄 요약을 입력해주세요.';
+  const row = {
+    title, body: $('#dsRelBody').value.trim(), kind: S.relKind,
+    released_on: $('#dsRelDate').value || fd(new Date()),
+    version: $('#dsRelVer').value.trim(),
+    task_id: $('#dsRelTask').value || null
+  };
+  $('#dsRelGo').disabled = true;
+  const { data, error } = await (S.relSel
+    ? S.sb.from('ds_releases').update(row).eq('id', S.relSel).select().single()
+    : S.sb.from('ds_releases').insert(row).select().single());
+  $('#dsRelGo').disabled = false;
+  if (error) return $('#dsRelErr').textContent = '저장 실패: ' + error.message;
+  if (S.relSel) S.releases = S.releases.map(x => x.id === data.id ? data : x);
+  else S.releases.unshift(data);
+  $('#dsRelModal').classList.remove('is-on');
+  render(); if (S.sel) renderDrawer();
+  toast('변경 항목을 저장했습니다');
+});
+$('#dsRelDel').addEventListener('click', async () => {
+  if (!S.relSel || !confirm('이 변경 항목을 삭제할까요?')) return;
+  const { error } = await S.sb.from('ds_releases').delete().eq('id', S.relSel);
+  if (error) return toast('삭제 실패: ' + error.message, true);
+  S.releases = S.releases.filter(r => r.id !== S.relSel);
+  $('#dsRelModal').classList.remove('is-on');
+  render(); if (S.sel) renderDrawer();
+  toast('삭제했습니다');
+});
+async function delRel(r) {
+  if (!confirm(`"${r.title}" 항목을 삭제할까요?`)) return;
+  const { error } = await S.sb.from('ds_releases').delete().eq('id', r.id);
+  if (error) return toast('삭제 실패: ' + error.message, true);
+  S.releases = S.releases.filter(x => x.id !== r.id);
+  render(); toast('삭제했습니다');
+}
+
+/* ============================================================
+   레인 순서 변경
+   ============================================================ */
+function armLaneDrag(e, lane, node) {
+  e.preventDefault(); e.stopPropagation();
+  const ids = orderableIds();
+  const from = ids.indexOf(lane.id);
+  if (from < 0) return;
+  const lefts = [...document.querySelectorAll('#dsLeft > .ds-lane')];
+  const rights = [...document.querySelectorAll('#dsLanes > .ds-lane')];
+  const rows = lefts
+    .map((n, i) => ({ node: n, id: rights[i]?.dataset.lane, rect: n.getBoundingClientRect() }))
+    .filter(r => ids.includes(r.id));
+  const myRow = rows.findIndex(r => r.id === lane.id);
+  const y0 = e.clientY;
+  let started = false, to = myRow, lastN = null;
+
+  const mv = ev => {
+    if (!started) {
+      if (Math.abs(ev.clientY - y0) < 6) return;
+      started = true;
+      if (rows[myRow]) rows[myRow].node.classList.add('is-lifting');
+    }
+    to = rows.length;
+    for (let i = 0; i < rows.length; i++) {
+      if (ev.clientY < rows[i].rect.top + rows[i].rect.height / 2) { to = i; break; }
+    }
+    if (lastN) lastN.classList.remove('is-over', 'is-over-b');
+    if (to < rows.length) { lastN = rows[to].node; lastN.classList.add('is-over'); }
+    else { lastN = rows[rows.length - 1].node; lastN.classList.add('is-over-b'); }
+  };
+  const up = async () => {
+    window.removeEventListener('pointermove', mv);
+    window.removeEventListener('pointerup', up);
+    if (rows[myRow]) rows[myRow].node.classList.remove('is-lifting');
+    if (lastN) lastN.classList.remove('is-over', 'is-over-b');
+    if (!started) return;
+    let next = to > myRow ? to - 1 : to;
+    if (next === myRow) return;
+    const arr = ids.slice();
+    arr.splice(from, 1);
+    arr.splice(clamp(next, 0, arr.length), 0, lane.id);
+    await persistOrder(arr);
+  };
+  window.addEventListener('pointermove', mv);
+  window.addEventListener('pointerup', up);
+}
+function orderableIds() {
+  return S.group === 'phase' ? S.phases.map(p => p.id) : S.members.filter(m => m.active).map(m => m.id);
+}
+async function persistOrder(ids) {
+  const table = S.group === 'phase' ? 'ds_phases' : 'ds_members';
+  const list = S.group === 'phase' ? S.phases : S.members;
+  ids.forEach((id, i) => { const o = list.find(x => x.id === id); if (o) o.sort = i; });
+  list.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+  render();
+  for (let i = 0; i < ids.length; i++) {
+    const { error } = await S.sb.from(table).update({ sort: i }).eq('id', ids[i]);
+    if (error) { toast('순서 저장 실패: ' + error.message, true); await loadAll(); render(); return; }
+  }
+  toast('순서를 바꿨습니다');
+}
+async function movePerson(table, list, id, dir) {
+  const arr = S[list].slice();
+  const i = arr.findIndex(x => x.id === id);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  S[list] = arr;
+  arr.forEach((x, k) => x.sort = k);
+  renderAdmin(); render();
+  for (let k = 0; k < arr.length; k++) await S.sb.from(table).update({ sort: k }).eq('id', arr[k].id);
+}
+
+/* ============================================================
    알림
    ============================================================ */
 function unreadList() {
@@ -3043,6 +3440,27 @@ $('#dsNotifAll').addEventListener('click', async () => {
   toast('모두 읽음으로 표시했습니다');
 });
 
+/* ---------- 단축키 도움말 ---------- */
+const KEYMAP = [
+  ['/', '검색'], ['?', '단축키 보기'], ['Esc', '닫기'],
+  ['T', '오늘로 이동'], ['N', '새 작업'], ['R', '백로그 빠른 추가'],
+  ['D', '백로그 패널'], ['B', '좌측 패널 접기'], ['E', '전체 펼치기'],
+  ['G', '단계 ↔ 담당'], ['1 2 3', '일 · 주 · 월'], ['+ −', '확대 · 축소'],
+  ['Alt+클릭', '작업 숨기기'], ['우클릭', '메뉴 열기'],
+  ['드래그', '날짜 이동 · 레인 이동'], ['⌘/Ctrl+Enter', '댓글 등록']
+];
+function openKeys() {
+  const box = $('#dsKeysList'); box.innerHTML = '';
+  KEYMAP.forEach(([k, d]) => {
+    const row = el('div', 'ds-keyrow');
+    row.appendChild(el('kbd', null, k));
+    row.appendChild(el('span', null, d));
+    box.appendChild(row);
+  });
+  $('#dsKeysModal').classList.add('is-on');
+}
+$('#dsKeysClose').addEventListener('click', () => $('#dsKeysModal').classList.remove('is-on'));
+
 /* ============================================================
    메인 렌더
    ============================================================ */
@@ -3053,6 +3471,7 @@ function render() {
   renderDock();
   if (S.view === 'timeline') { renderHeader(); renderLanes(); }
   else if (S.view === 'request') renderRequests();
+  else if (S.view === 'clog') renderClog();
   else renderList();
   const all = live(), done = all.filter(t => t.status === 'done').length;
   $('#dsSub').textContent = all.length ? `작업 ${all.length} · 완료 ${Math.round(done / all.length * 100)}%` : 'SCHEDULE';
