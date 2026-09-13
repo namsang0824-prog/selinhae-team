@@ -154,7 +154,8 @@ textarea.in{height:auto;min-height:84px;padding:9px 11px;resize:vertical;line-he
 .brand__t{font-size:14px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
 .brand__s{display:block;font-size:10px;color:var(--tx3);font-weight:500;white-space:nowrap;margin-top:-2px}
 
-.nav{display:flex;gap:2px;background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:3px;margin:0 auto}
+.top__sp{flex:1 1 auto;min-width:8px}
+.nav{display:flex;gap:2px;background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:3px;flex:0 0 auto}
 .nav button{
   position:relative;display:flex;align-items:center;gap:7px;height:28px;padding:0 13px;border-radius:7px;
   font-size:13px;font-weight:600;color:var(--tx3);transition:all .16s var(--ease);
@@ -165,12 +166,13 @@ textarea.in{height:auto;min-height:84px;padding:9px 11px;resize:vertical;line-he
 .nav .n{min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--s-block);color:#fff;font-size:9.5px;font-weight:800;display:grid;place-items:center;font-family:'JetBrains Mono',monospace}
 .nav button[aria-pressed="true"] .n{background:var(--pri);color:var(--pri-tx)}
 
-.top__r{display:flex;align-items:center;gap:6px;flex:0 0 auto;margin-left:auto}
+.top__r{display:flex;align-items:center;gap:6px;flex:0 0 auto}
 .search{position:relative;width:34px;transition:width .22s var(--ease)}
 .search.is-open{width:210px}
 .search input{width:100%;height:34px;padding:0 10px 0 32px;border-radius:var(--r-sm);background:var(--surf2);border:1px solid var(--line);opacity:0;transition:opacity .16s}
 .search.is-open input{opacity:1}
-.search svg{position:absolute;left:10px;top:9px;width:15px;height:15px;color:var(--tx3);pointer-events:none}
+.search__i{position:absolute;left:9px;top:0;bottom:0;width:16px;display:grid;place-items:center;color:var(--tx3);pointer-events:none;z-index:1}
+.search__i svg{width:15px;height:15px;display:block}
 .search button{position:absolute;inset:0;width:34px;border-radius:var(--r-sm)}
 .search.is-open button{pointer-events:none}
 .search input:focus{outline:none;border-color:var(--pri)}
@@ -278,7 +280,11 @@ textarea.in{height:auto;min-height:84px;padding:9px 11px;resize:vertical;line-he
 .bar__x{position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
 .bar__i{position:relative;z-index:1;flex:0 0 auto;display:grid;place-items:center;opacity:.7}
 .bar__i svg{width:11px;height:11px}
-.bar__n{position:relative;z-index:1;flex:0 0 auto;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:999px;background:rgba(0,0,0,.25)}
+.bar__n{position:relative;z-index:1;flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;height:15px;font-size:9.5px;font-weight:800;padding:0 5px;border-radius:999px}
+.bar__ni{display:grid;place-items:center;width:9px;height:9px}
+.bar__ni svg{width:9px;height:9px;display:block}
+.bar__n--log{background:rgba(255,255,255,.34);border:1px solid rgba(0,0,0,.18)}
+.bar__n--cm{background:rgba(0,0,0,.3);color:#fff;border:1px solid transparent}
 .bar__h{position:absolute;top:0;bottom:0;width:10px;cursor:ew-resize;z-index:2;opacity:0;transition:opacity .13s}
 .bar__h::after{content:'';position:absolute;top:8px;bottom:8px;left:3.5px;width:2.5px;border-radius:2px;background:rgba(0,0,0,.4)}
 .bar:hover .bar__h{opacity:1}
@@ -389,8 +395,8 @@ textarea.in{height:auto;min-height:84px;padding:9px 11px;resize:vertical;line-he
 .addline input:focus{outline:none;border-style:solid;border-color:var(--pri);background:var(--surf3)}
 
 /* 달력 (휴무일) */
-.cal{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:thin}
-.cal__m{flex:0 0 auto;width:190px}
+.cal{display:flex;gap:14px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin;align-items:flex-start}
+.cal__m{flex:0 0 190px;width:190px;min-width:190px}
 .cal__t{font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
 .cal__g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal__w{font-size:9px;color:var(--tx3);text-align:center;padding-bottom:2px}
@@ -583,6 +589,10 @@ function h(tag, props, ...kids) {
     else n.setAttribute(k, v === true ? '' : v);
   }
   kids.flat(3).forEach(c => { if (c == null || c === false) return; n.append(c.nodeType ? c : document.createTextNode(c)); });
+  return n;
+}
+function add(n, ...kids) {
+  kids.flat(4).forEach(c => { if (c == null || c === false || c === '') return; n.append(c.nodeType ? c : document.createTextNode(c)); });
   return n;
 }
 const frag = (...k) => { const f = document.createDocumentFragment(); k.flat(3).forEach(c => c && f.append(c.nodeType ? c : document.createTextNode(c))); return f; };
@@ -1054,7 +1064,7 @@ async function createTask(o = {}) {
 function toast(msg, bad, action) {
   const n = h('div', { class: 'toast' + (bad ? ' toast--bad' : '') }, msg,
     action && h('button', { onClick: () => { action.fn(); n.remove(); } }, action.t));
-  $('#toasts').append(n);
+  add($('#toasts'), n);
   setTimeout(() => { n.classList.add('out'); setTimeout(() => n.remove(), 260); }, bad ? 4500 : action ? 5200 : 2000);
 }
 
@@ -1073,19 +1083,20 @@ function shell() {
         h('div', {},
           h('div', { class: 'brand__t' }, '개발 진행 스케줄'),
           h('small', { class: 'brand__s mono', id: 'subline' }, ''))),
-      h('nav', { class: 'nav' }, nav.map(n => h('button', {
-        'aria-pressed': S.view === n.k, onClick: () => go(n.k), title: n.t
-      }, h('span', { class: 'sr' }, n.t), h('span', { html: n.i, style: 'display:flex' }),
-        h('span', {}, n.t), n.k === 'board' && newN ? h('span', { class: 'n' }, String(newN)) : null))),
+      h('div', { class: 'top__sp' }),
       h('div', { class: 'top__r' },
         h('div', { class: 'search' + (S.searchOpen ? ' is-open' : ''), id: 'searchBox' },
-          h('span', { html: I.search, style: 'position:absolute;left:10px;top:9px;width:15px;height:15px;color:var(--tx3)' }),
+          h('span', { class: 'search__i', html: I.search }),
           h('input', {
             id: 'q', type: 'search', placeholder: '검색', value: S.q, autocomplete: 'off',
             onInput: e => { S.q = e.target.value; renderStage(); },
             onKeydown: e => { e.stopPropagation(); if (e.key === 'Escape') { S.q = ''; S.searchOpen = false; render(); } }
           }),
           h('button', { 'aria-label': '검색', onClick: () => { S.searchOpen = true; render(); setTimeout(() => $('#q')?.focus(), 60); } })),
+      h('nav', { class: 'nav' }, nav.map(n => h('button', {
+        'aria-pressed': S.view === n.k, onClick: () => go(n.k), title: n.t
+      }, h('span', { class: 'sr' }, n.t), h('span', { html: n.i, style: 'display:flex' }),
+        h('span', {}, n.t), n.k === 'board' && newN ? h('span', { class: 'n' }, String(newN)) : null))),
         S.owner ? h('span', { class: 'bell' },
           h('button', { class: 'btn btn--ico btn--ghost', html: I.bell, title: '알림', onClick: e => { e.stopPropagation(); toggleNotif(); } }),
           notifCount() ? h('span', { class: 'bell__n' }, notifCount() > 99 ? '99+' : String(notifCount())) : null) : null,
@@ -1113,7 +1124,7 @@ function subbar() {
   const bar = $('#sub'); if (!bar) return;
   bar.textContent = '';
   if (S.view === 'timeline') {
-    bar.append(
+    add(bar, 
       h('div', { class: 'seg' }, [['phase', '단계'], ['member', '담당']].map(([k, t]) =>
         h('button', { 'aria-pressed': S.group === k, onClick: () => { S.group = k; render(); } }, t))),
       h('div', { class: 'zoom' },
@@ -1135,7 +1146,7 @@ function subbar() {
         h('span', { html: I.plus, style: 'display:flex' }), '새 작업') : null
     );
   } else if (S.view === 'board') {
-    bar.append(
+    add(bar, 
       h('div', { class: 'seg' }, [['all', '전체'], ['request', '직원 요청'], ['plan', '내 계획']].map(([k, t]) =>
         h('button', { 'aria-pressed': S.boardTab === k, onClick: () => { S.boardTab = k; LS.set('boardTab', k); renderStage(); } }, t))),
       h('div', { class: 'div' }),
@@ -1146,7 +1157,7 @@ function subbar() {
         h('span', { html: I.plus, style: 'display:flex' }), S.owner ? '계획 추가' : '요청하기')
     );
   } else {
-    bar.append(
+    add(bar, 
       h('span', { class: 'hint' }, '완료한 항목이 날짜·버전별로 쌓입니다'),
       h('div', { class: 'sub__sp' }),
       h('button', { class: 'btn btn--sm', onClick: copyLogMd }, '마크다운 복사'),
@@ -1201,7 +1212,7 @@ function viewTimeline() {
   for (let i = 0; i < days;) {
     const d = addD(s, i), last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
     const span = Math.min(dDiff(d, last) + 1, days - i), px = span * w;
-    months.append(h('div', { class: 'month', style: `width:${px}px` },
+    add(months, h('div', { class: 'month', style: `width:${px}px` },
       px < 48 ? `${d.getMonth() + 1}` : `${d.getFullYear()}. ${String(d.getMonth() + 1).padStart(2, '0')}월`));
     i += span;
   }
@@ -1210,7 +1221,7 @@ function viewTimeline() {
   if (w >= 26) {
     for (let k = 0; k < days; k++) {
       const d = addD(s, k), wd = d.getDay();
-      ticks.append(h('div', {
+      add(ticks, h('div', {
         class: 'tick' + (wd % 6 === 0 ? ' tick--we' : '') + (wd === 0 ? ' tick--sun' : '') + (fd(d) === tstr ? ' tick--now' : ''),
         style: `width:${w}px`
       }, h('b', {}, String(d.getDate())), w >= 32 ? h('em', {}, WD[wd]) : null));
@@ -1219,15 +1230,15 @@ function viewTimeline() {
     const showLb = 7 * w >= 30;
     for (let k = 0; k < days; k += 7) {
       const d = addD(s, k), off = dDiff(d, mid(new Date()));
-      ticks.append(h('div', { class: 'tick' + (off >= 0 && off < 7 ? ' tick--now' : ''), style: `width:${7 * w}px` },
+      add(ticks, h('div', { class: 'tick' + (off >= 0 && off < 7 ? ' tick--now' : ''), style: `width:${7 * w}px` },
         showLb ? h('b', {}, w >= 7 ? `${d.getMonth() + 1}/${d.getDate()}` : String(d.getDate())) : null));
     }
   }
   const layer = h('div', { class: 'layer' });
   for (let k = 0; k < days; k++) {
     const d = addD(s, k);
-    if (w >= 9 && d.getDay() % 6 === 0) layer.append(h('div', { class: 'band', style: `left:${k * w}px;width:${w}px` }));
-    if (d.getDate() === 1) layer.append(h('div', { class: 'mline', style: `left:${k * w}px` }));
+    if (w >= 9 && d.getDay() % 6 === 0) add(layer, h('div', { class: 'band', style: `left:${k * w}px;width:${w}px` }));
+    if (d.getDate() === 1) add(layer, h('div', { class: 'mline', style: `left:${k * w}px` }));
   }
   const offNow = dDiff(s, new Date());
   const nowLine = (offNow >= 0 && offNow < days) ? h('div', { class: 'now', style: `left:${offNow * w + w / 2 - 1}px` }) : null;
@@ -1267,7 +1278,7 @@ function viewTimeline() {
         (S.owner && lane.id !== '__vac' && lane.id !== '__none')
           ? h('div', { class: 'lh__g', html: I.grip, title: '끌어서 순서 변경', onPointerdown: e => laneDrag(e, lane) }) : null));
     if (S.owner) lrow.addEventListener('contextmenu', e => { e.preventDefault(); laneMenu(e, lane); });
-    left.append(lrow);
+    add(left, lrow);
 
     /* 우측 */
     const track = h('div', { class: 'track' });
@@ -1275,16 +1286,16 @@ function viewTimeline() {
       if (lane.items.length) {
         const a = Math.min(...lane.items.map(i => xOf(i.start_date)));
         const b = Math.max(...lane.items.map(i => xOf(i.start_date) + wOf(i.start_date, i.end_date)));
-        track.append(h('div', { class: 'sumbar', style: `left:${a}px;width:${b - a}px;background:${lane.color}` }));
+        add(track, h('div', { class: 'sumbar', style: `left:${a}px;width:${b - a}px;background:${lane.color}` }));
       }
     } else {
-      lane.items.forEach(it => track.append(it._t === 'vac' ? vacEl(it, PAD + it.__row * slot) : barEl(it, PAD + it.__row * slot)));
+      lane.items.forEach(it => add(track, it._t === 'vac' ? vacEl(it, PAD + it.__row * slot) : barEl(it, PAD + it.__row * slot)));
       if (S.owner) track.addEventListener('dblclick', e => {
         if (e.target.closest('.bar,.vac')) return;
         addToLane(lane, fd(addD(S.range.s, Math.floor(e.offsetX / S.dayW))));
       });
     }
-    right.append(h('div', { class: 'lane' + (isVac ? ' lane--off' : ''), style: `height:${H}px`, data: { lane: lane.id, kind: lane.kind } }, track));
+    add(right, h('div', { class: 'lane' + (isVac ? ' lane--off' : ''), style: `height:${H}px`, data: { lane: lane.id, kind: lane.kind } }, track));
   });
 
   const side = h('aside', { class: 'tl__side' + (S.sideMin ? ' is-min' : ''), id: 'tlSide' },
@@ -1317,20 +1328,26 @@ function barEl(t, top) {
     style: `left:${xOf(t.start_date)}px;width:${w}px;top:${top}px;background:${col}`,
     data: { id: t.id }
   });
-  if (t.progress > 0) bar.append(h('div', { class: 'bar__f', style: `width:${t.progress}%` }));
+  if (t.progress > 0) add(bar, h('div', { class: 'bar__f', style: `width:${t.progress}%` }));
   const x0 = xOf(t.start_date);
   offDays(t).forEach(d => {
     const bl = Math.max(xOf(d) - x0, 0), bw = Math.min(S.dayW, w - bl);
-    if (bw > 0) bar.append(h('div', { class: 'bar__off', style: `left:${bl}px;width:${bw}px` }));
+    if (bw > 0) add(bar, h('div', { class: 'bar__off', style: `left:${bl}px;width:${bw}px` }));
   });
-  bar.append(h('span', { class: 'bar__x' }, t.title));
-  if ((t.description || '').trim()) bar.append(h('span', { class: 'bar__i', html: I.note }));
-  if (n) bar.append(h('span', { class: 'bar__n', style: un ? `background:${cvar('--acc')};color:#0B0E13` : '' }, String(n)));
+  add(bar, h('span', { class: 'bar__x' }, t.title));
+  if ((t.description || '').trim()) add(bar, h('span', { class: 'bar__i', html: I.note }));
+  const ln = relOfTask(t.id).length;
+  if (ln) add(bar, h('span', { class: 'bar__n bar__n--log', title: `업데이트 로그 ${ln}건` },
+    h('span', { class: 'bar__ni', html: I.log }), String(ln)));
+  if (n) add(bar, h('span', {
+    class: 'bar__n bar__n--cm', title: `댓글 ${n}건` + (un ? ` · 안 읽음 ${un}` : ''),
+    style: un ? `background:${cvar('--acc')};color:#0B0E13;border-color:transparent` : ''
+  }, h('span', { class: 'bar__ni', html: I.chat }), String(n)));
   const od = offDays(t).length;
   bar.title = `${t.title}\n${t.start_date} → ${t.end_date} · ${totalDays(t)}일` + (od ? ` (실작업 ${workDays(t)}일)` : '');
 
   if (S.owner) {
-    bar.append(h('div', { class: 'bar__h bar__h--l', data: { edge: 'l' } }), h('div', { class: 'bar__h bar__h--r', data: { edge: 'r' } }));
+    add(bar, h('div', { class: 'bar__h bar__h--l', data: { edge: 'l' } }), h('div', { class: 'bar__h bar__h--r', data: { edge: 'r' } }));
     bar.addEventListener('pointerdown', e => barDrag(e, t, bar));
   }
   bar.addEventListener('click', e => {
@@ -1488,8 +1505,8 @@ function viewBoard() {
     const list = items.filter(r => rStatus(r) === c.k)
       .sort((a, b) => prIx(a.priority) - prIx(b.priority) || new Date(b.created_at) - new Date(a.created_at));
     const body = h('div', { class: 'col__l', data: { col: c.k } });
-    list.forEach(r => body.append(reqCard(r)));
-    if (!list.length) body.append(h('div', { class: 'hint', style: 'padding:14px 4px;text-align:center' }, c.hint));
+    list.forEach(r => add(body, reqCard(r)));
+    if (!list.length) add(body, h('div', { class: 'hint', style: 'padding:14px 4px;text-align:center' }, c.hint));
     const col = h('div', { class: 'col', data: { col: c.k } },
       h('div', { class: 'col__h' },
         h('b', {}, c.t), h('span', { class: 'n' }, String(list.length))),
@@ -1501,7 +1518,7 @@ function viewBoard() {
             onKeydown: e => { e.stopPropagation(); if (e.key === 'Enter') quickAdd(e.target); }
           }))
         : null);
-    board.append(col);
+    add(board, col);
   });
   return board;
 }
@@ -1542,7 +1559,8 @@ function reqCard(r) {
       (r.origin === 'plan')
         ? h('span', { class: 'orig', style: 'background:color-mix(in srgb,var(--s-done) 18%,transparent);color:var(--s-done)' }, '내 계획')
         : h('span', { class: 'orig', style: 'background:color-mix(in srgb,var(--s-act) 18%,transparent);color:var(--s-act)' }, '요청'),
-      r.is_public === false ? h('span', { class: 'lock' }, '비공개') : null),
+      r.is_public === false ? h('span', { class: 'lock' }, '비공개') : null,
+      relOfReq(r.id).length ? h('span', { class: 'orig', style: 'background:color-mix(in srgb,var(--k-imp) 18%,transparent);color:var(--k-imp)' }, '로그 기록됨') : null),
     h('div', { class: 'card__t' }, r.title),
     r.body.trim() && !open ? h('div', { class: 'card__b' }, r.body) : null,
     t ? h('div', { class: 'card__link' },
@@ -1633,11 +1651,8 @@ async function moveToColumn(r, col) {
   const cur = rStatus(r);
   if (col === cur) return;
   if (col === 'planned' && !r.task_id) {
-    const t = await createTask({ phase_id: r.phase_id, title: r.title, description: r.body, start: today(), days: 3, silent: true });
-    if (!t) return;
-    await upReq(r.id, { task_id: t.id, status: 'planned' });
-    toast('오늘부터 3일로 잡았습니다. 날짜를 조정해주세요');
-    openTask(t.id);
+    await upReq(r.id, { status: 'planned' });
+    toast('진행 중으로 옮겼습니다', false, { t: '타임라인에 일정 잡기', fn: () => scheduleReq(r) });
     return;
   }
   if (col === 'done' && r.task_id) { await upTask(r.task_id, { status: 'done', progress: 100 }); return; }
@@ -1648,6 +1663,17 @@ async function moveToColumn(r, col) {
   }
   await upReq(r.id, { status: col });
   if (col === 'done') await maybeLog(r);
+}
+async function scheduleReq(r) {
+  const t = await createTask({ phase_id: r.phase_id, title: r.title, description: r.body, start: today(), days: 3, silent: true });
+  if (!t) return;
+  await upReq(r.id, { task_id: t.id, status: 'planned' });
+  toast('오늘부터 3일로 잡았습니다. 날짜를 조정해주세요');
+  openTask(t.id);
+}
+async function finishReq(r) {
+  await upReq(r.id, { status: 'done' });
+  await maybeLog(r);
 }
 async function maybeLog(r) {
   if (r.logged || relOfReq(r.id).length) return;
@@ -1692,13 +1718,13 @@ function viewLog() {
   }
   const root = h('div', { class: 'log' });
   if (pend.length) {
-    root.append(h('div', { style: 'margin-bottom:22px' },
+    add(root, h('div', { style: 'margin-bottom:22px' },
       h('div', { class: 'sect__h' }, h('b', {}, '예정 · 진행 중'), h('span', {}, String(pend.length))),
       h('div', { style: 'background:var(--surf);border:1px solid var(--line);border-radius:var(--r-lg);padding:2px 13px' },
         pend.map(r => logRow(r)))));
   }
   groups.forEach(g => {
-    root.append(h('div', { class: 'lgroup' },
+    add(root, h('div', { class: 'lgroup' },
       h('div', { class: 'lgroup__h' },
         h('div', { class: 'lgroup__v' }, g.version || g.date.replace(/-/g, '. ')),
         g.version ? h('div', { class: 'lgroup__d' }, g.date) : null,
@@ -1807,7 +1833,7 @@ function hidePop() { clearTimeout(popT); $('#pop').classList.remove('is-on'); }
 function showPop(t, bar) {
   const pop = $('#pop'); pop.textContent = '';
   const st = stOf(t.status), col = cvar(st.v), m = memOf(t.assignee_id), cs = cmOfTask(t.id), rels = relOfTask(t.id);
-  pop.append(
+  add(pop, 
     h('div', { class: 'pop__t' }, t.title),
     h('div', { class: 'pop__m' },
       h('span', { class: 'pill', style: `background:color-mix(in srgb,${col} 20%,transparent);color:${col};height:19px;font-size:10px` }, st.t),
@@ -1831,8 +1857,8 @@ function showPop(t, bar) {
 function showMenu(e, items) {
   const menu = $('#menu'); menu.textContent = '';
   items.forEach(it => {
-    if (it.sep) return menu.append(h('hr'));
-    menu.append(h('button', { class: it.danger ? 'dgr' : '', onClick: () => { closeMenu(); it.fn(); } },
+    if (it.sep) return add(menu, h('hr'));
+    add(menu, h('button', { class: it.danger ? 'dgr' : '', onClick: () => { closeMenu(); it.fn(); } },
       it.icon ? h('span', { html: it.icon, style: 'display:flex' }) : null,
       h('span', {}, it.t), it.k ? h('span', { class: 'k' }, it.k) : null));
   });
@@ -1873,7 +1899,8 @@ async function delTask(t) {
 function reqMenu(e, r) {
   const items = [{ t: '열기', icon: I.open, fn: () => openReq(r.id) }];
   if (S.owner) {
-    if (!r.task_id) items.push({ t: '지금 일정 잡기', icon: I.plus, fn: () => moveToColumn(r, 'planned') });
+    if (!r.task_id) items.push({ t: '타임라인에 일정 잡기', icon: I.cal, fn: () => scheduleReq(r) });
+    if (!r.logged && rStatus(r) !== 'done') items.push({ t: '로그에 기록하고 완료', icon: I.log, fn: () => finishReq(r) });
     else items.push({ t: '연결된 작업 열기', icon: I.open, fn: () => openTask(r.task_id) });
     items.push({ sep: 1 });
     PRIO.forEach(p => { if (p.k !== r.priority) items.push({ t: `우선순위 → ${p.t}`, fn: () => upReq(r.id, { priority: p.k }) }); });
@@ -1905,7 +1932,7 @@ function laneMenu(e, lane) {
 }
 function pickColor(cur, cb) {
   const i = h('input', { type: 'color', value: cur || '#4C8DFF', style: 'position:fixed;left:-9999px' });
-  document.body.append(i);
+  add(document.body, i);
   i.addEventListener('change', () => { cb(i.value); i.remove(); });
   i.click();
 }
@@ -1914,7 +1941,7 @@ let panelEl = null;
 function openTask(id) { S.sel = id; S.selKind = 'task'; S.replyTo = null; hidePop(); markTaskRead(id); location.hash = 't=' + id; openPanel(); }
 function openReq(id) { S.sel = id; S.selKind = 'req'; S.replyTo = null; markReqRead(id); location.hash = 'r=' + id; openPanel(); }
 function openPanel() {
-  if (!panelEl) { panelEl = h('aside', { class: 'panel' }); $('#overlays').append(panelEl); }
+  if (!panelEl) { panelEl = h('aside', { class: 'panel' }); add($('#overlays'), panelEl); }
   renderPanel();
   requestAnimationFrame(() => { panelEl.classList.add('is-on'); $('#scrim').classList.add('is-on'); });
   render();
@@ -1932,10 +1959,10 @@ function renderPanel() {
   if (!panelEl) return;
   if (S.selKind === 'task') {
     const t = taskOf(S.sel); if (!t) return closePanel();
-    panelEl.textContent = ''; panelEl.append(...taskPanel(t));
+    panelEl.textContent = ''; add(panelEl, ...taskPanel(t));
   } else {
     const r = reqOf(S.sel); if (!r) return closePanel();
-    panelEl.textContent = ''; panelEl.append(...reqPanel(r));
+    panelEl.textContent = ''; add(panelEl, ...reqPanel(r));
   }
 }
 
@@ -2078,7 +2105,8 @@ function reqPanel(r) {
     panelHead(
       frag(h('span', {}, (r.origin === 'plan' ? '내 계획' : '직원 요청')), h('span', {}, '· ' + colT(cur))),
       [
-        S.owner && !t ? h('button', { class: 'btn btn--sm btn--pri', onClick: () => moveToColumn(r, 'planned') }, '지금 일정 잡기') : null,
+        S.owner && !r.logged && rStatus(r) !== 'done' ? h('button', { class: 'btn btn--sm btn--pri', onClick: () => finishReq(r) }, '로그에 기록하고 완료') : null,
+        S.owner && !t ? h('button', { class: 'btn btn--sm', title: '일정이 필요한 큰 건일 때', onClick: () => scheduleReq(r) }, '일정 잡기') : null,
         S.owner ? h('button', { class: 'btn btn--ico btn--ghost btn--danger', html: I.trash, title: '삭제', onClick: () => delReq(r) }) : null
       ].filter(Boolean)),
     h('div', { class: 'panel__b', id: 'panelBody' },
@@ -2143,7 +2171,7 @@ const saveReqTitle = debounce(v => { if (S.sel && S.selKind === 'req') upReq(S.s
 
 function sel(id, opts, val, disabled, onchange) {
   const s = h('select', { class: 'in', id, disabled, onChange: e => onchange(e.target.value) });
-  opts.forEach(([v, t]) => s.append(h('option', { value: v, selected: String(v) === String(val) }, t)));
+  opts.forEach(([v, t]) => add(s, h('option', { value: v, selected: String(v) === String(val) }, t)));
   s.value = val; return s;
 }
 
@@ -2158,17 +2186,17 @@ function offCal(t) {
     const y = cur.getFullYear(), m = cur.getMonth();
     const first = new Date(y, m, 1), lastD = new Date(y, m + 1, 0).getDate();
     const g = h('div', { class: 'cal__g' });
-    WD.forEach(w => g.append(h('div', { class: 'cal__w' }, w)));
-    for (let k = 0; k < first.getDay(); k++) g.append(h('div', {}));
+    WD.forEach(w => add(g, h('div', { class: 'cal__w' }, w)));
+    for (let k = 0; k < first.getDay(); k++) add(g, h('div', {}));
     for (let d = 1; d <= lastD; d++) {
       const date = new Date(y, m, d), ds = fd(date);
       const inR = date >= s && date <= e, isOff = offs.has(ds);
-      g.append(h('div', {
+      add(g, h('div', {
         class: 'cal__d' + (inR ? ' in' : ' out') + (isOff ? ' off' : '') + (ds === today() ? ' today' : ''),
         onClick: inR && S.owner ? () => toggleOff(t, ds) : null
       }, String(d)));
     }
-    wrap.append(h('div', { class: 'cal__m' }, h('div', { class: 'cal__t' }, `${y}. ${String(m + 1).padStart(2, '0')}`), g));
+    add(wrap, h('div', { class: 'cal__m' }, h('div', { class: 'cal__t' }, `${y}. ${String(m + 1).padStart(2, '0')}`), g));
     cur = new Date(y, m + 1, 1);
   }
   return wrap;
@@ -2185,11 +2213,11 @@ async function toggleOff(t, day) {
 /* 댓글 */
 function commentList(list, ctx) {
   const box = h('div', {});
-  if (!list.length) { box.append(h('div', { class: 'hint', style: 'padding:14px 0;text-align:center' }, '첫 댓글을 남겨보세요.')); return box; }
+  if (!list.length) { add(box, h('div', { class: 'hint', style: 'padding:14px 0;text-align:center' }, '첫 댓글을 남겨보세요.')); return box; }
   threads(list).forEach(({ root, replies }) => {
-    box.append(cmRow(root, ctx));
-    replies.forEach(rp => box.append(cmRow(rp, ctx, true)));
-    if (S.replyTo === root.id) box.append(replyBox(root, ctx));
+    add(box, cmRow(root, ctx));
+    replies.forEach(rp => add(box, cmRow(rp, ctx, true)));
+    if (S.replyTo === root.id) add(box, replyBox(root, ctx));
   });
   return box;
 }
@@ -2269,7 +2297,7 @@ function modal(title, desc, bodyNodes, actions, opt = {}) {
       h('h2', {}, title), desc ? h('p', {}, desc) : null,
       ...bodyNodes,
       h('div', { style: 'display:flex;gap:8px;margin-top:14px' }, ...actions)));
-  $('#overlays').append(m);
+  add($('#overlays'), m);
   requestAnimationFrame(() => m.classList.add('is-on'));
   m._close = () => { m.classList.remove('is-on'); setTimeout(() => m.remove(), 240); };
   m.addEventListener('click', e => { if (e.target === m) m._close(); });
@@ -2316,8 +2344,8 @@ function openNewReq() {
   const pw = h('div', { class: 'chips' });
   const vw2 = h('div', { class: 'chips' });
   const err = h('div', { class: 'err' });
-  const drawP = () => { pw.textContent = ''; PRIO.forEach(p => pw.append(h('button', { class: 'chip', 'aria-pressed': prio === p.k, style: prio === p.k ? `background:${cvar(p.v)};color:#0B0E13` : '', onClick: () => { prio = p.k; drawP(); } }, p.t))); };
-  const drawV = () => { vw2.textContent = ''; [[true, '공개'], [false, '나만 보기']].forEach(([k, lb]) => vw2.append(h('button', { class: 'chip', 'aria-pressed': pub === k, style: pub === k ? `background:${cvar(k ? '--s-done' : '--s-plan')};color:#0B0E13` : '', onClick: () => { pub = k; drawV(); } }, lb))); };
+  const drawP = () => { pw.textContent = ''; PRIO.forEach(p => add(pw, h('button', { class: 'chip', 'aria-pressed': prio === p.k, style: prio === p.k ? `background:${cvar(p.v)};color:#0B0E13` : '', onClick: () => { prio = p.k; drawP(); } }, p.t))); };
+  const drawV = () => { vw2.textContent = ''; [[true, '공개'], [false, '나만 보기']].forEach(([k, lb]) => add(vw2, h('button', { class: 'chip', 'aria-pressed': pub === k, style: pub === k ? `background:${cvar(k ? '--s-done' : '--s-plan')};color:#0B0E13` : '', onClick: () => { pub = k; drawV(); } }, lb))); };
   drawP(); drawV();
   const go2 = async () => {
     const title = ti.value.trim();
@@ -2359,8 +2387,8 @@ function openRelModal(rel, taskId) {
   const tk = sel('relTask', [['', '연결 안 함'], ...[...S.tasks].sort((a, b) => b.start_date.localeCompare(a.start_date)).map(t => [t.id, t.title])], rel?.task_id || taskId || '', false, () => {});
   const kw = h('div', { class: 'chips' }), sw = h('div', { class: 'chips' });
   const err = h('div', { class: 'err' });
-  const dk = () => { kw.textContent = ''; RK.forEach(k => kw.append(h('button', { class: 'chip', 'aria-pressed': kind === k.k, style: kind === k.k ? `background:${cvar(k.v)};color:#0B0E13` : '', onClick: () => { kind = k.k; dk(); } }, k.t))); };
-  const ds = () => { sw.textContent = ''; RS.forEach(k => sw.append(h('button', { class: 'chip', 'aria-pressed': status === k.k, style: status === k.k ? `background:${cvar(k.v)};color:#0B0E13` : '', onClick: () => { status = k.k; ds(); } }, k.t))); };
+  const dk = () => { kw.textContent = ''; RK.forEach(k => add(kw, h('button', { class: 'chip', 'aria-pressed': kind === k.k, style: kind === k.k ? `background:${cvar(k.v)};color:#0B0E13` : '', onClick: () => { kind = k.k; dk(); } }, k.t))); };
+  const ds = () => { sw.textContent = ''; RS.forEach(k => add(sw, h('button', { class: 'chip', 'aria-pressed': status === k.k, style: status === k.k ? `background:${cvar(k.v)};color:#0B0E13` : '', onClick: () => { status = k.k; ds(); } }, k.t))); };
   dk(); ds();
   const save = async () => {
     const title = ti.value.trim();
@@ -2394,7 +2422,7 @@ function openVac(vac, startHint) {
   const ed = h('input', { class: 'in mono', type: 'date', value: vac?.end_date || s0 });
   const mo = h('input', { class: 'in', placeholder: '예: 제주도', value: vac?.memo || '' });
   const kw = h('div', { class: 'chips' }); const err = h('div', { class: 'err' });
-  const dk = () => { kw.textContent = ''; VK.forEach(k => kw.append(h('button', { class: 'chip', 'aria-pressed': kind === k.k, style: kind === k.k ? `background:${cvar('--pri')};color:${cvar('--pri-tx')}` : '', onClick: () => { kind = k.k; dk(); } }, k.t))); };
+  const dk = () => { kw.textContent = ''; VK.forEach(k => add(kw, h('button', { class: 'chip', 'aria-pressed': kind === k.k, style: kind === k.k ? `background:${cvar('--pri')};color:${cvar('--pri-tx')}` : '', onClick: () => { kind = k.k; dk(); } }, k.t))); };
   dk();
   const save = async () => {
     if (!who.value) { err.textContent = '담당자를 먼저 등록해주세요.'; return; }
@@ -2452,12 +2480,12 @@ function openSettings(tab) {
   const draw = () => {
     tabs.textContent = '';
     [['members', '담당자'], ['viewers', '작성자'], ['default', '기본 보기'], ['archive', '보관함']].forEach(([k, t]) =>
-      tabs.append(h('button', { 'aria-pressed': cur === k, onClick: () => { cur = k; draw(); } }, t)));
+      add(tabs, h('button', { 'aria-pressed': cur === k, onClick: () => { cur = k; draw(); } }, t)));
     body.textContent = '';
-    if (cur === 'members') body.append(peopleTab('members', '작업에 배정되는 사람입니다. 담당 묶기와 휴가에 쓰입니다.'));
-    else if (cur === 'viewers') body.append(peopleTab('viewers', '댓글과 요청을 남길 수 있는 사람입니다. 여기 없는 이름으로는 등록되지 않습니다.'));
-    else if (cur === 'default') body.append(defaultTab());
-    else body.append(archiveTab());
+    if (cur === 'members') add(body, peopleTab('members', '작업에 배정되는 사람입니다. 담당 묶기와 휴가에 쓰입니다.'));
+    else if (cur === 'viewers') add(body, peopleTab('viewers', '댓글과 요청을 남길 수 있는 사람입니다. 여기 없는 이름으로는 등록되지 않습니다.'));
+    else if (cur === 'default') add(body, defaultTab());
+    else add(body, archiveTab());
   };
   draw();
   const m = modal('설정', null, [tabs, body], [h('button', { class: 'btn btn--full', onClick: () => m._close() }, '닫기')], { width: 460 });
@@ -2465,9 +2493,9 @@ function openSettings(tab) {
 }
 function peopleTab(list, desc) {
   const wrap = h('div', {});
-  wrap.append(h('p', { style: 'margin-bottom:12px' }, desc));
+  add(wrap, h('p', { style: 'margin-bottom:12px' }, desc));
   S[list].forEach((p, i) => {
-    wrap.append(h('div', { class: 'prow' },
+    add(wrap, h('div', { class: 'prow' },
       h('input', { class: 'sw', type: 'color', value: p.color, onChange: e => savePerson(list, p.id, { color: e.target.value }) }),
       h('input', { type: 'text', value: p.name, onChange: e => savePerson(list, p.id, { name: e.target.value.trim() || p.name }) }),
       h('button', { class: 'ico', text: '↑', title: '위로', onClick: () => movePerson(list, i, -1) }),
@@ -2482,7 +2510,7 @@ function peopleTab(list, desc) {
         }
       })));
   });
-  wrap.append(h('button', {
+  add(wrap, h('button', {
     class: 'btn btn--sm btn--full', style: 'margin-top:12px', onClick: async () => {
       const name = prompt(list === 'members' ? '담당자 이름' : '작성자 이름'); if (!name?.trim()) return;
       try {
@@ -2515,7 +2543,7 @@ function defaultTab() {
     const c = h('div', { class: 'chips' });
     const draw = () => {
       c.textContent = '';
-      opts.forEach(([k, t]) => c.append(h('button', {
+      opts.forEach(([k, t]) => add(c, h('button', {
         class: 'chip', 'aria-pressed': d[key] === k,
         style: d[key] === k ? `background:${cvar('--pri')};color:${cvar('--pri-tx')}` : '',
         onClick: async () => { d[key] = k; draw(); await DB.saveSettings(d); toast('기본값을 저장했습니다'); }
@@ -2524,30 +2552,30 @@ function defaultTab() {
     draw();
     return h('div', { class: 'fld' }, h('span', { class: 'lb' }, label), c);
   };
-  wrap.append(h('p', { style: 'margin-bottom:12px' }, '모두가 처음 접속했을 때 보게 될 화면입니다.'));
-  wrap.append(row('기본 보기', [['timeline', '타임라인'], ['board', '요청'], ['log', '로그']], 'view'));
-  wrap.append(row('기본 묶기', [['phase', '단계'], ['member', '담당']], 'group'));
+  add(wrap, h('p', { style: 'margin-bottom:12px' }, '모두가 처음 접속했을 때 보게 될 화면입니다.'));
+  add(wrap, row('기본 보기', [['timeline', '타임라인'], ['board', '요청'], ['log', '로그']], 'view'));
+  add(wrap, row('기본 묶기', [['phase', '단계'], ['member', '담당']], 'group'));
   const lbl = h('b', { class: 'mono', style: 'color:var(--tx2)' }, String(d.dayW));
-  wrap.append(h('div', { class: 'fld' }, h('span', { class: 'lb' }, '기본 확대 ', lbl),
+  add(wrap, h('div', { class: 'fld' }, h('span', { class: 'lb' }, '기본 확대 ', lbl),
     h('input', {
       class: 'rng', type: 'range', min: ZMIN, max: ZMAX, value: d.dayW,
       onInput: e => lbl.textContent = e.target.value,
       onChange: async e => { d.dayW = +e.target.value; await DB.saveSettings(d); toast('기본값을 저장했습니다'); }
     })));
-  wrap.append(h('button', {
+  add(wrap, h('button', {
     class: 'btn btn--sm btn--full', onClick: async () => {
       Object.assign(d, { dayW: Math.round(S.dayW), view: S.view, group: S.group, sideW: S.sideW });
       await DB.saveSettings(d); toast('지금 화면을 기본값으로 저장했습니다'); window.__redrawSettings?.();
     }
   }, '지금 보고 있는 화면을 기본값으로'));
-  wrap.append(h('div', { class: 'note' }, '개인이 바꾼 확대·보기는 그 세션에서만 유지되고, 새로고침하면 이 기본값으로 돌아옵니다.'));
+  add(wrap, h('div', { class: 'note' }, '개인이 바꾼 확대·보기는 그 세션에서만 유지되고, 새로고침하면 이 기본값으로 돌아옵니다.'));
   return wrap;
 }
 function archiveTab() {
   const wrap = h('div', {});
   const list = S.tasks.filter(t => t.is_archived);
   if (!list.length) return h('div', { class: 'hint', style: 'text-align:center;padding:20px' }, '보관된 작업이 없습니다.');
-  list.forEach(t => wrap.append(h('div', { class: 'prow' },
+  list.forEach(t => add(wrap, h('div', { class: 'prow' },
     h('div', { style: 'flex:1;min-width:0' },
       h('div', { style: 'font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' }, t.title),
       h('div', { class: 'lrow__d' }, `${t.start_date} → ${t.end_date}`)),
@@ -2573,10 +2601,10 @@ const notifCount = () => notifList().length;
 let notifEl = null;
 function toggleNotif() {
   if (notifEl && notifEl.classList.contains('is-on')) return closeNotif();
-  if (!notifEl) { notifEl = h('div', { class: 'notif' }); $('#overlays').append(notifEl); }
+  if (!notifEl) { notifEl = h('div', { class: 'notif' }); add($('#overlays'), notifEl); }
   const items = notifList();
   notifEl.textContent = '';
-  notifEl.append(
+  add(notifEl, 
     h('div', { class: 'notif__h' }, h('b', {}, '알림'),
       h('button', { class: 'btn btn--sm', onClick: markAllRead }, '모두 읽음')),
     h('div', { class: 'notif__l' }, items.length ? items.slice(0, 40).map(it => {
@@ -2635,13 +2663,13 @@ function openKeys() {
 let shellDone = false;
 function render() {
   const root = $('#app');
-  if (!shellDone) { root.textContent = ''; root.append(shell()); shellDone = true; }
+  if (!shellDone) { root.textContent = ''; add(root, shell()); shellDone = true; }
   else {
     /* 상단바만 부분 갱신 (스크롤·포커스 유지) */
     const old = root.firstElementChild, next = shell();
     old.replaceChild(next.querySelector('.top'), old.querySelector('.top'));
     const demoOld = old.querySelector('.demo'), demoNew = next.querySelector('.demo');
-    if (!demoOld && demoNew) old.append(demoNew);
+    if (!demoOld && demoNew) add(old, demoNew);
   }
   subbar();
   renderStage();
@@ -2655,7 +2683,7 @@ function renderStage() {
   hidePop();
   const keep = st.scrollLeft, keepY = st.scrollTop;
   st.textContent = '';
-  st.append(S.view === 'timeline' ? viewTimeline() : S.view === 'board' ? viewBoard() : viewLog());
+  add(st, S.view === 'timeline' ? viewTimeline() : S.view === 'board' ? viewBoard() : viewLog());
   if (S.view === 'timeline') { st.scrollLeft = keep; st.scrollTop = keepY; }
   if (S.view === 'timeline') attachSideGrip();
   $('#unfold')?.remove();
@@ -2664,7 +2692,7 @@ function renderStage() {
       class: 'unfold', id: 'unfold', html: I.right, title: '패널 열기 (B)',
       onClick: () => { S.sideMin = false; LS.set('sideMin', false); render(); }
     });
-    document.body.append(b);
+    add(document.body, b);
     const r = st.getBoundingClientRect(); b.style.top = (r.top + 8) + 'px';
   }
 }
