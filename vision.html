@@ -1,0 +1,1012 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>셀인해 1년 비전 발표</title>
+<style id="deck-style">
+/* Layout: 편집 = 실제 크기 슬라이드를 세로로 쌓고 글자를 직접 눌러 수정. 발표(#present / #show) = 16:9 스테이지 + 클릭 단계 등장 + 항목 강조. 단일 라이트 테마(셀인해 브랜드 팔레트). */
+@font-face { font-family: "Paperlogy"; src: url("/_blob/2b9d6fb1f206a8678713c07e843b1ea0") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Paperlogy"; src: url("/_blob/40638890322af65f2ddfc51bdc85119b") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Paperlogy"; src: url("/_blob/627052d3aa27e66b1c0a36252081a05a") format("woff2"); font-weight: 800; font-display: swap; }
+@font-face { font-family: "Pretendard"; src: url("/_blob/44fdbc3afd891534467cdaf82c1a7a6d") format("woff2-variations"), url("/_blob/44fdbc3afd891534467cdaf82c1a7a6d") format("woff2"); font-weight: 45 920; font-display: swap; }
+:root {
+  --brand: #FF407C;
+  --brand-soft: #FFEBF1;
+  --ink: #191F28;
+  --sub: #8B95A1;
+  --sub-strong: #404654;
+  --card: #F3F6F8;
+  --bg: #FFFFFF;
+  --line: #E5E8EB;
+  --line-strong: #D1D6DB;
+  --danger: #E5484D;
+  --f-display: "Paperlogy", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --f-body: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); }
+body { font-family: var(--f-body); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.hl { font-style: normal; color: var(--brand); }
+
+/* ───────── 편집 화면 ───────── */
+.ed-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.ed-bar-in { max-width: 1180px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.ed-name { flex: 1 1 240px; min-width: 0; margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 17px; }
+.ed-name small { display: block; font-family: var(--f-body); font-weight: 500; font-size: 12px; color: var(--sub); }
+.ed-state { font-size: 12.5px; color: var(--sub); }
+.ed-state.dirty { color: var(--brand); font-weight: 600; }
+.ed-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 8px 14px; font-size: 13.5px; font-weight: 600; }
+.btn:hover { border-color: var(--sub); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+.btn.brand { background: var(--brand); border-color: var(--brand); color: #fff; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--sub-strong); }
+.btn.sm { padding: 6px 10px; font-size: 12.5px; border-radius: 8px; }
+.ed-main { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 80px; display: flex; flex-direction: column; gap: 22px; }
+.ed-intro { margin: 0; font-size: 13.5px; color: var(--sub-strong); max-width: 72ch; }
+.ed-intro code { font-family: var(--f-body); background: var(--card); border-radius: 4px; padding: 0 5px; color: var(--brand); font-weight: 600; }
+.banner { background: var(--brand-soft); border-radius: 12px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 13.5px; }
+.banner p { margin: 0; flex: 1 1 240px; min-width: 0; }
+.notice { font-size: 13px; color: var(--sub-strong); background: var(--card); border-radius: 10px; padding: 10px 12px; margin: 0; }
+.notice.err { color: var(--danger); }
+.panel { background: var(--card); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.panel h2 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 16px; }
+.panel p { margin: 0; font-size: 13px; color: var(--sub-strong); }
+.panel textarea, .adv textarea { width: 100%; min-height: 200px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 12px; line-height: 1.5; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.st-text { font-size: 13px; color: var(--brand); }
+.st-text.err { color: var(--danger); }
+.link-box { font-size: 13px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; }
+
+.deck-list { display: flex; flex-direction: column; gap: 40px; }
+.card { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.card-no { font-family: var(--f-display); font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+.card-tag { font-size: 12px; font-weight: 600; color: var(--sub-strong); background: var(--card); border-radius: 6px; padding: 2px 8px; }
+.card-sp { flex: 1; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--sub-strong); }
+.toggle input { accent-color: var(--brand); width: 16px; height: 16px; }
+.icon-btn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; min-width: 32px; height: 32px; padding: 0 9px; font-size: 13px; }
+.icon-btn:disabled { opacity: .3; cursor: default; }
+.icon-btn.confirm { color: var(--danger); border-color: var(--danger); }
+.frame { border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 8px 24px rgba(25,31,40,.06); }
+.frame.off { opacity: .35; }
+.ed .stage [data-k] { cursor: text; border-radius: 3px; transition: box-shadow .15s; }
+.ed .stage [data-k]:hover { box-shadow: 0 0 0 1px rgba(255,64,124,.45); }
+.ed .stage [data-k]:focus { outline: none; box-shadow: 0 0 0 2px var(--brand); background: rgba(255,235,241,.6); }
+.below { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field > label, .field > .lbl { font-size: 12px; font-weight: 600; color: var(--sub-strong); }
+.field textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 9px 11px; font-size: 14px; resize: vertical; min-height: 64px; line-height: 1.55; }
+details.adv { border: 1px solid var(--line); border-radius: 10px; }
+details.adv > summary { cursor: pointer; padding: 9px 12px; font-size: 12.5px; font-weight: 600; color: var(--sub-strong); }
+details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.slot { border: 1.5px dashed var(--line-strong); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.slot-name { font-size: 12px; font-weight: 700; }
+.slot-img { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 8px; background: var(--card); display: grid; place-items: center; overflow: hidden; color: var(--sub); font-size: 12px; }
+.slot-img img { width: 100%; height: 100%; object-fit: contain; }
+.slot input[type="file"] { display: none; }
+@media (max-width: 700px) { .below { grid-template-columns: 1fr; } }
+
+/* ───────── 슬라이드 공통 ───────── */
+.stage { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; container-type: inline-size; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--f-body); line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
+.sl { position: absolute; inset: 0; padding: 4.3cqw 5.4cqw 5cqw; display: flex; flex-direction: column; }
+.sl p, .sl h1, .sl h2, .sl h3, .sl h4, .sl ul, .sl ol, .sl dl, .sl dd, .sl figure { margin: 0; }
+.sl ul, .sl ol { padding: 0; list-style: none; }
+.hd { display: flex; flex-direction: column; gap: .6cqw; padding-bottom: 1.5cqw; border-bottom: 1px solid var(--line); }
+.sec { font-size: 1.02cqw; font-weight: 700; color: var(--brand); letter-spacing: .03em; view-transition-name: slh-sec; }
+.t { font-family: var(--f-display); font-weight: 700; font-size: 2.6cqw; line-height: 1.3; letter-spacing: -.015em; text-wrap: balance; view-transition-name: slh-title; }
+.lead { font-size: 1.3cqw; font-weight: 500; color: var(--sub-strong); line-height: 1.5; }
+.bd { flex: 1; min-height: 0; margin-top: 2cqw; display: flex; flex-direction: column; gap: 1.6cqw; }
+.ft { position: absolute; left: 5.4cqw; right: 5.4cqw; bottom: 2cqw; display: flex; justify-content: space-between; align-items: center; gap: 2cqw; font-size: .85cqw; color: var(--sub); }
+.ft .pg { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--sub-strong); }
+.chip { display: inline-flex; align-items: center; font-size: .92cqw; font-weight: 700; border-radius: 99px; padding: .28cqw .85cqw; white-space: nowrap; line-height: 1.3; }
+.chip.c-go { background: var(--brand); color: #fff; }
+.chip.c-plan { background: var(--card); color: var(--sub-strong); }
+.chip.c-done { background: var(--ink); color: #fff; }
+.chip.c-soft { background: var(--brand-soft); color: var(--brand); }
+.lbl-sm { font-size: .95cqw; font-weight: 700; color: var(--sub); letter-spacing: .04em; }
+.num { font-family: var(--f-display); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.fx { transition: opacity .35s ease, box-shadow .35s ease, transform .35s ease, filter .35s ease; }
+.sl.fmode .fx:not(.on) { opacity: .2; filter: grayscale(.6); }
+.sl.fmode .fx.on { box-shadow: 0 0 0 .2cqw var(--brand); }
+.pv .fx { cursor: pointer; }
+.dots { display: flex; flex-direction: column; gap: .7cqw; }
+.dots li { position: relative; padding-left: 1.3cqw; font-size: 1.28cqw; line-height: 1.55; color: var(--sub-strong); }
+.dots li::before { content: ""; position: absolute; left: 0; top: .72cqw; width: .45cqw; height: .45cqw; border-radius: 50%; background: var(--sub); }
+.empty { display: inline-block; min-width: 4em; min-height: 1em; background: var(--card); border-radius: 3px; }
+
+/* 표지 */
+.sl-cover { padding: 6cqw 6.4cqw 5cqw; justify-content: space-between; }
+.cv-top { display: flex; align-items: center; gap: 1.2cqw; }
+.cv-top i { width: 3.2cqw; height: .42cqw; background: var(--brand); border-radius: 1cqw; }
+.cv-k { font-size: 1.25cqw; font-weight: 700; color: var(--sub-strong); }
+.cv-main { display: flex; flex-direction: column; gap: 1.6cqw; }
+.cv-t { font-family: var(--f-display); font-weight: 800; font-size: 4.6cqw; line-height: 1.2; letter-spacing: -.03em; text-wrap: balance; max-width: 72%; view-transition-name: slh-title; }
+.cv-s { font-size: 1.65cqw; font-weight: 600; color: var(--brand); }
+.cv-meta { display: flex; gap: 5cqw; padding-top: 1.8cqw; border-top: 1px solid var(--line); }
+.cv-meta div { display: flex; flex-direction: column; gap: .3cqw; }
+.cv-meta dt { font-size: .95cqw; color: var(--sub); font-weight: 600; }
+.cv-meta dd { font-size: 1.3cqw; font-weight: 700; }
+
+/* 목차 */
+.ag { display: grid; grid-template-columns: 30% 1fr; gap: 5cqw; height: 100%; padding: 5.6cqw 6.4cqw; }
+.ag-l { display: flex; flex-direction: column; gap: .8cqw; }
+.ag-l .t { font-size: 3.4cqw; }
+.ag-l .lbl-sm { color: var(--brand); }
+.ag-list { border-top: 2px solid var(--ink); align-self: start; }
+.ag-list li { display: grid; grid-template-columns: 5cqw 1fr auto; gap: 1.4cqw; align-items: baseline; padding: 1.45cqw 0; border-bottom: 1px solid var(--line); }
+.ag-list .n { font-family: var(--f-display); font-weight: 800; font-size: 1.55cqw; color: var(--brand); }
+.ag-list .a { font-family: var(--f-display); font-weight: 700; font-size: 1.85cqw; }
+.ag-list .d { font-size: 1.2cqw; color: var(--sub); }
+
+/* 요약 */
+.sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4cqw; flex: 1; min-height: 0; }
+.sum-c { border-radius: 1.2cqw; background: var(--card); padding: 2cqw; display: flex; flex-direction: column; gap: 1.2cqw; min-width: 0; }
+.sum-c:nth-child(2) { background: var(--ink); color: #fff; }
+.sum-c:nth-child(2) .dots li { color: rgba(255,255,255,.86); }
+.sum-c:nth-child(2) .dots li::before { background: var(--brand); }
+.sum-h { display: flex; align-items: baseline; gap: .8cqw; }
+.sum-h .num { font-size: 1.3cqw; color: var(--brand); }
+.sum-h h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.75cqw; }
+.sum-big { font-family: var(--f-display); font-weight: 700; font-size: 1.95cqw; line-height: 1.38; }
+.sum-c .dots li { font-size: 1.32cqw; }
+
+/* KPI */
+.kpi { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 1.2cqw; flex: 1; min-height: 0; }
+.kp { border-radius: 1.2cqw; background: var(--card); padding: 2.2cqw 1.9cqw; display: flex; flex-direction: column; gap: .8cqw; min-width: 0; }
+.kp .nt { margin-top: auto; }
+.kp.hi { background: var(--brand); color: #fff; }
+.kp .lb { font-size: 1.25cqw; font-weight: 700; color: var(--sub-strong); }
+.kp.hi .lb, .kp.hi .nt { color: rgba(255,255,255,.9); }
+.kp .vv { display: flex; align-items: baseline; gap: .3cqw; }
+.kp .num { font-size: 3.9cqw; line-height: 1.1; }
+.kp .un { font-size: 1.25cqw; font-weight: 700; }
+.kp .nt { font-size: 1.12cqw; color: var(--sub); }
+.ctxbar { display: flex; flex-wrap: wrap; align-items: center; gap: .6cqw 2.4cqw; border-top: 1px solid var(--line); padding-top: 1.2cqw; font-size: 1.15cqw; color: var(--sub-strong); }
+.ctxbar b { font-weight: 700; color: var(--ink); }
+.insight { display: flex; gap: 1.2cqw; align-items: flex-start; background: var(--brand-soft); border-radius: 1cqw; padding: 1.3cqw 1.6cqw; }
+.insight .lbl-sm { color: var(--brand); flex: none; padding-top: .15cqw; }
+.insight p { font-size: 1.3cqw; font-weight: 600; line-height: 1.55; }
+
+/* 차트 */
+.chart-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 19cqw; gap: 2.2cqw; flex: 1; min-height: 0; }
+.chart { position: relative; min-width: 0; display: flex; flex-direction: column; gap: .6cqw; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ax { font-family: var(--f-body); font-size: 15px; fill: var(--sub); font-variant-numeric: tabular-nums; }
+.ax.strong { fill: var(--sub-strong); font-weight: 700; }
+.gl { stroke: var(--line); stroke-width: 1; }
+.bar { fill: var(--brand); cursor: pointer; transition: opacity .2s; }
+.bar-hit { fill: transparent; cursor: pointer; }
+.chart.sel .bar:not(.cur) { opacity: .35; }
+.gap-box { fill: none; stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.vlab { font-family: var(--f-display); font-weight: 700; font-size: 16px; fill: var(--ink); }
+.ln { fill: none; stroke: var(--brand); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.pt { fill: var(--brand); stroke: var(--bg); stroke-width: 3; cursor: pointer; }
+.pt.cur { fill: var(--ink); }
+.ref-avg { stroke: var(--sub); stroke-width: 1.5; stroke-dasharray: 6 6; }
+.ref-tgt { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 6 6; }
+.tgt-band { fill: var(--brand-soft); }
+.side { display: flex; flex-direction: column; gap: 1.2cqw; min-width: 0; }
+.info { border-radius: 1.1cqw; background: var(--card); padding: 1.5cqw 1.6cqw; display: flex; flex-direction: column; gap: .8cqw; }
+.info .lbl-sm { color: var(--sub); }
+.info h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.7cqw; }
+.info dl { display: grid; grid-template-columns: auto 1fr; gap: .6cqw 1cqw; font-size: 1.2cqw; }
+.info dt { color: var(--sub-strong); }
+.info dd { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.info dd small { font-weight: 600; color: var(--brand); margin-left: .4cqw; font-size: .95cqw; }
+.legend { display: flex; flex-wrap: wrap; gap: .4cqw 1.6cqw; font-size: .98cqw; color: var(--sub-strong); }
+.legend span { display: inline-flex; align-items: center; gap: .5cqw; }
+.legend i { width: 1.6cqw; height: 0; border-top: 2px dashed var(--sub); }
+.legend i.tg { border-color: var(--ink); }
+.legend i.ln-k { border-top: 3px solid var(--brand); }
+.legend i.sq { width: .9cqw; height: .9cqw; border: 0; border-radius: .2cqw; background: var(--brand); }
+.hint { font-size: .9cqw; color: var(--sub); }
+
+/* 운영 병목 */
+.flow { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 1.8cqw; position: relative; }
+.fs { position: relative; display: flex; flex-direction: column; gap: .8cqw; min-width: 0; }
+.fs-box { border-radius: 1cqw; border: 1.5px solid var(--line-strong); padding: 1.4cqw 1.3cqw; min-height: 11cqw; display: flex; flex-direction: column; gap: .5cqw; background: var(--bg); }
+.fs.man .fs-box { border-color: var(--brand); background: var(--brand-soft); }
+.fs-box h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.6cqw; }
+.fs-box p { font-size: 1.15cqw; color: var(--sub-strong); line-height: 1.5; }
+.fs:not(:last-child)::after { content: ""; position: absolute; right: -1.45cqw; top: 3.6cqw; width: 1.1cqw; height: 1.1cqw; border-top: 2px solid var(--line-strong); border-right: 2px solid var(--line-strong); transform: rotate(45deg); }
+.fs .fix { font-size: 1.12cqw; font-weight: 600; color: var(--sub-strong); display: flex; gap: .5cqw; }
+.fs .fix::before { content: "→"; color: var(--brand); font-weight: 800; }
+.bn-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2cqw; }
+.bs { border-radius: 1cqw; background: var(--card); padding: 1.8cqw 1.9cqw; display: flex; flex-direction: column; gap: .3cqw; }
+.bs .num { font-size: 3cqw; }
+.bs .lb { font-size: 1.15cqw; color: var(--sub-strong); font-weight: 600; }
+.bs.hi { background: var(--ink); color: #fff; }
+.bs.hi .lb { color: rgba(255,255,255,.8); }
+
+/* 목표 */
+.vision { display: flex; align-items: center; gap: 2cqw; border-radius: 1.2cqw; background: var(--ink); color: #fff; padding: 1.6cqw 2.2cqw; }
+.vision .lbl-sm { color: var(--brand); }
+.vision h3 { font-family: var(--f-display); font-weight: 800; font-size: 2.3cqw; letter-spacing: -.02em; }
+.vision p { margin-left: auto; font-size: 1.05cqw; color: rgba(255,255,255,.7); }
+.vision .hl { color: var(--brand); }
+.goals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4cqw; flex: 1; min-height: 0; }
+.gc { border-radius: 1.2cqw; border: 1.5px solid var(--line); padding: 1.8cqw 2cqw; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto 1fr auto; gap: .8cqw 1.6cqw; min-width: 0; }
+.gc .no { font-size: 1.02cqw; font-weight: 800; color: var(--brand); grid-column: 1; }
+.gc h3 { font-family: var(--f-display); font-weight: 800; font-size: 2.1cqw; line-height: 1.25; grid-column: 1; }
+.gc .ds { font-size: 1.3cqw; color: var(--sub-strong); line-height: 1.55; grid-column: 1; }
+.gc .kp-row { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .6cqw 1.6cqw; align-items: center; border-top: 1px solid var(--line); padding-top: 1cqw; font-size: 1.3cqw; font-weight: 600; }
+.gc .kp-row b { color: var(--brand); font-weight: 800; }
+.concept { grid-column: 2; grid-row: 1 / 4; width: 16cqw; display: flex; flex-direction: column; gap: .4cqw; }
+.concept svg { width: 100%; height: auto; display: block; }
+.concept .hint { text-align: right; }
+
+/* R&R */
+.rnr { display: grid; grid-template-columns: 19cqw minmax(0, 1fr); gap: 2.4cqw; flex: 1; min-height: 0; }
+.role-card { border-radius: 1.2cqw; background: var(--ink); color: #fff; padding: 2cqw; display: flex; flex-direction: column; gap: 1cqw; }
+.role-card .lbl-sm { color: var(--brand); }
+.role-card h3 { font-family: var(--f-display); font-weight: 800; font-size: 2.2cqw; }
+.role-card p { font-size: 1.22cqw; color: rgba(255,255,255,.8); line-height: 1.55; }
+.role-card ul { margin-top: auto; display: flex; flex-direction: column; gap: .55cqw; border-top: 1px solid rgba(255,255,255,.16); padding-top: 1.2cqw; }
+.role-card li { font-size: 1.15cqw; color: rgba(255,255,255,.85); display: flex; justify-content: space-between; gap: 1cqw; }
+.role-card li b { color: #fff; font-weight: 700; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 1.3cqw; }
+.tbl th { text-align: left; font-size: 1.05cqw; font-weight: 700; color: var(--sub); padding: 0 1cqw .8cqw 0; border-bottom: 2px solid var(--ink); }
+.tbl td { padding: 1.15cqw 1.2cqw 1.15cqw 0; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--sub-strong); line-height: 1.5; }
+.tbl td:first-child { font-family: var(--f-display); font-weight: 700; color: var(--ink); white-space: nowrap; }
+.tbl td.k { color: var(--brand); font-weight: 700; }
+.tbl tr.fx.on td { background: var(--brand-soft); }
+.sl.fmode .tbl tr.fx.on { box-shadow: none; }
+
+/* 실적 */
+.done { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 2.4cqw; flex: 1; min-height: 0; }
+.done.noimg { grid-template-columns: 1fr; }
+.pts { display: grid; gap: 1cqw; align-content: start; }
+.done.noimg .pts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pt-c { border-radius: 1cqw; background: var(--card); padding: 1.5cqw 1.6cqw; display: flex; flex-direction: column; gap: .5cqw; }
+.done.noimg .pt-c { min-height: 22cqw; padding: 2.2cqw 2cqw; gap: 1cqw; }
+.pt-c .num { font-size: 1.4cqw; color: var(--brand); }
+.pt-c h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.75cqw; }
+.pt-c p { font-size: 1.3cqw; color: var(--sub-strong); line-height: 1.55; }
+.shots { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 1.2cqw; min-height: 0; }
+.shot { position: relative; background: var(--card); border-radius: 1.2cqw; overflow: hidden; min-height: 0; display: grid; place-items: center; }
+.shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.shot .cap { position: absolute; left: 1cqw; top: 1cqw; font-size: .95cqw; font-weight: 700; border-radius: 99px; padding: .3cqw .9cqw; background: var(--ink); color: #fff; }
+.shot.after .cap { background: var(--brand); }
+
+/* 간트 */
+.gantt { position: relative; display: flex; flex-direction: column; }
+.g-row { display: grid; grid-template-columns: 22cqw minmax(0, 1fr); align-items: center; min-height: 2.75cqw; border-bottom: 1px solid var(--line); }
+.g-head { border-bottom: 2px solid var(--ink); min-height: 2.6cqw; }
+.g-lab { display: flex; align-items: center; gap: .8cqw; padding-right: 1.2cqw; min-width: 0; }
+.g-lab .ph { flex: none; font-size: .82cqw; font-weight: 800; color: var(--brand); width: 2.2cqw; }
+.g-lab b { font-family: var(--f-display); font-weight: 700; font-size: 1.22cqw; min-width: 0; }
+.g-lab span { margin-left: auto; font-size: .98cqw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.g-track { position: relative; height: 100%; min-height: 2.6cqw; }
+.g-months { display: grid; grid-template-columns: repeat(var(--m, 10), minmax(0, 1fr)); height: 100%; align-items: end; }
+.g-months span { font-size: .92cqw; font-weight: 700; color: var(--sub-strong); padding: 0 0 .5cqw .5cqw; border-left: 1px solid var(--line); }
+.g-months span.y { color: var(--brand); }
+.g-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--m, 10), minmax(0, 1fr)); pointer-events: none; }
+.g-grid i { border-left: 1px solid var(--line); }
+.g-bar { position: absolute; top: 50%; height: 1.25cqw; transform: translateY(-50%); border-radius: .4cqw; background: var(--ink); transform-origin: left center; }
+.g-bar.go { background: var(--brand); }
+.g-bar.ongoing { background: transparent; border: 1.5px dashed var(--sub); }
+.g-ms { position: absolute; top: 50%; width: 1.3cqw; height: 1.3cqw; background: var(--brand); transform: translate(-50%, -50%) rotate(45deg); border-radius: .15cqw; }
+.g-today { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px solid var(--brand); pointer-events: none; z-index: 2; }
+.g-today b { position: absolute; top: auto; bottom: -1.6cqw; left: .4cqw; font-size: .8cqw; color: var(--brand); white-space: nowrap; }
+.g-legend { display: flex; gap: 2cqw; margin-top: 1cqw; font-size: .95cqw; color: var(--sub-strong); flex-wrap: wrap; }
+.g-legend span { display: inline-flex; align-items: center; gap: .5cqw; }
+.g-legend i { display: inline-block; width: 1.8cqw; height: .9cqw; border-radius: .25cqw; background: var(--ink); }
+.g-legend i.go { background: var(--brand); }
+.g-legend i.on { background: transparent; border: 1.5px dashed var(--sub); }
+.g-legend i.ms { width: .9cqw; height: .9cqw; background: var(--brand); transform: rotate(45deg); }
+.g-row.fx.on { background: var(--brand-soft); }
+.sl.fmode .g-row.fx.on { box-shadow: none; }
+
+/* 과제 상세 */
+.tk-meta { display: flex; flex-wrap: wrap; gap: .6cqw; align-items: center; }
+.tk-meta .chip { font-size: 1.05cqw; }
+.tk-meta .pd { font-size: 1.3cqw; font-weight: 700; color: var(--ink); margin-right: .8cqw; font-variant-numeric: tabular-nums; }
+.tk { display: grid; grid-template-columns: minmax(0, 1fr) 2.4cqw minmax(0, 1.15fr) 2.4cqw minmax(0, 1fr); flex: 1; min-height: 0; align-items: stretch; }
+.tk-c { border-radius: 1.2cqw; padding: 2cqw 2cqw; display: flex; flex-direction: column; gap: 1cqw; min-width: 0; background: var(--card); }
+.tk-c.tobe { background: var(--bg); border: 2px solid var(--ink); }
+.tk-c.eff { background: var(--brand-soft); }
+.tk-c h4 { font-size: 1.15cqw; font-weight: 800; color: var(--sub); letter-spacing: .04em; }
+.tk-c.tobe h4 { color: var(--ink); }
+.tk-c.eff h4 { color: var(--brand); }
+.tk-c .dots li { font-size: 1.38cqw; }
+.tk-c .dots { gap: 1.1cqw; }
+.tk-c.tobe .dots li { color: var(--ink); }
+.tk-c.tobe .dots li::before { background: var(--ink); }
+.tk-c.eff .dots li::before { background: var(--brand); }
+.tk-arrow { display: grid; place-items: center; }
+.tk-arrow i { width: 1cqw; height: 1cqw; border-top: 2px solid var(--line-strong); border-right: 2px solid var(--line-strong); transform: rotate(45deg); }
+.kpi-line { display: flex; flex-wrap: wrap; align-items: center; gap: .6cqw 1.8cqw; border-top: 1px solid var(--line); padding-top: 1.2cqw; font-size: 1.3cqw; font-weight: 600; }
+.kpi-line .lbl-sm { color: var(--brand); }
+.kpi-line span { display: inline-flex; gap: .5cqw; align-items: baseline; }
+.kpi-line span::before { content: ""; width: .45cqw; height: .45cqw; border-radius: 50%; background: var(--ink); align-self: center; }
+
+/* 커뮤니티 */
+.boards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1cqw; }
+.bo { border-radius: 1cqw; background: var(--card); padding: 1.7cqw 1.8cqw; min-height: 8.5cqw; display: flex; flex-direction: column; gap: .5cqw; min-width: 0; }
+.bo.first { background: var(--ink); color: #fff; }
+.bo.first p { color: rgba(255,255,255,.8); }
+.bo-h { display: flex; align-items: center; justify-content: space-between; gap: .8cqw; }
+.bo h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.6cqw; }
+.bo p { font-size: 1.22cqw; color: var(--sub-strong); line-height: 1.5; }
+.bo .chip { font-size: .82cqw; }
+.loop { display: flex; flex-wrap: wrap; align-items: center; gap: .6cqw; }
+.loop span { font-size: 1.25cqw; font-weight: 700; padding: .55cqw 1.1cqw; border-radius: 99px; background: var(--brand-soft); color: var(--brand); }
+.loop i { font-style: normal; color: var(--sub); font-weight: 700; }
+
+/* KPI 트리 */
+.tree { display: flex; align-items: stretch; gap: .8cqw; }
+.tn { flex: 1 1 0; min-width: 0; border-radius: 1.1cqw; border: 1.5px solid var(--line); padding: 1.6cqw 1.3cqw; min-height: 15cqw; display: flex; flex-direction: column; gap: .5cqw; background: var(--bg); }
+.tn.key { border-color: var(--brand); background: var(--brand-soft); }
+.tn.res { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tn .lb { font-size: 1.15cqw; font-weight: 700; color: var(--sub-strong); }
+.tn.res .lb { color: rgba(255,255,255,.75); }
+.tn .num { font-size: 2.5cqw; line-height: 1.15; }
+.tn .tg { font-size: 1.12cqw; font-weight: 700; color: var(--brand); }
+.tn .by { margin-top: auto; padding-top: .8cqw; border-top: 1px solid var(--line); font-size: 1.08cqw; color: var(--sub-strong); line-height: 1.5; }
+.tn.key .by { border-color: rgba(255,64,124,.25); }
+.tn.res .by { border-color: rgba(255,255,255,.16); color: rgba(255,255,255,.8); }
+.op { flex: none; align-self: center; font-family: var(--f-display); font-weight: 800; font-size: 1.7cqw; color: var(--sub); }
+.ins2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2cqw; }
+.ins2 .insight:nth-child(2) { background: var(--card); }
+.ins2 .insight:nth-child(2) .lbl-sm { color: var(--ink); }
+
+/* BM */
+.bm { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 1.1cqw; flex: 1; min-height: 0; }
+.bmc { border-radius: 1.1cqw; border: 1.5px solid var(--line); padding: 1.6cqw 1.4cqw; display: flex; flex-direction: column; gap: .8cqw; min-width: 0; }
+.bmc .num { font-size: 1.6cqw; color: var(--brand); }
+.bmc h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.75cqw; line-height: 1.3; }
+.bmc p { font-size: 1.3cqw; color: var(--sub-strong); line-height: 1.55; }
+.bmc .base { margin-top: auto; font-size: 1.08cqw; color: var(--sub); border-top: 1px solid var(--line); padding-top: .8cqw; }
+.bmc .base b { color: var(--ink); }
+
+/* 마무리 */
+.sl-close { justify-content: center; align-items: flex-start; padding-left: 6.4cqw; gap: 1.4cqw; }
+.cl-t { font-family: var(--f-display); font-weight: 800; font-size: 5.6cqw; letter-spacing: -.03em; view-transition-name: slh-title; }
+.cl-s { font-size: 1.6cqw; font-weight: 600; color: var(--sub-strong); }
+.cl-bar { width: 3.2cqw; height: .42cqw; border-radius: 1cqw; background: var(--brand); }
+
+/* ───────── 발표 화면 ───────── */
+.pv { position: fixed; inset: 0; background: var(--bg); display: grid; place-items: center; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.pv-stage { width: min(100vw, calc(100vh * 16 / 9)); width: min(100vw, calc(100dvh * 16 / 9)); }
+.pv-ui { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); right: 12px; display: flex; gap: 6px; z-index: 5; transition: opacity .3s ease; }
+.pv-ui.hide, .pv-count.hide { opacity: 0; pointer-events: none; }
+.pv-ui button { border: 0; background: rgba(25,31,40,.78); color: #fff; border-radius: 99px; padding: 8px 14px; font-size: 13px; font-weight: 600; min-width: 38px; }
+.pv-count { position: fixed; left: 14px; top: calc(env(safe-area-inset-top, 0px) + 18px); font-size: 12px; font-weight: 700; color: var(--sub); font-variant-numeric: tabular-nums; z-index: 5; transition: opacity .3s ease; }
+.pv-progress { position: fixed; left: 0; bottom: env(safe-area-inset-bottom, 0px); height: 3px; background: var(--brand); transition: width .5s ease; z-index: 5; }
+.pv-note { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); transform: translateX(-50%); width: min(760px, calc(100vw - 32px)); background: rgba(25,31,40,.92); color: #fff; border-radius: 14px; padding: 14px 18px; font-size: 15px; line-height: 1.6; z-index: 6; }
+.pv-note b { display: block; font-size: 11.5px; color: rgba(255,255,255,.6); margin-bottom: 4px; }
+.pv [data-s] { transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1); }
+.pv [data-s].off { opacity: 0; transform: translateY(1.2cqw); pointer-events: none; }
+.pv .instant [data-s] { transition: none; }
+@keyframes barUp { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes drawLn { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes barX { from { transform: translateY(-50%) scaleX(0); } to { transform: translateY(-50%) scaleX(1); } }
+.pv .play .bar { transform-box: fill-box; transform-origin: bottom; animation: barUp .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+.pv .play .ln { stroke-dasharray: 1; animation: drawLn 1.4s cubic-bezier(.4,0,.2,1) both; }
+.pv .play .g-bar { animation: barX .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 70ms); }
+.pv .instant .play .bar, .pv .instant .play .ln, .pv .instant .play .g-bar { animation: none; }
+::view-transition-group(*) { animation-duration: .55s; animation-timing-function: cubic-bezier(.2,.7,.2,1); }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .3s; }
+@media (prefers-reduced-motion: reduce) {
+  .pv [data-s] { transition: none; }
+  .pv .play .bar, .pv .play .ln, .pv .play .g-bar { animation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+</style>
+<div id="app"></div>
+<script type="application/json" id="deck-data">{"rev": 3, "deck": "셀인해 프로덕트 1년 추진 계획", "metrics": "월,매칭 요청,연결,계약\n25.09,212,64,9\n25.10,454,219,31\n25.11,413,280,44\n25.12,966,682,93\n26.01,898,627,102\n26.02,1074,716,113\n26.03,1367,967,170\n26.04,1171,833,124\n26.05,1170,867,86\n26.06,,,\n26.07,817,602,83\n26.08,1263,740,79\n26.09,752,520,124\n26.10,946,901,111", "slides": [{"type": "cover", "note": "프로덕트 담당 남민우입니다. 셀인해 1년 비전을 프로덕트 관점에서 어떻게 실현할지, 앞으로 10개월의 추진 계획을 말씀드리겠습니다.", "d": {"sec": "2026 셀인해 워크숍", "title": "셀인해 1년 비전 달성을 위한 프로덕트 추진 계획", "lead": "기획 · UX/UI · 개발 · 데이터", "meta": [{"k": "발표", "v": "남민우 · 프로덕트 담당"}, {"k": "일자", "v": "2026. 10. 07"}, {"k": "계획 기간", "v": "2026.10 – 2027.07"}]}, "include": true}, {"type": "agenda", "note": "순서는 현황 진단, 목표와 역할, 추진 로드맵, 과제별 실행 계획, 성과 관리, 마지막으로 추가 수익 모델 검토입니다.", "d": {"title": "목차", "items": [{"t": "현황 진단", "d": "지표로 본 플랫폼의 현재"}, {"t": "목표와 역할", "d": "1년 목표와 프로덕트 R&R"}, {"t": "추진 로드맵", "d": "2026.10 – 2027.07 일정"}, {"t": "과제별 실행 계획", "d": "7개 과제 상세"}, {"t": "성과 관리", "d": "KPI 체계 · 측정 · 리스크"}, {"t": "추가 수익 모델", "d": "논의 제안"}], "src": ""}, "include": true}, {"type": "summary", "note": "먼저 결론부터 말씀드리겠습니다. 유입은 이미 월 1천 건 수준으로 확보했습니다. 앞으로 1년은 들어온 고객을 계약까지 더 많이 데려가고, 운영진 손이 가는 일을 시스템으로 옮기는 데 집중하겠습니다.", "d": {"sec": "요약", "title": "유입은 확보했고, 이제 전환과 자동화로 플랫폼 매출을 키우겠습니다", "lead": "", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "cols": [{"h": "현황", "big": "13개월 누적 매칭 요청 11,503건, 계약 1,169건", "pts": ["연결 → 계약 전환율 평균 14.6%", "연결마다 운영진이 단톡방 직접 개설 (월평균 728건)", "매출 · 단계별 전환 데이터 미집계"]}, {"h": "목표", "big": "플랫폼 매출 확대, 운영 부담 축소", "pts": ["연결 → 계약 전환율 20% 이상", "상담 · 단톡방 · 거래 확인 수작업의 시스템화", "대행 매출 의존도 완화"]}, {"h": "실행", "big": "5단계 로드맵, 2026.10 – 2027.07", "pts": ["P1 (10월) 자재 구매 · 작업자 모집 · 커뮤니티 MVP", "P2 (11–12월) 플래너 개편 · 앱 런칭", "P3–P5 (2027) 작업자 개편 · 인앱 채팅 · 커뮤니티"]}]}, "include": true}, {"type": "kpis", "note": "13개월 동안 누적 가입자 2,297명, 매칭 요청 11,503건, 계약 1,169건이 쌓였습니다. 서비스 초기 3개월과 비교하면 최근 3개월 매칭 요청이 2.6배 늘었습니다.", "d": {"sec": "01 현황 진단", "title": "13개월간 매칭 요청 11,503건, 계약 1,169건 달성", "lead": "", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "tiles": [{"lb": "누적 가입자", "v": "2,297", "u": "명", "nt": "2025.09 – 2026.10.07"}, {"lb": "누적 매칭 요청", "v": "11,503", "u": "건", "nt": "가입자 1인당 약 5.0건"}, {"lb": "누적 연결", "v": "8,018", "u": "건", "nt": "매칭 요청 대비 69.7%"}, {"lb": "누적 계약", "v": "1,169", "u": "건", "nt": "연결 대비 14.6%", "hi": true}, {"lb": "활성 업체", "v": "79", "u": "팀", "nt": "구독 중"}], "insight": "서비스 첫 3개월(25.09–11) 대비 최근 3개월(26.07–09) 매칭 요청 2.6배 증가 (1,079건 → 2,832건)", "ctx": "참고 · 마케팅 채널 (김도헌 이사 담당): 오픈채팅 609명 · 유튜브 구독자 1,580명 (2026.10.07 기준)"}, "include": true}, {"type": "chartM", "note": "월별로 보면 매칭 요청은 3월에 1,367건으로 정점을 찍고, 이후 750건에서 1,260건 사이를 오가고 있습니다. 유입 규모는 확보됐고, 과제는 유입 이후의 전환입니다.", "d": {"sec": "01 현황 진단", "title": "월 매칭 요청은 1천 건 안팎으로 성장, 이제 과제는 유입 이후의 전환", "lead": "월별 매칭 요청 수 (건)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "points": ["2026.03 최고 1,367건, 이후 750 – 1,260건 사이에서 등락", "첫 3개월 대비 최근 3개월 매칭 요청 2.6배", "막대를 누르면 해당 월의 연결 · 계약 수치 확인 가능"]}, "include": true}, {"type": "chartR", "note": "연결된 고객 중 실제 계약까지 가는 비율은 평균 14.6%입니다. 9월처럼 23.8%까지 오른 달도 있고, 5월처럼 9.9%까지 떨어진 달도 있습니다. 지금은 이 차이가 왜 생기는지 설명할 데이터가 없습니다. 목표는 이 전환율을 안정적으로 20% 이상으로 올리는 것입니다.", "d": {"sec": "01 현황 진단", "title": "연결 대비 계약 전환율 평균 14.6%, 목표는 20% 이상 안정화", "lead": "월별 연결 → 계약 전환율 (%)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "target": "20", "points": ["최고 2026.09 23.8%, 최저 2026.05 9.9%로 변동 폭이 큼", "월별 변동 원인을 설명할 단계별 데이터가 아직 없음", "플래너 개편과 측정 체계로 20% 이상을 안정적으로 유지"]}, "include": true}, {"type": "flow", "note": "현재 운영 구조입니다. 매칭 요청부터 계약까지 다섯 단계 중 세 단계를 운영진이 직접 처리합니다. 특히 연결 한 건마다 단톡방을 손으로 만들고 있어, 최근 기준 하루 약 24개입니다. 매출이 늘수록 운영진 시간도 같이 늘어나는 구조입니다.", "d": {"sec": "01 현황 진단", "title": "연결 1건마다 운영진 수작업이 반복되는 구조", "lead": "매칭 요청부터 계약까지의 운영 프로세스와 개선 과제", "src": "출처: 셀인해 어드민 (2025.12 – 2026.09 중 2026.06 제외 9개월 평균) · 연결 1건 = 단톡방 1개 기준", "steps": [{"t": "매칭 요청", "d": "고객이 플래너에서 공정별 시공 업체 요청", "man": false, "fix": "플래너 개편 (2026.11–12)"}, {"t": "상담 · 확인", "d": "반셀프가 낯선 고객 상담, 요청 내용 확인", "man": true, "fix": "단계형 플래너로 상담 대체"}, {"t": "단톡방 개설", "d": "고객 · 업체 · 셀인해 카카오톡 단톡방 직접 생성", "man": true, "fix": "인앱 채팅 (2027.03–04)"}, {"t": "대화 · 거래 확인", "d": "대화를 보며 계약 여부와 우회 거래 확인", "man": true, "fix": "거래 신호 자동 감지"}, {"t": "계약 · 정산", "d": "계약 확정 및 수수료 정산", "man": false, "fix": "월 매출 추이 집계 신설"}], "stats": [{"v": "728건", "lb": "월평균 연결 = 운영진이 만드는 단톡방 수"}, {"v": "약 24건", "lb": "하루 평균 단톡방 개설"}, {"v": "3단계", "lb": "운영진 손을 거치는 단계 (상담 · 개설 · 확인)"}]}, "include": true}, {"type": "goals", "note": "회사의 1년 비전은 '반셀프 하면 셀인해'입니다. 이 비전 아래에서 프로덕트는 두 가지 목표에 집중하겠습니다. 첫째, 플랫폼 매출 확대입니다. 대행은 사람 시간에 비례하지만 플랫폼은 개선이 곱해져 커집니다. 둘째, 운영 부담을 줄이고 대행 의존도를 낮추는 것입니다.", "d": {"sec": "02 목표와 역할", "title": "회사 비전 아래, 프로덕트는 두 가지 목표에 집중합니다", "lead": "", "src": "", "vision": "반셀프 하면, [[셀인해]]", "visionNote": "셀인해 1년 비전", "concept": true, "goals": [{"no": "목표 01", "t": "플랫폼 매출 확대", "d": "대행 매출은 운영진 시간에 비례하지만, 플랫폼 매출은 유입과 전환 개선이 곱으로 쌓입니다. 같은 유입에서 더 많은 계약이 나오게 만듭니다.", "kpi": "연결 → 계약 전환율 14.6% → 20% 이상"}, {"no": "목표 02", "t": "운영 부담 축소 · 대행 의존도 완화", "d": "상담 · 단톡방 개설 · 거래 확인 등 반복 수작업을 시스템으로 옮깁니다. 운영진은 대행과 고부가 업무에 집중하고, 매출 구조는 플랫폼 중심으로 이동합니다.", "kpi": "운영 수작업 건수 · 플랫폼 매출 비중 (측정 신설)"}]}, "include": true}, {"type": "rnr", "note": "제 역할은 프로덕트 담당입니다. 기획부터 디자인, 개발, 데이터까지 단독으로 맡아 네 개 서비스를 운영합니다. 오른쪽은 제가 책임지는 영역과, 각 영역의 성과를 무엇으로 판단할지입니다.", "d": {"sec": "02 목표와 역할", "title": "프로덕트 전 과정을 책임지고, 성과는 지표로 증명합니다", "lead": "", "src": "", "role": "프로덕트 담당", "roleD": "기획 · UX/UI 디자인 · 개발 · 데이터를 단독 수행하며, 소비자 · 작업자 · 자재 매장 · 어드민 4개 서비스를 운영합니다.", "team": [{"k": "대표", "v": "사업 총괄 · 의사결정"}, {"k": "김도헌 이사", "v": "마케팅 · 운영"}, {"k": "남민우", "v": "프로덕트 · 데이터"}], "rows": [{"a": "프로덕트 전략", "w": "로드맵 수립, 과제 우선순위 결정", "k": "로드맵 일정 준수"}, {"a": "고객 경험 설계", "w": "고객 흐름 기획, UX/UI · 디자인 시스템 운영", "k": "단계별 전환율"}, {"a": "서비스 개발", "w": "Bubble 기반 전 화면 개발, 앱 전환", "k": "출시 일정 · 오류 건수"}, {"a": "운영 자동화", "w": "단톡방 · 알림 · 거래 확인 자동화", "k": "운영 수작업 건수"}, {"a": "데이터 · 성과 관리", "w": "로그 설계, 월간 지표 리포트", "k": "월 1회 리포트 공유"}, {"a": "고객 커뮤니케이션", "w": "알림톡 · 채널 메시지 작성", "k": "메시지 반응률"}]}, "include": true}, {"type": "done", "note": "로드맵에 앞서 최근 완료한 작업입니다. 그때그때 추가하던 화면 요소를 하나의 규칙으로 정리했습니다. 이 디자인 시스템이 앞으로 만들 모든 화면의 기반이 되고, 자재 구매 기능에 처음 적용했습니다.", "d": {"sec": "03 추진 로드맵 · 완료 과제", "title": "디자인 시스템 재정립 완료, 이후 모든 신규 화면의 기반", "lead": "그때그때 추가되던 화면 요소를 하나의 규칙으로 정리", "src": "", "pts": [{"t": "사용 기준 정의", "d": "팝업 · 바텀시트를 상황별로 구분해 사용 규칙 수립"}, {"t": "오조작 방지", "d": "확인 · 취소 버튼의 위치와 위계 통일"}, {"t": "개발 속도 향상", "d": "공통 요소 재사용으로 신규 화면 제작 시간 단축"}, {"t": "첫 적용", "d": "자재 구매 기능 (소비자 · 매장 · 어드민)에 전면 적용"}], "images": [null, null]}, "include": true}, {"type": "gantt", "note": "전체 일정입니다. 다섯 단계로 나눴습니다. 10월에는 자재 구매를 마무리하고 작업자 모집 페이지와 커뮤니티 MVP를 만듭니다. 연말까지 플래너 개편과 앱 런칭, 내년 1–2월 작업자 화면 개편, 3–4월 인앱 채팅, 4월부터 커뮤니티를 정식으로 엽니다. 데이터 트래킹은 전 기간 동안 지속합니다.", "d": {"sec": "03 추진 로드맵", "title": "5단계로 10개월간 추진합니다", "lead": "P1 기반 구축 → P2 전환율 · 앱 → P3 공급자 경험 → P4 운영 자동화 → P5 커뮤니티", "src": "※ 커뮤니티 MVP 일정은 가안", "from": "2026-10-01", "today": "2026-10-07", "months": ["26년 10월", "11월", "12월", "27년 1월", "2월", "3월", "4월", "5월", "6월", "7월"], "rows": [{"ph": "P1", "t": "자재 구매 기능 완성", "p": "~ 10.11", "s": "2026-10-01", "e": "2026-10-12", "kind": "go", "step": 1}, {"ph": "P1", "t": "작업자 모집 페이지", "p": "10.12 – 10.18", "s": "2026-10-12", "e": "2026-10-19", "kind": "", "step": 1}, {"ph": "P1", "t": "커뮤니티 MVP (단톡방 요약)", "p": "10월 말", "s": "2026-10-19", "e": "2026-11-01", "kind": "", "step": 1}, {"ph": "P2", "t": "플래너 전면 개편", "p": "11 – 12월", "s": "2026-11-01", "e": "2027-01-01", "kind": "", "step": 2}, {"ph": "P2", "t": "앱 런칭 (홍보 없이)", "p": "12월 말", "s": "2026-12-31", "kind": "ms", "step": 2}, {"ph": "P2", "t": "앱 안정화 테스트", "p": "1 – 4월", "s": "2027-01-01", "e": "2027-05-01", "kind": "ongoing", "step": 2}, {"ph": "P3", "t": "작업자 화면 전면 개편", "p": "1 – 2월", "s": "2027-01-01", "e": "2027-03-01", "kind": "", "step": 3}, {"ph": "P4", "t": "인앱 채팅 · 앱 홍보", "p": "3 – 4월", "s": "2027-03-01", "e": "2027-05-01", "kind": "", "step": 4}, {"ph": "P5", "t": "커뮤니티 정식 오픈", "p": "4월 ~", "s": "2027-04-01", "e": "2027-08-01", "kind": "", "step": 5}, {"ph": "상시", "t": "데이터 트래킹 · 월간 리포트", "p": "전 기간", "s": "2026-10-01", "e": "2027-08-01", "kind": "ongoing", "step": 5}]}, "include": true}, {"type": "task", "include": true, "note": "첫 번째 과제는 자재 구매입니다. 원래 10월 6일 완료 목표였는데 이번 주말까지로 조정했습니다. 시공 업체 연결에서 끝나던 흐름을 자재 구매까지 이어서, 플랫폼 밖에서 일어나던 자재 거래를 수익으로 연결합니다.", "d": {"sec": "04 과제별 실행 계획 · 1 / 7 · P1", "title": "자재 구매 기능 완성으로 시공 이후 자재 구매까지 플랫폼 안에서 연결", "lead": "", "period": "2026.10.01 – 10.11", "status": "마무리 중", "tag": "당초 10.06 → 10.11 완료 예정", "asis": ["시공 업체 연결 후 자재는 고객이 직접 검색해 구매", "자재 거래가 플랫폼 밖에서 발생해 수익 · 데이터 미확보", "자재 매장과의 접점이 운영진 개인 연락에 의존"], "tobe": ["공정이 확정된 고객에게 연동 자재 매장 자동 추천", "방문 예약 → 전날 리마인드 → 방문 확인 알림 자동 발송", "매장 전용 관리 화면 (매출 · 예약 · 통계 · 프로필) 제공", "거래 발생 시 매장 · 어드민이 매출 입력"], "eff": ["자재 거래 수수료라는 신규 매출원 확보", "고객 체류 구간 확대 (시공 → 자재)", "관리 화면으로 매장의 플랫폼 이탈 방지"], "kpi": ["예약 → 방문 전환율", "방문 → 거래 신고율", "업체별 방문 대비 신고 비율"], "src": ""}}, {"type": "task", "include": true, "note": "두 번째는 작업자 모집 페이지입니다. 자재 구매 직후 1주일 동안 소개부터 가입 신청까지 만들겠습니다. 지금은 운영진이 개별로 안내하고 있는데, 이걸 페이지 하나로 대체합니다.", "d": {"sec": "04 과제별 실행 계획 · 2 / 7 · P1", "title": "작업자 모집 페이지로 공급 확대를 시스템화", "lead": "", "period": "2026.10.12 – 10.18", "status": "예정", "tag": "1주 집중", "asis": ["작업자 모집 · 가입 안내를 운영진이 개별 응대", "셀인해를 소개할 공식 페이지가 없어 신뢰 형성에 시간 소요"], "tobe": ["셀인해 소개 → 혜택 → 가입 신청까지 한 페이지 흐름", "신청 정보 어드민 자동 적재, 검토 상태 관리", "신규 디자인 시스템 적용"], "eff": ["활성 업체 79팀 기반 공급 확대", "모집 응대 시간 절감", "연결률 개선의 기반 (공급 부족 공정 보강)"], "kpi": ["월 가입 신청 수", "신청 → 활성 업체 전환율"], "src": ""}}, {"type": "task", "include": true, "note": "세 번째는 커뮤니티 MVP입니다. 단톡방에 좋은 정보가 매일 올라오는데 흘러가 버립니다. 전날 대화를 자동으로 모아 아티클로 만들고, 어드민이 검수한 뒤 발행합니다. 정식 커뮤니티를 열기 전에 콘텐츠를 먼저 쌓는 단계입니다.", "d": {"sec": "04 과제별 실행 계획 · 3 / 7 · P1", "title": "단톡방에서 휘발되던 정보를 매일 아티클로 축적", "lead": "", "period": "2026.10 말 (가안)", "status": "예정", "tag": "커뮤니티 MVP", "asis": ["오픈채팅 609명이 매일 양질의 정보를 나누지만 흘러가서 사라짐", "셀인해 사이트로 검색 유입을 만들 콘텐츠 부족"], "tobe": ["전날 단톡방 대화를 자동 수집 → 핵심 내용을 AI가 아티클로 정리", "발행 전 어드민 최종 검수", "게시글 구조를 Q&A · 자랑 게시판까지 확장 가능하게 설계"], "eff": ["커뮤니티 콘텐츠 DB 선확보", "검색 유입 경로 확보, 반셀프 정보 허브로서의 인지도", "2027.04 정식 커뮤니티의 기반"], "kpi": ["발행 아티클 수", "아티클 방문자 수"], "src": ""}}, {"type": "task", "include": true, "note": "네 번째, 가장 중요한 과제인 플래너 개편입니다. 반셀프를 모르는 고객도 튜토리얼처럼 따라오면 계약까지 갈 수 있게 만들겠습니다. 단계별 이탈 로그도 함께 심고, 연말에는 앱으로 런칭합니다. 앱은 홍보 없이 런칭해서 안정화부터 하겠습니다.", "d": {"sec": "04 과제별 실행 계획 · 4 / 7 · P2", "title": "반셀프 입문자도 혼자 계약까지 도달하는 플래너로 개편", "lead": "", "period": "2026.11 – 12", "status": "기획 · 디자인 진행 중", "tag": "앱 런칭 포함", "asis": ["반셀프가 낯선 고객은 흐름을 몰라 운영진 상담에 의존", "연결 → 계약 전환율 평균 14.6%, 월별 9.9 – 23.8%로 변동", "웹 기반이라 푸시 알림 등 재방문 장치 부재"], "tobe": ["공정 순서를 튜토리얼처럼 안내하는 단계형 플래너", "단계별 이탈 로그 수집 (가입 → 플래너 → 매칭 → 계약)", "앱 래핑 후 연말 런칭, 홍보 없이 안정화 우선"], "eff": ["상담 의존도 감소", "계약 전환율 개선", "앱 기반 재방문 · 알림 채널 확보"], "kpi": ["연결 → 계약 전환율 14.6% → 20% 이상", "가입 → 매칭 요청 전환율 (신규 측정)"], "src": ""}}, {"type": "task", "include": true, "note": "다섯 번째는 작업자 화면 전면 개편입니다. 자재 매장 사장님용 화면을 만들면서 얻은 경험을 작업자 쪽으로 넓힙니다. 작업자가 플랫폼 안에서 일을 관리하게 되면 구독도 오래 유지됩니다.", "d": {"sec": "04 과제별 실행 계획 · 5 / 7 · P3", "title": "자재 매장 화면 구축 경험을 작업자 화면 전면 개편으로 확장", "lead": "", "period": "2027.01 – 02", "status": "예정", "tag": "2개월", "asis": ["작업자 화면이 초기 구조 그대로 운영", "작업자가 일정 · 고객 · 실적을 한눈에 관리하기 어려움"], "tobe": ["자재 매장 화면에서 검증한 관리 구조 (매출 · 예약 · 통계 · 프로필) 적용", "신규 디자인 시스템 전면 적용"], "eff": ["작업자 활동성 증가 → 공급 품질 향상", "구독 유지율 개선"], "kpi": ["활성 업체 수 (현재 79팀)", "작업자 월간 접속률"], "src": ""}}, {"type": "task", "include": true, "note": "여섯 번째는 인앱 채팅입니다. 운영진 부담을 줄이는 핵심 과제입니다. 연결되면 채팅방이 자동으로 만들어지고, 거래가 있었는지는 시스템이 먼저 표시하고 운영진이 최종 판단합니다. 이때부터 앱 홍보도 시작합니다.", "d": {"sec": "04 과제별 실행 계획 · 6 / 7 · P4", "title": "단톡방 수작업을 인앱 채팅으로 대체해 운영 부담을 구조적으로 축소", "lead": "", "period": "2027.03 – 04", "status": "기획 · 디자인 완료", "tag": "앱 홍보 시작", "asis": ["연결마다 운영진이 단톡방 직접 개설 (월평균 728건)", "거래 여부를 운영진이 대화를 보며 수동 확인", "대화 데이터가 플랫폼에 남지 않음"], "tobe": ["연결 시 채팅방 자동 생성 (고객 · 업체 · 셀인해)", "대화 기반 거래 신호 감지 → '확인 필요' 표시, 최종 판단은 운영진", "앱 푸시 알림, 앱 사용 유도 홍보"], "eff": ["단톡방 개설 수작업 제거", "거래 확인 효율화, 누락 매출 방지", "대화 데이터 축적"], "kpi": ["운영 수작업 건수", "앱 전환율"], "src": ""}}, {"type": "boards", "note": "마지막 일곱 번째는 커뮤니티 정식 오픈입니다. 단톡방 요약 아티클에 더해 매거진, Q&A, 자랑 게시판, 남은 자재 나눔까지 열겠습니다. 정보가 쌓이면 검색으로 사람이 들어오고, 그게 신뢰가 되고, 결국 작업자 매칭과 수수료로 이어집니다.", "d": {"sec": "04 과제별 실행 계획 · 7 / 7 · P5", "title": "커뮤니티를 반셀프 정보 · 거래 · 평판이 쌓이는 공간으로 확장", "lead": "", "src": "", "period": "2027.04 ~ (3개월 이상)", "status": "예정", "boards": [{"t": "단톡방 요약 아티클", "d": "매일 자동 발행, 어드민 검수 (MVP에서 확장)", "w": "운영"}, {"t": "셀인해 매거진", "d": "시공 포트폴리오, 반셀프 꿀팁 (어드민 작성)", "w": "어드민"}, {"t": "Q&A", "d": "누구나 질문 · 답변, 작업자는 답변으로 인지도 확보", "w": "소비자 · 작업자"}, {"t": "자랑 게시판", "d": "시공 사진에 자재 · 작업자 연동 (오늘의집 초창기 모델)", "w": "소비자"}, {"t": "자재 나눔 · 중고거래", "d": "공사 후 남은 자재 거래", "w": "소비자"}, {"t": "자유게시판", "d": "반셀프 경험 공유 · 소통", "w": "전체"}], "loop": ["정보 축적", "검색 유입", "신뢰 형성", "작업자 매칭 · 수수료"], "kpi": ["월 방문자 수", "월 게시글 수", "커뮤니티 경유 매칭 요청 수"]}, "include": true}, {"type": "tree", "note": "성과는 이 산식으로 관리하겠습니다. 플랫폼 매출은 가입자, 1인당 매칭 요청, 연결률, 계약 전환율, 계약당 매출의 곱입니다. 계약 전환율 하나만 20%로 올려도 같은 유입에서 계약이 37% 늘어납니다. 그래서 대행과 달리 플랫폼은 곱으로 커집니다.", "d": {"sec": "05 성과 관리", "title": "단계별 전환을 곱으로 관리해 플랫폼 매출을 키웁니다", "lead": "플랫폼 매출 = 가입자 × 1인당 매칭 요청 × 연결률 × 계약 전환율 × 계약당 매출", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "nodes": [{"lb": "가입자", "v": "2,297명", "by": "커뮤니티 · 앱 런칭"}, {"lb": "1인당 매칭 요청", "v": "5.0건", "by": "플래너 개편"}, {"lb": "연결률", "v": "69.7%", "by": "작업자 모집 · 작업자 화면 개편"}, {"lb": "계약 전환율", "v": "14.6%", "tg": "목표 20% 이상", "key": true, "by": "플래너 개편 · 인앱 채팅"}, {"lb": "계약당 매출", "v": "집계 예정", "by": "자재 구매 · 추가 수익 모델"}, {"lb": "결과", "v": "플랫폼 매출", "by": "각 단계 개선이 곱해져 반영"}], "ins": [{"h": "INSIGHT", "p": "계약 전환율만 14.6% → 20%로 올려도, 같은 연결 8,018건에서 계약 1,169건 → 1,604건 (+37%)"}, {"h": "구조", "p": "네 단계가 각각 10%씩만 개선돼도 매출은 1.1⁴ ≈ 1.46배. 사람 시간에 비례하는 대행과 다른 점"}]}, "include": true}, {"type": "table", "note": "지금은 매칭 요청 이후만 보고 있습니다. 앞으로 월 매출 추이와 가입부터 계약까지 전 구간 전환율을 측정하겠습니다. 버블 비용을 고려해 핵심 이벤트만 골라 수집하고, 매월 한 번 지표 리포트로 공유드리겠습니다.", "d": {"sec": "05 성과 관리", "title": "측정 범위를 매출과 전 구간 전환율로 확대합니다", "lead": "현재는 매칭 요청 이후만 집계 → 가입부터 매출까지 월간 리포트로 관리", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "lastStrong": true, "heads": ["지표", "정의", "현재", "도입 시점"], "rows": [["월 매출 추이", "대행 · 플랫폼 매출을 구분한 월별 추이", "미집계", "P2"], ["가입 → 매칭 요청", "가입자 중 매칭을 요청한 비율", "미측정", "P2 · 플래너 개편"], ["매칭 요청 → 연결", "요청 중 업체와 연결된 비율", "69.7%", "측정 중"], ["연결 → 계약", "연결 중 계약까지 간 비율", "14.6%", "측정 중"], ["가입 → 계약", "가입자 중 계약까지 간 비율", "미측정", "P2 · 플래너 개편"], ["앱 전환율", "활성 사용자 중 앱 사용 비율", "—", "P2 · 앱 런칭 후"], ["거래 신고 누락 탐지", "업체별 방문 완료 대비 거래 신고 비율", "—", "P1 · 자재 구매"]], "insight": "Bubble 워크로드 비용을 고려해 핵심 이벤트만 선별 수집, 월 1회 지표 리포트로 공유"}, "include": true}, {"type": "table", "note": "리스크도 미리 말씀드리겠습니다. 가장 큰 리스크는 일정입니다. 혼자 개발하다 보니 하나가 밀리면 뒤가 같이 밀립니다. 과제마다 최소 범위를 먼저 정하고, 2주마다 진행 상황을 공유드리겠습니다.", "d": {"sec": "05 성과 관리", "title": "일정 · 데이터 리스크를 미리 관리합니다", "lead": "", "src": "", "lastStrong": false, "heads": ["리스크", "영향", "대응 방안"], "rows": [["1인 개발 일정 지연 (자재 구매 5일 지연 발생)", "후속 과제 연쇄 지연", "과제별 최소 기능 범위 확정, 2주 단위 진행 상황 공유"], ["12월 플래너 개편 · 앱 런칭 동시 진행", "품질 저하 · 런칭 지연", "앱은 홍보 없이 런칭, 2027.04까지 안정화 기간 확보"], ["단톡방 · 채팅 데이터 수집과 AI 분석", "개인정보 · 약관 이슈", "약관 · 개인정보처리방침 개정 필요 여부 전문가 확인 후 착수"], ["측정 로그 증가", "Bubble 워크로드 비용 증가", "핵심 이벤트만 수집, 월 단위 비용 점검"], ["카톡 → 인앱 채팅 전환", "기존 사용 습관으로 인한 이탈", "카톡 병행 기간 운영, 앱 사용 유도 혜택"]]}, "include": true}, {"type": "bm", "note": "마지막으로 함께 논의드리고 싶은 부분입니다. 지금 만드는 기능 위에 얹을 수 있는 수익 모델을 다섯 가지 정리해 봤습니다. 아직 아이디어 단계라 우선순위는 같이 정하고 싶습니다.", "d": {"sec": "06 추가 수익 모델", "title": "구축 중인 기능 위에 얹을 수 있는 수익 모델을 함께 검토하고 싶습니다", "lead": "아이디어 단계 · 우선순위와 실행 여부는 논의 후 결정", "src": "", "cards": [{"t": "자재 거래 수수료", "d": "자재 구매 흐름의 거래 신고를 기반으로 매장 거래에 수수료 부과", "b": "자재 구매 (2026.10)"}, {"t": "업체 프리미엄 플랜", "d": "구독 업체 대상 상위 노출 · 추천 배지 등 상위 요금제", "b": "업체 구독 79팀"}, {"t": "브랜드 제휴 콘텐츠", "d": "타일 · 도기 등 자재 브랜드의 매거진 · 자랑 게시판 협찬", "b": "커뮤니티 (2027.04)"}, {"t": "중고 · 나눔 안전거래", "d": "남은 자재 거래에 안전결제를 붙이고 수수료 부과", "b": "커뮤니티 (2027.04)"}, {"t": "반셀프 견적 진단", "d": "누적 매칭 · 계약 데이터로 공정별 적정 견적 범위 제공", "b": "누적 거래 데이터"}]}, "include": true}, {"type": "closing", "note": "이상으로 발표를 마치겠습니다. 감사합니다.", "d": {"title": "감사합니다", "lead": "질의응답"}, "include": true}]}</script>
+<script id="deck-app">
+(function () {
+  "use strict";
+  var DRAFT_KEY = "slh-vision-deck-v2-draft";
+  var RESET_CSS = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}";
+  var TYPES = {
+    cover: "표지", agenda: "목차", summary: "요약", kpis: "핵심 지표", chartM: "월별 추이 차트", chartR: "전환율 차트",
+    flow: "운영 병목", goals: "목표", rnr: "R&R", done: "추진 실적", gantt: "로드맵", task: "과제 상세",
+    boards: "커뮤니티", tree: "KPI 트리", table: "표", bm: "수익 모델", closing: "마무리"
+  };
+
+  var dataEl = document.getElementById("deck-data"), styleEl = document.getElementById("deck-style"), appEl = document.getElementById("deck-app");
+  var SAVED = JSON.parse(dataEl.textContent);
+  var uid = 0;
+  function nid() { uid += 1; return "s" + uid; }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function normalize(d) {
+    return {
+      rev: d.rev || 1, deck: d.deck || "", metrics: String(d.metrics || ""),
+      slides: (d.slides || []).map(function (s) { return { id: nid(), type: TYPES[s.type] ? s.type : "closing", include: s.include !== false, note: String(s.note || ""), d: s.d || {} }; })
+    };
+  }
+  function plain(st) {
+    return { rev: st.rev, deck: st.deck, metrics: st.metrics, slides: st.slides.map(function (s) { return { type: s.type, include: s.include, note: s.note, d: s.d }; }) };
+  }
+  var state = normalize(clone(SAVED));
+  var savedSnap = JSON.stringify(plain(state));
+
+  /* ── 도우미 ── */
+  function esc(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function fmt(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<em class="hl">$1</em>').replace(/\n/g, "<br>"); }
+  function get(o, p) { return p.split(".").reduce(function (a, k) { return a == null ? a : a[k]; }, o); }
+  function put(o, p, v) { var ks = p.split("."), last = ks.pop(); var t = ks.reduce(function (a, k) { return a[k]; }, o); t[last] = v; }
+  function T(d, p, tag, cls, attrs) { var v = get(d, p); return "<" + tag + (cls ? ' class="' + cls + '"' : "") + ' data-k="' + p + '"' + (attrs || "") + ">" + (v == null || v === "" ? "" : fmt(v)) + "</" + tag + ">"; }
+  function S(n) { return ' data-s="' + n + '"'; }
+  function arr(x) { return Array.isArray(x) ? x : []; }
+  function nfmt(n) { return Number(n).toLocaleString("ko-KR"); }
+  function pct(a, b) { return b ? (a / b * 100) : 0; }
+  function chipCls(t) { t = String(t || ""); if (/완료/.test(t)) return "chip c-done"; if (/진행|마무리/.test(t)) return "chip c-go"; return "chip c-plan"; }
+  function imgSrc(r) { return !r ? "" : (r.indexOf("data:") === 0 ? r : "/_blob/" + r); }
+
+  function metrics() {
+    return state.metrics.split("\n").map(function (l) { return l.split(",").map(function (x) { return x.trim(); }); })
+      .filter(function (c) { return c[0] && !/^월|month/i.test(c[0]); })
+      .map(function (c) {
+        var r = parseFloat(c[1]), n = parseFloat(c[2]), k = parseFloat(c[3]);
+        return { m: c[0], req: isNaN(r) ? null : r, conn: isNaN(n) ? null : n, con: isNaN(k) ? null : k };
+      });
+  }
+  function totals(rows) {
+    var t = { req: 0, conn: 0, con: 0 };
+    rows.forEach(function (r) { if (r.req != null) { t.req += r.req; t.conn += r.conn || 0; t.con += r.con || 0; } });
+    return t;
+  }
+
+  /* ── 공통 틀 ── */
+  function head(d, c) {
+    return '<header class="hd">' + (d.sec != null ? T(d, "sec", "p", "sec") : "") + T(d, "title", "h2", "t") +
+      (d.lead != null && (d.lead !== "" || c.edit) ? T(d, "lead", "p", "lead") : "") + "</header>";
+  }
+  function foot(d, c) { return '<footer class="ft">' + (d.src != null ? T(d, "src", "span", "src") : "<span></span>") + '<span class="pg">' + c.no + "</span></footer>"; }
+  function frame(d, c, body, cls) { return '<div class="sl ' + (cls || "") + '">' + head(d, c) + '<div class="bd">' + body + "</div>" + foot(d, c) + "</div>"; }
+  function list(d, p, cls) { return '<ul class="' + (cls || "dots") + '">' + arr(get(d, p)).map(function (_, i) { return T(d, p + "." + i, "li", ""); }).join("") + "</ul>"; }
+
+  /* ── 슬라이드 종류별 ── */
+  var R = {};
+  R.cover = function (d, c) {
+    return '<div class="sl sl-cover"><div class="cv-top"><i></i>' + T(d, "sec", "p", "cv-k") + '</div>' +
+      '<div class="cv-main">' + T(d, "title", "h1", "cv-t") + T(d, "lead", "p", "cv-s") + "</div>" +
+      '<dl class="cv-meta">' + arr(d.meta).map(function (_, i) { return "<div>" + T(d, "meta." + i + ".k", "dt", "") + T(d, "meta." + i + ".v", "dd", "") + "</div>"; }).join("") + "</dl></div>";
+  };
+  R.agenda = function (d, c) {
+    return '<div class="sl" style="padding:0"><div class="ag"><div class="ag-l"><p class="lbl-sm">CONTENTS</p>' + T(d, "title", "h2", "t") + "</div>" +
+      '<ol class="ag-list">' + arr(d.items).map(function (_, i) { return '<li class="fx"' + S(i + 1) + '><span class="n">' + (i < 9 ? "0" : "") + (i + 1) + "</span>" + T(d, "items." + i + ".t", "span", "a") + T(d, "items." + i + ".d", "span", "d") + "</li>"; }).join("") + "</ol></div>" + foot(d, c) + "</div>";
+  };
+  R.summary = function (d, c) {
+    return frame(d, c, '<div class="sum">' + arr(d.cols).map(function (_, i) {
+      return '<div class="sum-c fx"' + S(i + 1) + '><div class="sum-h"><span class="num">0' + (i + 1) + "</span>" + T(d, "cols." + i + ".h", "h3", "") + "</div>" + T(d, "cols." + i + ".big", "p", "sum-big") + list(d, "cols." + i + ".pts") + "</div>";
+    }).join("") + "</div>");
+  };
+  R.kpis = function (d, c) {
+    var tiles = arr(d.tiles);
+    var body = '<div class="kpi" style="--n:' + tiles.length + '">' + tiles.map(function (t, i) {
+      return '<div class="kp fx' + (t.hi ? " hi" : "") + '"' + S(i + 1) + ">" + T(d, "tiles." + i + ".lb", "p", "lb") + '<p class="vv">' + T(d, "tiles." + i + ".v", "span", "num cnt") + T(d, "tiles." + i + ".u", "span", "un") + "</p>" + T(d, "tiles." + i + ".nt", "p", "nt") + "</div>";
+    }).join("") + "</div>";
+    if (d.insight != null) body += '<div class="insight"' + S(tiles.length + 1) + '><span class="lbl-sm">INSIGHT</span>' + T(d, "insight", "p", "") + "</div>";
+    if (d.ctx != null) body += '<div class="ctxbar"' + S(tiles.length + 2) + ">" + T(d, "ctx", "p", "") + "</div>";
+    return frame(d, c, body);
+  };
+
+  function niceMax(v, step) { return Math.ceil(v / step) * step; }
+  function barPath(x, y, w, base, r) { r = Math.min(r, w / 2, base - y); if (base - y < 1) return ""; return "M" + x + "," + base + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y + "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "V" + base + "Z"; }
+  function infoHtml(kind, rows, i) {
+    if (i == null || !rows[i] || rows[i].req == null) {
+      var t = totals(rows);
+      return '<p class="lbl-sm">전체 기간 합계</p><h4>' + esc(rows.length ? rows[0].m + " – " + rows[rows.length - 1].m : "") + "</h4><dl><dt>매칭 요청</dt><dd>" + nfmt(t.req) + "건</dd><dt>연결</dt><dd>" + nfmt(t.conn) + "건<small>" + pct(t.conn, t.req).toFixed(1) + "%</small></dd><dt>계약</dt><dd>" + nfmt(t.con) + "건<small>" + pct(t.con, t.conn).toFixed(1) + "%</small></dd></dl>";
+    }
+    var r = rows[i];
+    return '<p class="lbl-sm">선택한 월</p><h4>' + esc(r.m) + "</h4><dl><dt>매칭 요청</dt><dd>" + nfmt(r.req) + "건</dd><dt>연결</dt><dd>" + nfmt(r.conn) + "건<small>" + pct(r.conn, r.req).toFixed(1) + "%</small></dd><dt>계약</dt><dd>" + nfmt(r.con) + "건<small>" + pct(r.con, r.conn).toFixed(1) + "%</small></dd></dl>";
+  }
+  R.chartM = function (d, c) {
+    var rows = metrics(), n = rows.length || 1, W = 1000, H = 400, L = 58, Rr = 8, Tt = 26, B = 44;
+    var max = niceMax(Math.max.apply(null, rows.map(function (r) { return r.req || 0; }).concat([1])), 500);
+    var bw = (W - L - Rr) / n, w = Math.min(bw * .58, 46), base = H - B, y = function (v) { return Tt + (base - Tt) * (1 - v / max); };
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="월별 매칭 요청 수">';
+    for (var g = 0; g <= max; g += max / 3) svg += '<line class="gl" x1="' + L + '" x2="' + W + '" y1="' + y(g) + '" y2="' + y(g) + '"/><text class="ax" x="' + (L - 10) + '" y="' + (y(g) + 5) + '" text-anchor="end">' + nfmt(g) + "</text>";
+    var reqs = rows.map(function (r) { return r.req; }).filter(function (v) { return v != null; });
+    var mx = Math.max.apply(null, reqs), last = -1;
+    rows.forEach(function (r, i) { if (r.req != null) last = i; });
+    rows.forEach(function (r, i) {
+      var cx = L + bw * i + bw / 2, x = cx - w / 2;
+      if (r.req == null) {
+        svg += '<rect class="gap-box" x="' + x + '" y="' + (base - 60) + '" width="' + w + '" height="60" rx="4"/><text class="ax" x="' + cx + '" y="' + (base - 70) + '" text-anchor="middle" style="font-size:13px">누락</text>';
+      } else {
+        svg += '<path class="bar" data-i="' + i + '" style="--i:' + i + '" d="' + barPath(x, y(r.req), w, base, 4) + '"/>';
+        if (r.req === mx || i === last) svg += '<text class="vlab" x="' + cx + '" y="' + (y(r.req) - 9) + '" text-anchor="middle">' + nfmt(r.req) + "</text>";
+        svg += '<rect class="bar-hit" data-i="' + i + '" x="' + (L + bw * i) + '" y="' + Tt + '" width="' + bw + '" height="' + (base - Tt) + '"/>';
+      }
+      var lab = r.m.split("."), yr = lab.length > 1 && (i === 0 || lab[1] === "01");
+      svg += '<text class="ax' + (yr ? " strong" : "") + '" x="' + cx + '" y="' + (base + 22) + '" text-anchor="middle">' + esc(yr ? r.m : (lab[1] || r.m)) + "</text>";
+    });
+    svg += '<line x1="' + L + '" x2="' + W + '" y1="' + base + '" y2="' + base + '" stroke="#191F28" stroke-width="1.5"/></svg>';
+    var body = '<div class="chart-wrap"><div class="chart" data-chart="m"' + S(1) + '>' + svg + '<p class="hint">막대를 누르면 월별 연결 · 계약 수치를 볼 수 있습니다</p></div>' +
+      '<div class="side"><div class="info" data-role="info"' + S(1) + ">" + infoHtml("m", rows, null) + "</div>" + '<div' + S(2) + ">" + list(d, "points") + "</div></div></div>";
+    return frame(d, c, body);
+  };
+  R.chartR = function (d, c) {
+    var rows = metrics(), n = rows.length || 1, W = 1000, H = 400, L = 58, Rr = 96, Tt = 20, B = 44, max = 30;
+    var bw = (W - L - Rr) / n, base = H - B, y = function (v) { return Tt + (base - Tt) * (1 - v / max); };
+    var t = totals(rows), avg = pct(t.con, t.conn), tgt = parseFloat(d.target) || 20;
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="월별 연결 대비 계약 전환율">';
+    svg += '<rect class="tgt-band" x="' + L + '" y="' + y(max) + '" width="' + (W - L - Rr) + '" height="' + (y(tgt) - y(max)) + '"/>';
+    [0, 10, 20, 30].forEach(function (g) { svg += '<line class="gl" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(g) + '" y2="' + y(g) + '"/><text class="ax" x="' + (L - 10) + '" y="' + (y(g) + 5) + '" text-anchor="end">' + g + "%</text>"; });
+    svg += '<line class="ref-tgt" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(tgt) + '" y2="' + y(tgt) + '"/><text class="ax strong" x="' + (W - Rr + 8) + '" y="' + (y(tgt) + 5) + '">목표 ' + tgt + "%</text>";
+    svg += '<line class="ref-avg" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(avg) + '" y2="' + y(avg) + '"/><text class="ax" x="' + (W - Rr + 8) + '" y="' + (y(avg) + 5) + '">평균 ' + avg.toFixed(1) + "%</text>";
+    var pts = rows.map(function (r, i) { return r.req == null || !r.conn ? null : { x: L + bw * i + bw / 2, y: y(pct(r.con, r.conn)), v: pct(r.con, r.conn), i: i }; });
+    var dpath = "", pen = false;
+    pts.forEach(function (p) { if (!p) { pen = false; return; } dpath += (pen ? "L" : "M") + p.x.toFixed(1) + "," + p.y.toFixed(1); pen = true; });
+    svg += '<path class="ln" pathLength="1" d="' + dpath + '"/>';
+    var vals = pts.filter(Boolean), hi = vals.reduce(function (a, b) { return b.v > a.v ? b : a; }, vals[0] || { v: 0 }), lo = vals.reduce(function (a, b) { return b.v < a.v ? b : a; }, vals[0] || { v: 0 });
+    pts.forEach(function (p, i) {
+      var cx = L + bw * i + bw / 2, r = rows[i];
+      if (p) {
+        svg += '<circle class="pt" data-i="' + i + '" cx="' + p.x + '" cy="' + p.y + '" r="7"/>';
+        if (p === hi || p === lo) svg += '<text class="vlab" x="' + p.x + '" y="' + (p === hi ? p.y - 16 : p.y + 28) + '" text-anchor="middle">' + p.v.toFixed(1) + "%</text>";
+        svg += '<rect class="bar-hit" data-i="' + i + '" x="' + (L + bw * i) + '" y="' + Tt + '" width="' + bw + '" height="' + (base - Tt) + '"/>';
+      } else {
+        svg += '<text class="ax" x="' + cx + '" y="' + (base - 10) + '" text-anchor="middle" style="font-size:13px">누락</text>';
+      }
+      var lab = r.m.split("."), yr = lab.length > 1 && (i === 0 || lab[1] === "01");
+      svg += '<text class="ax' + (yr ? " strong" : "") + '" x="' + cx + '" y="' + (base + 22) + '" text-anchor="middle">' + esc(yr ? r.m : (lab[1] || r.m)) + "</text>";
+    });
+    svg += '<line x1="' + L + '" x2="' + (W - Rr) + '" y1="' + base + '" y2="' + base + '" stroke="#191F28" stroke-width="1.5"/></svg>';
+    var body = '<div class="chart-wrap"><div class="chart" data-chart="r"' + S(1) + '><div class="legend"><span><i class="ln-k"></i>연결 대비 계약 전환율</span><span><i></i>전체 평균</span><span><i class="tg"></i>목표</span></div>' + svg + '<p class="hint">점을 누르면 해당 월 수치를 볼 수 있습니다</p></div>' +
+      '<div class="side"><div class="info" data-role="info"' + S(1) + ">" + infoHtml("r", rows, null) + "</div><div" + S(2) + ">" + list(d, "points") + "</div></div></div>";
+    return frame(d, c, body);
+  };
+  R.flow = function (d, c) {
+    var steps = arr(d.steps);
+    var body = '<div class="flow" style="--n:' + steps.length + '">' + steps.map(function (s, i) {
+      return '<div class="fs fx' + (s.man ? " man" : "") + '"' + S(1) + '><div class="fs-box">' + (s.man ? '<span class="chip c-go" style="align-self:flex-start">운영진 수작업</span>' : '<span class="chip c-plan" style="align-self:flex-start">시스템</span>') + T(d, "steps." + i + ".t", "h4", "") + T(d, "steps." + i + ".d", "p", "") + "</div>" + (s.fix != null ? '<p class="fix"' + S(3) + ">" + T(d, "steps." + i + ".fix", "span", "") + "</p>" : "") + "</div>";
+    }).join("") + "</div>";
+    body += '<div class="bn-stats">' + arr(d.stats).map(function (s, i) { return '<div class="bs fx' + (i === 0 ? " hi" : "") + '"' + S(2) + '><p class="num">' + T(d, "stats." + i + ".v", "span", "cnt") + "</p>" + T(d, "stats." + i + ".lb", "p", "lb") + "</div>"; }).join("") + "</div>";
+    return frame(d, c, body);
+  };
+  R.goals = function (d, c) {
+    var body = '<div class="vision"' + S(1) + '><span class="lbl-sm">VISION</span>' + T(d, "vision", "h3", "") + T(d, "visionNote", "p", "") + "</div>";
+    body += '<div class="goals">' + arr(d.goals).map(function (g, i) {
+      var concept = i === 0 && d.concept ? '<div class="concept"><svg viewBox="0 0 200 130" aria-label="대행과 플랫폼 매출 구조 개념도"><line x1="14" y1="116" x2="196" y2="116" stroke="#D1D6DB" stroke-width="1.5"/><line x1="14" y1="116" x2="14" y2="6" stroke="#D1D6DB" stroke-width="1.5"/><path d="M14,116 L190,62" fill="none" stroke="#8B95A1" stroke-width="3" stroke-linecap="round"/><path d="M14,116 C90,112 150,82 190,10" fill="none" stroke="#FF407C" stroke-width="3.5" stroke-linecap="round"/><text x="188" y="78" text-anchor="end" font-size="12" fill="#8B95A1" font-weight="700">대행</text><text x="150" y="20" text-anchor="end" font-size="12" fill="#FF407C" font-weight="700">플랫폼</text><text x="196" y="128" text-anchor="end" font-size="10" fill="#8B95A1">투입 시간·유입</text></svg><p class="hint">개념도 · 매출 증가 구조</p></div>' : "";
+      return '<div class="gc fx"' + S(i + 2) + ">" + T(d, "goals." + i + ".no", "p", "no") + T(d, "goals." + i + ".t", "h3", "") + T(d, "goals." + i + ".d", "p", "ds") + concept + '<div class="kp-row"><b>KPI</b>' + T(d, "goals." + i + ".kpi", "span", "") + "</div></div>";
+    }).join("") + "</div>";
+    return frame(d, c, body);
+  };
+  R.rnr = function (d, c) {
+    var role = '<div class="role-card"' + S(1) + '><p class="lbl-sm">ROLE</p>' + T(d, "role", "h3", "") + T(d, "roleD", "p", "") +
+      "<ul>" + arr(d.team).map(function (_, i) { return "<li>" + T(d, "team." + i + ".k", "b", "") + T(d, "team." + i + ".v", "span", "") + "</li>"; }).join("") + "</ul></div>";
+    var tbl = '<table class="tbl"><thead><tr><th>책임 영역</th><th>주요 업무</th><th>책임 지표</th></tr></thead><tbody>' + arr(d.rows).map(function (_, i) {
+      return '<tr class="fx"' + S(i + 2) + ">" + T(d, "rows." + i + ".a", "td", "") + T(d, "rows." + i + ".w", "td", "") + T(d, "rows." + i + ".k", "td", "k") + "</tr>";
+    }).join("") + "</tbody></table>";
+    return frame(d, c, '<div class="rnr">' + role + '<div style="min-width:0">' + tbl + "</div></div>");
+  };
+  R.done = function (d, c) {
+    var imgs = arr(d.images), labels = ["Before", "After"], filled = [];
+    imgs.forEach(function (r, i) { if (r) filled.push({ r: r, i: i }); });
+    var pts = '<div class="pts">' + arr(d.pts).map(function (_, i) { return '<div class="pt-c fx"' + S(i + 1) + '><span class="num">0' + (i + 1) + "</span>" + T(d, "pts." + i + ".t", "h4", "") + T(d, "pts." + i + ".d", "p", "") + "</div>"; }).join("") + "</div>";
+    var shots = filled.length ? '<div class="shots"' + S(arr(d.pts).length + 1) + ' style="--n:' + filled.length + '">' + filled.map(function (f) { return '<figure class="shot' + (f.i === 1 ? " after" : "") + '"><img src="' + esc(imgSrc(f.r)) + '" alt="' + labels[f.i] + ' 화면"><span class="cap">' + labels[f.i] + "</span></figure>"; }).join("") + "</div>" : "";
+    return frame(d, c, '<div class="done' + (filled.length ? "" : " noimg") + '">' + pts + shots + "</div>");
+  };
+  function dayIdx(s, start) { var t = Date.parse(s + "T00:00:00"); return isNaN(t) ? null : (t - start) / 864e5; }
+  R.gantt = function (d, c) {
+    var start = Date.parse((d.from || "2026-10-01") + "T00:00:00"), months = arr(d.months), m = months.length || 10;
+    var endD = new Date(start); endD.setMonth(endD.getMonth() + m); var span = (endD - start) / 864e5;
+    var pos = function (s) { var v = dayIdx(s, start); return v == null ? 0 : Math.max(0, Math.min(100, v / span * 100)); };
+    var html = '<div class="gantt"><div class="g-row g-head"><div class="g-lab"><span style="margin-left:0;color:var(--sub-strong);font-weight:700">과제 · 기간</span></div><div class="g-track"><div class="g-months" style="--m:' + m + '">' + months.map(function (x) { return '<span class="' + (/년/.test(x) ? "y" : "") + '">' + esc(x) + "</span>"; }).join("") + "</div></div></div>";
+    arr(d.rows).forEach(function (r, i) {
+      var a = pos(r.s), b = pos(r.e || r.s), bar;
+      if (r.kind === "ms") bar = '<span class="g-ms" style="left:' + a + '%"></span>';
+      else bar = '<span class="g-bar ' + (r.kind || "") + '" style="--i:' + i + ";left:" + a + "%;width:" + Math.max(b - a, .8) + '%"></span>';
+      html += '<div class="g-row fx"' + S(r.step || 1) + '><div class="g-lab">' + T(d, "rows." + i + ".ph", "span", "ph") + T(d, "rows." + i + ".t", "b", "") + T(d, "rows." + i + ".p", "span", "") + '</div><div class="g-track"><div class="g-grid" style="--m:' + m + '">' + months.map(function () { return "<i></i>"; }).join("") + "</div>" + bar + "</div></div>";
+    });
+    var today = d.today ? pos(d.today) : null;
+    if (today != null) html += '<div class="g-today" style="left:calc(22cqw + (100% - 22cqw) * ' + (today / 100).toFixed(4) + ')"><b>오늘</b></div>';
+    html += "</div>";
+    var legend = '<div class="g-legend"><span><i class="go"></i>진행 중</span><span><i></i>예정</span><span><i class="on"></i>상시 · 지속</span><span><i class="ms"></i>마일스톤</span></div>';
+    var body = html + legend;
+    return frame(d, c, body);
+  };
+  R.task = function (d, c) {
+    var meta = '<div class="tk-meta">' + T(d, "period", "span", "pd") + '<span class="' + chipCls(d.status) + '" data-k="status">' + fmt(d.status || "") + "</span>" + (d.tag != null ? T(d, "tag", "span", "chip c-soft") : "") + "</div>";
+    var col = function (k, cls, h, s) { return '<div class="tk-c fx ' + cls + '"' + S(s) + "><h4>" + h + "</h4>" + list(d, k) + "</div>"; };
+    var arrow = '<div class="tk-arrow"><i></i></div>';
+    var body = meta + '<div class="tk">' + col("asis", "", "현재 (AS-IS)", 1) + arrow + col("tobe", "tobe", "개선 방안 (TO-BE)", 2) + arrow + col("eff", "eff", "기대 효과", 3) + "</div>" +
+      '<div class="kpi-line"' + S(4) + '><span class="lbl-sm" style="display:inline">성과 지표</span>' + arr(d.kpi).map(function (_, i) { return T(d, "kpi." + i, "span", ""); }).join("") + "</div>";
+    return frame(d, c, body);
+  };
+  R.boards = function (d, c) {
+    var meta = '<div class="tk-meta">' + T(d, "period", "span", "pd") + '<span class="' + chipCls(d.status) + '" data-k="status">' + fmt(d.status || "") + "</span></div>";
+    var body = meta + '<div class="boards">' + arr(d.boards).map(function (_, i) { return '<div class="bo fx' + (i === 0 ? " first" : "") + '"' + S(1 + Math.floor(i / 3)) + '><div class="bo-h">' + T(d, "boards." + i + ".t", "h4", "") + T(d, "boards." + i + ".w", "span", "chip " + (i === 0 ? "c-go" : "c-plan")) + "</div>" + T(d, "boards." + i + ".d", "p", "") + "</div>"; }).join("") + "</div>";
+    body += '<div class="loop"' + S(3) + ">" + arr(d.loop).map(function (_, i) { return (i ? "<i>→</i>" : "") + T(d, "loop." + i, "span", ""); }).join("") + "</div>";
+    body += '<div class="kpi-line"' + S(4) + '><span class="lbl-sm" style="display:inline">성과 지표</span>' + arr(d.kpi).map(function (_, i) { return T(d, "kpi." + i, "span", ""); }).join("") + "</div>";
+    return frame(d, c, body);
+  };
+  R.tree = function (d, c) {
+    var nodes = arr(d.nodes), html = '<div class="tree">';
+    nodes.forEach(function (nd, i) {
+      if (i) html += '<span class="op"' + S(1) + ">" + (i === nodes.length - 1 ? "=" : "×") + "</span>";
+      html += '<div class="tn fx' + (nd.key ? " key" : "") + (i === nodes.length - 1 ? " res" : "") + '"' + S(i === nodes.length - 1 ? 2 : 1) + ">" + T(d, "nodes." + i + ".lb", "p", "lb") + T(d, "nodes." + i + ".v", "p", "num") + (nd.tg != null ? T(d, "nodes." + i + ".tg", "p", "tg") : "") + T(d, "nodes." + i + ".by", "p", "by") + "</div>";
+    });
+    html += "</div>";
+    html += '<div class="ins2">' + arr(d.ins).map(function (_, i) { return '<div class="insight"' + S(3 + i) + '>' + T(d, "ins." + i + ".h", "span", "lbl-sm") + T(d, "ins." + i + ".p", "p", "") + "</div>"; }).join("") + "</div>";
+    return frame(d, c, html);
+  };
+  R.table = function (d, c) {
+    var heads = arr(d.heads);
+    var tbl = '<table class="tbl"><thead><tr>' + heads.map(function (_, i) { return T(d, "heads." + i, "th", ""); }).join("") + "</tr></thead><tbody>" + arr(d.rows).map(function (row, i) {
+      return '<tr class="fx"' + S(i + 1) + ">" + arr(row).map(function (_, j) { return T(d, "rows." + i + "." + j, "td", j === arr(row).length - 1 && d.lastStrong ? "k" : ""); }).join("") + "</tr>";
+    }).join("") + "</tbody></table>";
+    return frame(d, c, tbl + (d.insight != null ? '<div class="insight"' + S(arr(d.rows).length + 1) + '><span class="lbl-sm">NOTE</span>' + T(d, "insight", "p", "") + "</div>" : ""));
+  };
+  R.bm = function (d, c) {
+    var cards = arr(d.cards);
+    return frame(d, c, '<div class="bm" style="--n:' + cards.length + '">' + cards.map(function (_, i) {
+      return '<div class="bmc fx"' + S(i + 1) + '><span class="num">0' + (i + 1) + "</span>" + T(d, "cards." + i + ".t", "h4", "") + T(d, "cards." + i + ".d", "p", "") + '<p class="base"><b>기반</b> ' + T(d, "cards." + i + ".b", "span", "") + "</p></div>";
+    }).join("") + "</div>");
+  };
+  R.closing = function (d, c) { return '<div class="sl sl-close"><span class="cl-bar"></span>' + T(d, "title", "h1", "cl-t") + T(d, "lead", "p", "cl-s") + "</div>"; };
+
+  function slideHtml(s, no, edit) { var fn = R[s.type] || R.closing; return fn(s.d, { no: no, edit: !!edit }); }
+
+  /* 차트 정보 패널 */
+  function setInfo(root, i) {
+    var info = root.querySelector('[data-role="info"]'), ch = root.querySelector("[data-chart]");
+    if (!info || !ch) return;
+    var rows = metrics();
+    info.innerHTML = infoHtml(ch.dataset.chart, rows, i);
+    ch.classList.toggle("sel", i != null);
+    ch.querySelectorAll(".bar, .pt").forEach(function (b) { b.classList.toggle("cur", i != null && +b.dataset.i === i); });
+  }
+  function chartEvents(container) {
+    container.addEventListener("mouseover", function (e) { var h = e.target.closest && e.target.closest("[data-chart] [data-i]"); if (h) setInfo(h.closest(".sl"), +h.dataset.i); });
+    container.addEventListener("mouseout", function (e) { var h = e.target.closest && e.target.closest("[data-chart] [data-i]"); if (h && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest("[data-chart] [data-i]"))) { var sl = h.closest(".sl"); if (!sl.dataset.pin) setInfo(sl, sl.dataset.pinI ? +sl.dataset.pinI : null); } });
+  }
+
+  /* 카운트업 */
+  function countUp(el) {
+    var raw = el.textContent, m = raw.match(/^([^\d]*)([\d,]+(?:\.\d+)?)(.*)$/);
+    if (!m) return;
+    var target = parseFloat(m[2].replace(/,/g, "")), dec = (m[2].split(".")[1] || "").length, t0 = null, dur = 900;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3), v = target * e;
+      el.textContent = m[1] + (dec ? v.toFixed(dec) : Math.round(v).toLocaleString("ko-KR")) + m[3];
+      if (k < 1) requestAnimationFrame(step); else el.textContent = raw;
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ── 임시저장 ── */
+  function dirty() { return JSON.stringify(plain(state)) !== savedSnap; }
+  function saveDraft() { try { if (dirty()) localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: state.rev, data: plain(state) })); else localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+  function readDraft() { try { var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); return d && d.data ? d : null; } catch (e) { return null; } }
+  function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+
+  function buildDocument(data) {
+    var json = JSON.stringify(data).replace(/</g, "\\u003c"), close = "</" + "script>";
+    return "<!doctype html><html><head><meta charset=utf8><meta name=viewport content=\"width=device-width,initial-scale=1,viewport-fit=cover\"><style>" + RESET_CSS + "</style></head><body>" +
+      "<title>셀인해 1년 비전 발표</title>\n<style id=\"deck-style\">" + styleEl.textContent + "</style>\n<div id=\"app\"></div>\n" +
+      "<script type=\"application/json\" id=\"deck-data\">" + json + close + "\n<script id=\"deck-app\">" + appEl.textContent + close + "</body></html>";
+  }
+
+  var artifactCap = null, assetsCap = null, canSave = true;
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("artifact").then(function (a) { artifactCap = a; if (!a) canSave = false; refreshBar(); }, function () { canSave = false; refreshBar(); });
+    window.claude.use("assets").then(function (a) { assetsCap = a; }, function () {});
+  } else canSave = false;
+
+  var app = document.getElementById("app");
+  var mode = "edit";
+
+  /* ═════════ 편집 ═════════ */
+  var saveBtn, stateEl, listEl, msgEl;
+  function renderEditor() {
+    document.body.style.overflow = "";
+    app.className = "ed";
+    app.innerHTML =
+      '<header class="ed-bar"><div class="ed-bar-in"><h1 class="ed-name"><small>2026 워크숍 · 시안 2</small>' + esc(state.deck) + "</h1>" +
+      '<span class="ed-state" id="ed-state"></span><div class="ed-actions">' +
+      '<button class="btn" id="b-data" type="button">지표 데이터</button><button class="btn" id="b-json" type="button">JSON</button>' +
+      '<button class="btn primary" id="b-save" type="button">저장</button><button class="btn brand" id="b-present" type="button">발표 시작</button></div></div></header>' +
+      '<main class="ed-main"><p class="ed-intro">슬라이드 안의 글자를 <b>직접 눌러서</b> 고치세요. <code>[[ ]]</code>로 감싸면 브랜드 컬러, Shift+Enter는 줄바꿈이에요. 항목 추가·삭제는 슬라이드 아래 <b>구조 편집</b>에서 할 수 있어요. 다 고치면 <b>저장</b>을 눌러야 다른 기기에도 반영돼요.</p>' +
+      '<div id="ed-msg"></div>' +
+      '<section class="panel" id="p-data" hidden><h2>지표 데이터</h2><p>한 줄에 한 달씩 <b>월,매칭 요청,연결,계약</b> 순서로 적어요. 집계가 없는 달은 숫자를 비워 두면 차트에 "누락"으로 표시돼요. 차트와 합계가 바로 다시 계산돼요.</p><textarea id="t-data" spellcheck="false"></textarea><div class="row"><button class="btn ghost sm" id="c-data" type="button">닫기</button></div></section>' +
+      '<section class="panel" id="p-json" hidden><h2>JSON 내보내기 · 불러오기</h2><p>복사해서 Claude에게 붙여 넣거나, 받은 JSON을 붙여 넣고 불러오세요.</p><textarea id="t-json" spellcheck="false"></textarea><div class="row"><button class="btn primary sm" id="j-copy" type="button">복사하기</button><button class="btn sm" id="j-load" type="button">이 내용으로 불러오기</button><button class="btn ghost sm" id="j-close" type="button">닫기</button><span class="st-text" id="j-st" role="status"></span></div></section>' +
+      '<section class="panel" id="p-link" hidden><h2>발표 전용 화면</h2><p>이 페이지 주소 끝에 <b>#show</b>를 붙여서 열면 편집 버튼 없이 발표 화면만 열려요.</p><div class="row"><button class="btn sm" id="l-go" type="button">지금 발표 전용 화면으로 열기</button></div></section>' +
+      '<div class="deck-list" id="deck-list"></div></main>';
+    saveBtn = document.getElementById("b-save"); stateEl = document.getElementById("ed-state"); listEl = document.getElementById("deck-list"); msgEl = document.getElementById("ed-msg");
+    renderCards(); refreshBar(); bindEditor(); chartEvents(listEl);
+    var dr = readDraft();
+    if (dr && dr.base === state.rev && JSON.stringify(dr.data) !== savedSnap) {
+      msgEl.innerHTML = '<div class="banner"><p>저장하지 않은 수정 내용이 이 기기에 남아 있어요.</p><button class="btn primary sm" id="d-use" type="button">이어서 수정</button><button class="btn ghost sm" id="d-drop" type="button">버리기</button></div>';
+      document.getElementById("d-use").onclick = function () { var rev = state.rev; state = normalize(clone(dr.data)); state.rev = rev; msgEl.innerHTML = ""; renderCards(); refreshBar(); };
+      document.getElementById("d-drop").onclick = function () { clearDraft(); msgEl.innerHTML = ""; };
+    }
+  }
+  function refreshBar() {
+    if (!saveBtn) return;
+    var dt = dirty();
+    stateEl.textContent = !canSave ? "이 화면에서는 저장할 수 없어요" : (dt ? "저장 안 됨" : "저장됨");
+    stateEl.className = "ed-state" + (dt ? " dirty" : "");
+    saveBtn.disabled = !dt || !canSave;
+  }
+  function msg(t, err) { msgEl.innerHTML = '<p class="notice' + (err ? " err" : "") + '" role="status">' + esc(t) + "</p>"; }
+  function changed() { saveDraft(); refreshBar(); }
+  function idx(id) { for (var i = 0; i < state.slides.length; i++) if (state.slides[i].id === id) return i; return -1; }
+
+  function cardHtml(s, i, n) {
+    var p = "f-" + s.id + "-", slotUI = "";
+    if (s.type === "done") {
+      var imgs = s.d.images = arr(s.d.images); while (imgs.length < 2) imgs.push(null);
+      slotUI = '<div class="field"><span class="lbl">Before / After 이미지 <span style="font-weight:500;color:var(--sub)">(비워 두면 텍스트만 보여요)</span></span><div class="slots">' + ["Before", "After"].map(function (lb, si) {
+        var r = imgs[si];
+        return '<div class="slot" data-slot="' + si + '"><span class="slot-name">' + lb + '</span><div class="slot-img">' + (r ? '<img src="' + esc(imgSrc(r)) + '" alt="' + lb + '">' : "비어 있음") + '</div><div class="row"><label class="btn sm" for="' + p + "file" + si + '">' + (r ? "교체" : "이미지 올리기") + '</label><input type="file" accept="image/*" id="' + p + "file" + si + '" data-file="' + si + '">' + (r ? '<button class="btn ghost sm" type="button" data-act="unimg" data-slot="' + si + '">빼기</button>' : "") + "</div></div>";
+      }).join("") + "</div></div>";
+    }
+    return '<article class="card" data-id="' + s.id + '"><div class="card-head"><span class="card-no">' + (i + 1) + '</span><span class="card-tag">' + TYPES[s.type] + '</span><span class="card-sp"></span>' +
+      '<label class="toggle"><input type="checkbox" id="' + p + 'inc" data-field="include"' + (s.include ? " checked" : "") + "> 발표에 넣기</label>" +
+      '<button class="icon-btn" type="button" data-act="up" aria-label="위로"' + (i === 0 ? " disabled" : "") + '>↑</button><button class="icon-btn" type="button" data-act="down" aria-label="아래로"' + (i === n - 1 ? " disabled" : "") + '>↓</button>' +
+      '<button class="icon-btn" type="button" data-act="dup">복제</button><button class="icon-btn" type="button" data-act="del">삭제</button></div>' +
+      '<div class="frame' + (s.include ? "" : " off") + '"><div class="stage" data-role="stage">' + slideHtml(s, i + 1, true) + "</div></div>" +
+      '<div class="below"><div class="field"><label for="' + p + 'note">발표 멘트</label><textarea id="' + p + 'note" data-field="note" rows="3">' + esc(s.note) + "</textarea></div>" +
+      '<div class="field"><span class="lbl">구조 편집</span><details class="adv"><summary>항목 추가 · 삭제 (JSON)</summary><div><textarea id="' + p + 'adv" data-field="adv" spellcheck="false">' + esc(JSON.stringify(s.d, null, 2)) + '</textarea><div class="row"><button class="btn sm" type="button" data-act="adv">적용</button><span class="st-text" data-role="adv-st"></span></div></div></details></div>' + slotUI + "</div></article>";
+  }
+  function renderCards() {
+    listEl.innerHTML = state.slides.map(function (s, i) { return cardHtml(s, i, state.slides.length); }).join("");
+    armEditable(listEl);
+  }
+  function rerenderStage(card) {
+    var i = idx(card.dataset.id), st = card.querySelector('[data-role="stage"]');
+    st.innerHTML = slideHtml(state.slides[i], i + 1, true);
+    armEditable(st);
+    var adv = card.querySelector('[data-field="adv"]'); if (adv && document.activeElement !== adv) adv.value = JSON.stringify(state.slides[i].d, null, 2);
+  }
+  var PLAIN = (function () { var d = document.createElement("div"); try { d.contentEditable = "plaintext-only"; return d.contentEditable === "plaintext-only"; } catch (e) { return false; } })();
+  function armEditable(root) {
+    root.querySelectorAll(".stage [data-k]").forEach(function (el) { el.contentEditable = PLAIN ? "plaintext-only" : "true"; el.spellcheck = false; });
+  }
+  function bindEditor() {
+    listEl.addEventListener("focusin", function (e) {
+      var el = e.target.closest && e.target.closest(".stage [data-k]"); if (!el) return;
+      var card = el.closest(".card"), s = state.slides[idx(card.dataset.id)], v = get(s.d, el.dataset.k), raw = v == null ? "" : String(v);
+      if (el.innerText !== raw) {
+        el.textContent = raw;
+        try { var rg = document.createRange(), sel = window.getSelection(); rg.selectNodeContents(el); rg.collapse(false); sel.removeAllRanges(); sel.addRange(rg); } catch (err) {}
+      }
+    });
+    listEl.addEventListener("input", function (e) {
+      var el = e.target, card = el.closest && el.closest(".card"); if (!card) return;
+      var s = state.slides[idx(card.dataset.id)];
+      if (el.dataset && el.dataset.k && el.closest(".stage")) { put(s.d, el.dataset.k, el.innerText.replace(/\n$/, "")); changed(); return; }
+      if (el.dataset && el.dataset.field === "note") { s.note = el.value; changed(); }
+    });
+    listEl.addEventListener("focusout", function (e) {
+      var el = e.target.closest && e.target.closest(".stage [data-k]"); if (!el) return;
+      var card = el.closest(".card"); setTimeout(function () { var a = document.activeElement; if (!a || !card.contains(a) || !a.closest(".stage")) rerenderStage(card); }, 0);
+    });
+    listEl.addEventListener("keydown", function (e) {
+      var el = e.target.closest && e.target.closest(".stage [data-k]"); if (!el) return;
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); el.blur(); }
+      if (e.key === "Escape") el.blur();
+    });
+    listEl.addEventListener("paste", function (e) {
+      var el = e.target.closest && e.target.closest(".stage [data-k]"); if (!el || PLAIN) return;
+      e.preventDefault(); var t = (e.clipboardData || window.clipboardData).getData("text"); document.execCommand("insertText", false, t);
+    });
+    listEl.addEventListener("change", function (e) {
+      var el = e.target, card = el.closest(".card"); if (!card) return;
+      var i = idx(card.dataset.id);
+      if (el.dataset.file !== undefined) return onFile(el, card, i);
+      if (el.dataset.field === "include") { state.slides[i].include = el.checked; card.querySelector(".frame").classList.toggle("off", !el.checked); changed(); }
+    });
+    listEl.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-act]"); if (!b) return;
+      var card = b.closest(".card"), i = idx(card.dataset.id), act = b.dataset.act;
+      if (act === "up" && i > 0) state.slides.splice(i - 1, 0, state.slides.splice(i, 1)[0]);
+      else if (act === "down" && i < state.slides.length - 1) state.slides.splice(i + 1, 0, state.slides.splice(i, 1)[0]);
+      else if (act === "dup") { var cp = clone(plain({ slides: [state.slides[i]] }).slides[0]); state.slides.splice(i + 1, 0, { id: nid(), type: cp.type, include: cp.include, note: cp.note, d: cp.d }); }
+      else if (act === "del") {
+        if (!b.classList.contains("confirm")) { b.classList.add("confirm"); b.textContent = "정말 삭제"; setTimeout(function () { if (b.isConnected) { b.classList.remove("confirm"); b.textContent = "삭제"; } }, 3000); return; }
+        state.slides.splice(i, 1);
+      } else if (act === "unimg") { state.slides[i].d.images[+b.dataset.slot] = null; }
+      else if (act === "adv") {
+        var ta = card.querySelector('[data-field="adv"]'), st = card.querySelector('[data-role="adv-st"]');
+        try { state.slides[i].d = JSON.parse(ta.value); } catch (err) { st.className = "st-text err"; st.textContent = "JSON 형식이 맞지 않아요. 쉼표와 따옴표를 확인하세요."; return; }
+        st.className = "st-text"; st.textContent = "적용했어요."; rerenderStage(card); changed(); return;
+      } else return;
+      changed(); renderCards();
+    });
+
+    saveBtn.onclick = save;
+    document.getElementById("b-present").onclick = function () { location.hash = "present"; };
+    var pd = document.getElementById("p-data"), td = document.getElementById("t-data");
+    document.getElementById("b-data").onclick = function () { td.value = state.metrics; pd.hidden = false; pd.scrollIntoView({ behavior: "smooth", block: "start" }); };
+    document.getElementById("c-data").onclick = function () { pd.hidden = true; };
+    td.addEventListener("input", function () {
+      state.metrics = td.value; changed();
+      listEl.querySelectorAll(".card").forEach(function (cd) { var s = state.slides[idx(cd.dataset.id)]; if (s.type === "chartM" || s.type === "chartR") rerenderStage(cd); });
+    });
+    var pj = document.getElementById("p-json"), tj = document.getElementById("t-json"), js = document.getElementById("j-st");
+    document.getElementById("b-json").onclick = function () { tj.value = JSON.stringify(plain(state), null, 2); js.textContent = ""; pj.hidden = false; document.getElementById("p-link").hidden = false; pj.scrollIntoView({ behavior: "smooth", block: "start" }); };
+    document.getElementById("j-close").onclick = function () { pj.hidden = true; document.getElementById("p-link").hidden = true; };
+    document.getElementById("l-go").onclick = function () { location.hash = "show"; };
+    document.getElementById("j-copy").onclick = function () {
+      function fb() { tj.focus(); tj.select(); js.className = "st-text"; js.textContent = "전체 선택했어요. 길게 눌러 복사하세요."; }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(tj.value).then(function () { js.className = "st-text"; js.textContent = "복사했어요."; }, fb); else fb();
+    };
+    document.getElementById("j-load").onclick = function () {
+      var d; try { d = JSON.parse(tj.value); } catch (e) { js.className = "st-text err"; js.textContent = "JSON 형식이 아니에요. 중괄호까지 전부 붙여 넣었는지 확인하세요."; return; }
+      if (!d || !Array.isArray(d.slides) || !d.slides.length) { js.className = "st-text err"; js.textContent = "slides 목록을 찾지 못했어요."; return; }
+      if (d.slides[0] && d.slides[0].layout && !d.slides[0].type) { js.className = "st-text err"; js.textContent = "예전 시안의 JSON이에요. 이 시안 형식으로 내보낸 JSON을 붙여 넣어 주세요."; return; }
+      var rev = state.rev; state = normalize(d); state.rev = rev; changed(); renderCards();
+      js.className = "st-text"; js.textContent = "슬라이드 " + state.slides.length + "장을 불러왔어요. 저장을 눌러야 반영돼요.";
+    };
+  }
+  function shrink(file) {
+    return new Promise(function (res, rej) {
+      var u = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var r = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        c.toBlob(function (b) { if (b && b.type === "image/webp") return res(b); c.toBlob(function (b2) { b2 ? res(b2) : rej(new Error("encode")); }, "image/jpeg", .88); }, "image/webp", .86);
+      };
+      img.onerror = function () { URL.revokeObjectURL(u); rej(new Error("load")); };
+      img.src = u;
+    });
+  }
+  function onFile(input, card, i) {
+    var f = input.files && input.files[0]; if (!f) return;
+    var si = +input.dataset.file, box = card.querySelector('[data-slot="' + si + '"] .slot-img');
+    box.textContent = "올리는 중…";
+    shrink(f).then(function (blob) {
+      if (assetsCap) return assetsCap.upload(blob).then(function (r) { return r.id; });
+      return new Promise(function (res) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.readAsDataURL(blob); });
+    }).then(function (ref) { state.slides[i].d.images[si] = ref; changed(); renderCards(); })
+      .catch(function (err) {
+        var code = err && err.code; box.textContent = "업로드 실패";
+        msg(code === "too_large" ? "이미지가 너무 커요. 더 작은 파일로 올려 주세요." : code === "quota_or_state" ? "이미지 저장 공간이 가득 찼어요." : code === "rate_limited" ? "잠시 후 다시 올려 주세요." : "이미지를 올리지 못했어요. PNG나 JPG 파일인지 확인하고 다시 시도해 주세요.", true);
+      });
+    input.value = "";
+  }
+  function save() {
+    if (!dirty()) return;
+    if (!artifactCap) { canSave = false; refreshBar(); msg("이 화면에서는 저장할 수 없어요. 수정 내용은 이 기기에 임시로 남아 있고, JSON으로 내보낼 수 있어요.", true); return; }
+    var next = plain(state); next.rev = (state.rev || 1) + 1;
+    saveBtn.disabled = true; stateEl.textContent = "저장 중…";
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: next.rev, data: next })); } catch (e) {}
+    artifactCap.publish(buildDocument(next)).then(function () { clearDraft(); stateEl.textContent = "저장했어요. 새 버전을 여는 중…"; }, function (err) {
+      var code = err && err.code;
+      if (code === "conflict") { stateEl.textContent = "다른 곳에서 먼저 저장했어요. 최신 버전을 여는 중…"; return; }
+      try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: state.rev, data: plain(state) })); } catch (e) {}
+      if (/not_writer|not_granted|not_declared|capability_disabled|consent_required/.test(code || "")) { canSave = false; refreshBar(); msg("이 화면은 읽기 전용이라 저장할 수 없어요. JSON으로 내보내 주세요.", true); return; }
+      refreshBar();
+      msg(code === "too_large" ? "내용이 너무 커서 저장하지 못했어요." : code === "rate_limited" ? "저장을 너무 자주 했어요. 잠시 후 다시 눌러 주세요." : "저장하지 못했어요. 잠시 후 다시 눌러 주세요. 수정 내용은 이 기기에 남아 있어요.", true);
+    });
+  }
+
+  /* ═════════ 발표 ═════════ */
+  var shown = [], cur = 0, step = 0, maxStep = 0, notesOn = false, hideT = null;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function renderPresent(showOnly) {
+    shown = state.slides.filter(function (s) { return s.include; });
+    if (!shown.length) { location.hash = ""; return; }
+    app.className = "";
+    cur = Math.min(cur, shown.length - 1);
+    app.innerHTML = '<div class="pv" id="pv"><div class="pv-stage"><div class="stage" id="pv-stage"></div></div></div><span class="pv-count" id="pv-count"></span>' +
+      '<div class="pv-ui" id="pv-ui"><button type="button" id="u-prev" aria-label="이전">‹</button><button type="button" id="u-next" aria-label="다음">›</button>' +
+      (showOnly ? "" : '<button type="button" id="u-note">멘트</button>') + '<button type="button" id="u-full">전체화면</button>' + (showOnly ? "" : '<button type="button" id="u-exit">편집으로</button>') + "</div>" +
+      '<div class="pv-note" id="pv-note" hidden></div><div class="pv-progress" id="pv-prog"></div>';
+    document.body.style.overflow = "hidden";
+    paint(0, false); bindPresent(showOnly); poke();
+  }
+  function stageEl() { return document.getElementById("pv-stage"); }
+  function paint(stepTo, instant) {
+    var s = shown[cur], st = stageEl();
+    st.className = "stage" + (instant ? " instant" : "");
+    st.innerHTML = slideHtml(s, cur + 1, false);
+    var steps = st.querySelectorAll("[data-s]"); maxStep = 0;
+    steps.forEach(function (el) { maxStep = Math.max(maxStep, +el.dataset.s); });
+    step = stepTo === "max" ? maxStep : stepTo;
+    applyStep(true);
+    document.getElementById("pv-count").textContent = (cur + 1) + " / " + shown.length;
+    document.getElementById("pv-prog").style.width = ((cur + 1) / shown.length * 100) + "%";
+    var nt = document.getElementById("pv-note"); nt.innerHTML = "<b>발표 멘트</b>" + (esc(s.note) || "멘트가 비어 있어요"); nt.hidden = !notesOn;
+  }
+  function applyStep(first) {
+    var st = stageEl(), instant = st.classList.contains("instant");
+    st.querySelectorAll("[data-s]").forEach(function (el) {
+      var on = +el.dataset.s <= step, was = !el.classList.contains("off") && !first;
+      el.classList.toggle("off", !on);
+      if (on && !el.classList.contains("play")) {
+        el.classList.add("play");
+        if (!instant && !reduce) el.querySelectorAll(".cnt").forEach(countUp);
+        if (!instant && !reduce && el.classList.contains("cnt")) countUp(el);
+      }
+    });
+  }
+  function next() {
+    var sl = stageEl().querySelector(".sl");
+    if (sl && sl.classList.contains("fmode")) { clearFocus(sl); return; }
+    if (step < maxStep) { step += 1; applyStep(false); return; }
+    go(cur + 1, 0);
+  }
+  function prev() {
+    var sl = stageEl().querySelector(".sl");
+    if (sl && sl.classList.contains("fmode")) { clearFocus(sl); return; }
+    if (step > 0) { step -= 1; stageEl().querySelectorAll("[data-s]").forEach(function (el) { if (+el.dataset.s > step) el.classList.remove("play"); }); applyStep(false); return; }
+    go(cur - 1, "max");
+  }
+  function go(n, stepTo) {
+    if (n < 0 || n >= shown.length) return;
+    cur = n;
+    var instant = stepTo === "max";
+    if (document.startViewTransition && !reduce) { try { document.startViewTransition(function () { paint(stepTo, instant); }); return; } catch (e) {} }
+    paint(stepTo, instant);
+  }
+  function clearFocus(sl) { sl.classList.remove("fmode"); sl.querySelectorAll(".fx.on").forEach(function (x) { x.classList.remove("on"); }); delete sl.dataset.pinI; setInfo(sl, null); }
+  function poke() {
+    var ui = document.getElementById("pv-ui"), ct = document.getElementById("pv-count"); if (!ui) return;
+    ui.classList.remove("hide"); ct.classList.remove("hide"); clearTimeout(hideT);
+    hideT = setTimeout(function () { ui.classList.add("hide"); ct.classList.add("hide"); }, 2500);
+  }
+  function toggleNotes() { notesOn = !notesOn; var n = document.getElementById("pv-note"); if (n) n.hidden = !notesOn; }
+  function onKey(e) {
+    if (mode === "edit") return;
+    if (["ArrowRight", "ArrowDown", "PageDown", " ", "Enter"].indexOf(e.key) >= 0) { e.preventDefault(); next(); }
+    else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].indexOf(e.key) >= 0) { e.preventDefault(); prev(); }
+    else if (e.key === "Home") go(0, 0);
+    else if (e.key === "End") go(shown.length - 1, "max");
+    else if ((e.key === "n" || e.key === "N") && mode === "present") toggleNotes();
+    else if (e.key === "Escape" && mode === "present" && !document.fullscreenElement) location.hash = "";
+  }
+  function bindPresent(showOnly) {
+    var pv = document.getElementById("pv"), sx = null, sy = null, swiped = false;
+    chartEvents(pv);
+    pv.addEventListener("click", function (e) {
+      poke();
+      if (swiped) { swiped = false; return; }
+      var sl = stageEl().querySelector(".sl");
+      var hit = e.target.closest && e.target.closest("[data-chart] [data-i]");
+      if (hit) { sl.dataset.pinI = hit.dataset.i; setInfo(sl, +hit.dataset.i); return; }
+      var fx = e.target.closest && e.target.closest(".fx");
+      if (fx && !fx.classList.contains("off") && sl.contains(fx)) {
+        var on = !fx.classList.contains("on");
+        sl.querySelectorAll(".fx.on").forEach(function (x) { x.classList.remove("on"); });
+        fx.classList.toggle("on", on); sl.classList.toggle("fmode", on);
+        return;
+      }
+      if (e.clientX / window.innerWidth < 0.25) prev(); else next();
+    });
+    pv.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    pv.addEventListener("touchend", function (e) {
+      if (sx === null) return;
+      var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { swiped = true; setTimeout(function () { swiped = false; }, 400); if (dx < 0) next(); else prev(); }
+      sx = null;
+    }, { passive: true });
+    pv.addEventListener("mousemove", poke);
+    document.getElementById("u-prev").onclick = function () { prev(); poke(); };
+    document.getElementById("u-next").onclick = function () { next(); poke(); };
+    if (!showOnly) {
+      document.getElementById("u-note").onclick = function () { toggleNotes(); poke(); };
+      document.getElementById("u-exit").onclick = function () { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {}); location.hash = ""; };
+    }
+    var fb = document.getElementById("u-full");
+    if (!document.documentElement.requestFullscreen) fb.hidden = true;
+    fb.onclick = function () { try { var p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (p && p.catch) p.catch(function () { fb.hidden = true; }); } catch (err) { fb.hidden = true; } };
+  }
+  document.addEventListener("keydown", onKey);
+
+  function route() {
+    var h = location.hash;
+    mode = h === "#show" ? "show" : h === "#present" ? "present" : "edit";
+    if (mode === "edit") renderEditor(); else renderPresent(mode === "show");
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+
+</body></html>
