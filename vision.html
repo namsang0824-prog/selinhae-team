@@ -89,6 +89,8 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 .slot-img { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 8px; background: var(--card); display: grid; place-items: center; overflow: hidden; color: var(--sub); font-size: 12px; }
 .slot-img img { width: 100%; height: 100%; object-fit: contain; }
 .slot input[type="file"] { display: none; }
+.slot-url { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 12px; }
+.slot:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
 @media (max-width: 700px) { .below { grid-template-columns: 1fr; } }
 
 /* ───────── 슬라이드 공통 ───────── */
@@ -275,94 +277,276 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 
 /* 간트 */
 .gantt { position: relative; display: flex; flex-direction: column; }
-.g-row { display: grid; grid-template-columns: 22cqw minmax(0, 1fr); align-items: center; min-height: 2.75cqw; border-bottom: 1px solid var(--line); }
-.g-head { border-bottom: 2px solid var(--ink); min-height: 2.6cqw; }
+.g-row { display: grid; grid-template-columns: 24cqw minmax(0, 1fr); align-items: center; min-height: 2.42cqw; border-bottom: 1px solid var(--line); position: relative; }
+.g-head { border-bottom: 2px solid var(--ink); min-height: 2.5cqw; }
 .g-lab { display: flex; align-items: center; gap: .8cqw; padding-right: 1.2cqw; min-width: 0; }
-.g-lab .ph { flex: none; font-size: .82cqw; font-weight: 800; color: var(--brand); width: 2.2cqw; }
-.g-lab b { font-family: var(--f-display); font-weight: 700; font-size: 1.22cqw; min-width: 0; }
-.g-lab span { margin-left: auto; font-size: .98cqw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.g-track { position: relative; height: 100%; min-height: 2.6cqw; }
-.g-months { display: grid; grid-template-columns: repeat(var(--m, 10), minmax(0, 1fr)); height: 100%; align-items: end; }
-.g-months span { font-size: .92cqw; font-weight: 700; color: var(--sub-strong); padding: 0 0 .5cqw .5cqw; border-left: 1px solid var(--line); }
+.g-lab .ph { flex: none; font-size: .8cqw; font-weight: 800; color: #fff; background: var(--sub-strong); border-radius: .3cqw; padding: .1cqw .4cqw; min-width: 2.4cqw; text-align: center; }
+.g-lab .ph.p0 { background: var(--sub); }
+.g-lab .ph.p1 { background: var(--brand); }
+.g-lab .ph.p2 { background: #C2185B; }
+.g-lab .ph.p3 { background: var(--ink); }
+.g-lab b { font-family: var(--f-display); font-weight: 700; font-size: 1.18cqw; min-width: 0; }
+.g-lab span.pd { margin-left: auto; font-size: .95cqw; color: var(--sub); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.g-row.past .g-lab b, .g-row.past .g-lab span.pd { color: var(--sub); }
+.g-track { position: relative; height: 100%; min-height: 2.4cqw; }
+.g-months { display: grid; grid-template-columns: repeat(var(--m, 12), minmax(0, 1fr)); height: 100%; align-items: end; }
+.g-months span { font-size: .95cqw; font-weight: 700; color: var(--sub-strong); padding: 0 0 .5cqw .45cqw; border-left: 1px solid var(--line); white-space: nowrap; }
 .g-months span.y { color: var(--brand); }
-.g-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--m, 10), minmax(0, 1fr)); pointer-events: none; }
+.g-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--m, 12), minmax(0, 1fr)); pointer-events: none; }
 .g-grid i { border-left: 1px solid var(--line); }
-.g-bar { position: absolute; top: 50%; height: 1.25cqw; transform: translateY(-50%); border-radius: .4cqw; background: var(--ink); transform-origin: left center; }
-.g-bar.go { background: var(--brand); }
+.g-bar { position: absolute; top: 50%; height: 1.2cqw; transform: translateY(-50%); border-radius: .35cqw; background: var(--brand-soft); border: 1.5px solid var(--brand); transform-origin: left center; }
+.g-bar.go { background: var(--brand); border-color: var(--brand); }
+.g-bar.done { background: var(--ink); border-color: var(--ink); }
 .g-bar.ongoing { background: transparent; border: 1.5px dashed var(--sub); }
-.g-ms { position: absolute; top: 50%; width: 1.3cqw; height: 1.3cqw; background: var(--brand); transform: translate(-50%, -50%) rotate(45deg); border-radius: .15cqw; }
-.g-today { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px solid var(--brand); pointer-events: none; z-index: 2; }
-.g-today b { position: absolute; top: auto; bottom: -1.6cqw; left: .4cqw; font-size: .8cqw; color: var(--brand); white-space: nowrap; }
-.g-legend { display: flex; gap: 2cqw; margin-top: 1cqw; font-size: .95cqw; color: var(--sub-strong); flex-wrap: wrap; }
+.g-ms { position: absolute; top: 50%; width: 1.35cqw; height: 1.35cqw; background: var(--brand); transform: translate(-50%, -50%) rotate(45deg); border-radius: .15cqw; box-shadow: 0 0 0 .3cqw var(--bg); }
+.g-past { position: absolute; top: 2.5cqw; bottom: 0; left: 24cqw; background: repeating-linear-gradient(135deg, rgba(139,149,161,.07) 0 .5cqw, transparent .5cqw 1cqw); pointer-events: none; }
+.g-today { position: absolute; top: 2.5cqw; bottom: 0; width: 0; border-left: 2px solid var(--brand); pointer-events: none; z-index: 2; }
+.g-today b { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: .82cqw; font-weight: 800; color: #fff; background: var(--brand); border-radius: .3cqw; padding: .05cqw .4cqw; white-space: nowrap; }
+.g-legend { display: flex; gap: 2cqw; margin-top: 1cqw; font-size: .98cqw; color: var(--sub-strong); flex-wrap: wrap; align-items: center; }
 .g-legend span { display: inline-flex; align-items: center; gap: .5cqw; }
-.g-legend i { display: inline-block; width: 1.8cqw; height: .9cqw; border-radius: .25cqw; background: var(--ink); }
+.g-legend i { display: inline-block; width: 1.8cqw; height: .9cqw; border-radius: .25cqw; background: var(--brand-soft); border: 1.5px solid var(--brand); }
 .g-legend i.go { background: var(--brand); }
+.g-legend i.done { background: var(--ink); border-color: var(--ink); }
 .g-legend i.on { background: transparent; border: 1.5px dashed var(--sub); }
-.g-legend i.ms { width: .9cqw; height: .9cqw; background: var(--brand); transform: rotate(45deg); }
+.g-legend i.ms { width: .9cqw; height: .9cqw; background: var(--brand); border: 0; transform: rotate(45deg); }
 .g-row.fx.on { background: var(--brand-soft); }
 .sl.fmode .g-row.fx.on { box-shadow: none; }
 
-/* 과제 상세 */
-.tk-meta { display: flex; flex-wrap: wrap; gap: .6cqw; align-items: center; }
-.tk-meta .chip { font-size: 1.05cqw; }
-.tk-meta .pd { font-size: 1.3cqw; font-weight: 700; color: var(--ink); margin-right: .8cqw; font-variant-numeric: tabular-nums; }
-.tk { display: grid; grid-template-columns: minmax(0, 1fr) 2.4cqw minmax(0, 1.15fr) 2.4cqw minmax(0, 1fr); flex: 1; min-height: 0; align-items: stretch; }
-.tk-c { border-radius: 1.2cqw; padding: 2cqw 2cqw; display: flex; flex-direction: column; gap: 1cqw; min-width: 0; background: var(--card); }
-.tk-c.tobe { background: var(--bg); border: 2px solid var(--ink); }
-.tk-c.eff { background: var(--brand-soft); }
-.tk-c h4 { font-size: 1.15cqw; font-weight: 800; color: var(--sub); letter-spacing: .04em; }
-.tk-c.tobe h4 { color: var(--ink); }
-.tk-c.eff h4 { color: var(--brand); }
-.tk-c .dots li { font-size: 1.38cqw; }
-.tk-c .dots { gap: 1.1cqw; }
-.tk-c.tobe .dots li { color: var(--ink); }
-.tk-c.tobe .dots li::before { background: var(--ink); }
-.tk-c.eff .dots li::before { background: var(--brand); }
+/* 로드맵 지도 */
+.hub { position: relative; width: 100%; aspect-ratio: 1000 / 370; max-height: 100%; margin: auto 0; }
+.hub svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.road { fill: none; stroke: var(--card); stroke-width: 34; stroke-linecap: round; stroke-linejoin: round; }
+.road-mid { fill: none; stroke: #fff; stroke-width: 2.5; stroke-dasharray: 12 14; }
+.road-prog { fill: none; stroke: var(--brand); stroke-width: 34; stroke-linecap: round; opacity: .9; stroke-dasharray: 1 1; transition: stroke-dashoffset .9s cubic-bezier(.4,0,.2,1); }
+.hub-cap { position: absolute; font-size: .95cqw; font-weight: 800; color: var(--sub); white-space: nowrap; transform: translate(-50%, -50%); }
+.stn { position: absolute; transform: translate(-50%, -1.7cqw); display: flex; flex-direction: column; align-items: center; gap: .5cqw; width: 15cqw; text-align: center; cursor: pointer; }
+.stn-dot { width: 3.4cqw; height: 3.4cqw; border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: .25cqw solid var(--brand); color: var(--brand); font-family: var(--f-display); font-weight: 800; font-size: 1.35cqw; position: relative; transition: transform .3s; }
+.stn-lab { display: flex; flex-direction: column; align-items: center; gap: .2cqw; }
+.stn-lab b { font-family: var(--f-display); font-weight: 700; font-size: 1.22cqw; line-height: 1.25; }
+.stn-lab span { font-size: .92cqw; color: var(--sub); font-weight: 600; font-variant-numeric: tabular-nums; }
+.stn.st-done .stn-dot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.stn.seen .stn-dot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.stn.seen .stn-lab { opacity: .5; }
+.stn.next .stn-dot { background: var(--brand); color: #fff; transform: scale(1.22); box-shadow: 0 0 0 .7cqw rgba(255,64,124,.18); }
+.stn.next .stn-lab b { color: var(--brand); }
+.stn .tag-next { position: absolute; top: -2.1cqw; font-size: .8cqw; font-weight: 800; color: #fff; background: var(--ink); border-radius: .3cqw; padding: .05cqw .45cqw; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,64,124,.35); } 100% { box-shadow: 0 0 0 1.4cqw rgba(255,64,124,0); } }
+.pv .stn.next .stn-dot { animation: pulse 1.6s ease-out infinite; }
+
+/* 로드맵 상세 공통 */
+.rm-top { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; }
+.rm-badge { display: inline-flex; align-items: center; gap: 1cqw; }
+.rm-badge .n { width: 2.6cqw; height: 2.6cqw; border-radius: 50%; display: grid; place-items: center; background: var(--brand); color: #fff; font-family: var(--f-display); font-weight: 800; font-size: 1.15cqw; }
+.rm-badge .n.done { background: var(--ink); }
+.rm-badge b { font-family: var(--f-display); font-weight: 700; font-size: 1.35cqw; }
+.rm-badge .pd { font-size: 1.02cqw; color: var(--sub-strong); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rm-mini { display: flex; align-items: center; gap: .45cqw; }
+.rm-mini i { width: .75cqw; height: .75cqw; border-radius: 50%; background: var(--line-strong); }
+.rm-mini i.seen { background: var(--ink); }
+.rm-mini i.cur { background: var(--brand); width: 2cqw; border-radius: 1cqw; }
+.t.novt { view-transition-name: none; }
+.sec-row { display: flex; flex-wrap: wrap; gap: .6cqw 1.6cqw; align-items: center; font-size: 1.12cqw; }
+.sec-row .lbl-sm { color: var(--brand); }
+.sec-row span.it { display: inline-flex; gap: .5cqw; align-items: baseline; font-weight: 600; }
+.sec-row span.it::before { content: ""; width: .45cqw; height: .45cqw; border-radius: 50%; background: var(--ink); align-self: center; }
+.who { display: inline-flex; align-items: center; font-size: .82cqw; font-weight: 800; border-radius: .3cqw; padding: .1cqw .5cqw; white-space: nowrap; }
+.who.w-p { background: var(--brand); color: #fff; }
+.who.w-o { background: var(--ink); color: #fff; }
+.who.w-s { background: var(--card); color: var(--sub-strong); }
+.who.w-m { background: var(--line-strong); color: var(--ink); }
+
+/* 자재 구매: 여정 */
+.jr { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); gap: 1cqw; position: relative; }
+.jr::before { content: ""; position: absolute; left: 3%; right: 3%; top: 1.9cqw; height: 2px; background: var(--line-strong); }
+.js { position: relative; display: flex; flex-direction: column; gap: .55cqw; min-width: 0; }
+.js .ic { width: 3.8cqw; height: 3.8cqw; border-radius: 50%; background: var(--bg); border: .22cqw solid var(--ink); display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 1.3cqw; position: relative; z-index: 1; }
+.js.auto .ic { border-color: var(--brand); color: var(--brand); }
+.js h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.4cqw; }
+.js p { font-size: 1.05cqw; color: var(--sub-strong); line-height: 1.5; }
+.scr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1cqw; }
+.sc { border-radius: 1cqw; background: var(--card); padding: 1.3cqw 1.5cqw; display: flex; flex-direction: column; gap: .4cqw; }
+.sc .lbl-sm { color: var(--brand); }
+.sc h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.45cqw; }
+.sc p { font-size: 1.08cqw; color: var(--sub-strong); line-height: 1.5; }
+
+/* 작업자 모집: 페이지 목업 */
+.pm-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3cqw; flex: 1; min-height: 0; }
+.pm { border-radius: 1.2cqw; border: 1.5px solid var(--line-strong); overflow: hidden; display: flex; flex-direction: column; background: var(--bg); }
+.pm-bar { display: flex; gap: .4cqw; padding: .7cqw 1cqw; background: var(--card); align-items: center; }
+.pm-bar i { width: .65cqw; height: .65cqw; border-radius: 50%; background: var(--line-strong); }
+.pm-bar span { margin-left: .8cqw; font-size: .85cqw; color: var(--sub); }
+.pm-sec { display: grid; grid-template-columns: 2.2cqw 1fr; gap: .4cqw 1cqw; padding: 1cqw 1.4cqw; border-top: 1px solid var(--line); align-items: baseline; }
+.pm-sec .n { font-family: var(--f-display); font-weight: 800; font-size: 1.05cqw; color: var(--brand); }
+.pm-sec h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.3cqw; }
+.pm-sec p { grid-column: 2; font-size: 1.02cqw; color: var(--sub-strong); line-height: 1.45; }
+.pm-sec.cta { background: var(--ink); color: #fff; }
+.pm-sec.cta p { color: rgba(255,255,255,.8); }
+.side-list { display: flex; flex-direction: column; gap: 1.4cqw; }
+.side-list h4 { font-size: 1.05cqw; font-weight: 800; color: var(--sub); letter-spacing: .04em; margin-bottom: .6cqw; }
+.side-list .dots li { font-size: 1.32cqw; color: var(--ink); }
+.side-box { border-radius: 1cqw; background: var(--card); padding: 1.5cqw 1.7cqw; }
+.side-box.hi { background: var(--brand-soft); }
+.side-box.hi h4 { color: var(--brand); }
+
+/* 커뮤니티 MVP: 파이프라인 */
+.pipe { display: flex; align-items: stretch; gap: .6cqw; }
+.pp { flex: 1 1 0; min-width: 0; border-radius: 1cqw; border: 1.5px solid var(--line-strong); padding: 1.2cqw 1.1cqw; display: flex; flex-direction: column; gap: .5cqw; background: var(--bg); }
+.pp.auto { border-color: var(--brand); }
+.pp.human { background: var(--ink); color: #fff; border-color: var(--ink); }
+.pp.human p { color: rgba(255,255,255,.75); }
+.pp h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.3cqw; line-height: 1.3; }
+.pp p { font-size: .98cqw; color: var(--sub-strong); line-height: 1.45; }
+.pp .chip { align-self: flex-start; font-size: .8cqw; }
+.pipe .ar { flex: none; align-self: center; color: var(--brand); font-weight: 800; font-size: 1.4cqw; }
+.mvp-bottom { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2cqw; flex: 1; min-height: 0; }
+.art { border-radius: 1.2cqw; background: var(--card); padding: 1.6cqw 1.8cqw; display: flex; flex-direction: column; gap: .7cqw; }
+.art .lbl-sm { color: var(--brand); }
+.art h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.7cqw; line-height: 1.3; }
+.art .meta { font-size: .95cqw; color: var(--sub); }
+.art p { font-size: 1.12cqw; color: var(--sub-strong); line-height: 1.6; }
+
+/* 플래너 개편: 비교 */
+.cmp { display: grid; grid-template-columns: minmax(0, .8fr) 2.4cqw minmax(0, 1.4fr); flex: 1; min-height: 0; }
+.cmp-l { border-radius: 1.2cqw; background: var(--card); padding: 1.7cqw 1.8cqw; display: flex; flex-direction: column; gap: 1cqw; }
+.cmp-l h4, .cmp-r h4 { font-size: 1.05cqw; font-weight: 800; color: var(--sub); letter-spacing: .04em; }
+.cmp-r { border-radius: 1.2cqw; border: 2px solid var(--ink); padding: 1.7cqw 1.8cqw; display: flex; flex-direction: column; gap: 1.3cqw; }
+.cmp-r h4 { color: var(--ink); }
+.stepper { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: .5cqw; }
+.stp { display: flex; flex-direction: column; gap: .5cqw; }
+.stp .sbar { display: block; height: .5cqw; border-radius: 1cqw; background: var(--brand); }
+.stp span { font-size: .9cqw; font-weight: 800; color: var(--brand); }
+.stp b { font-family: var(--f-display); font-weight: 700; font-size: 1.2cqw; line-height: 1.3; }
+.tgts { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 1cqw; margin-top: auto; }
+.tg-c { border-radius: 1cqw; background: var(--brand-soft); padding: 1.2cqw 1.3cqw; display: flex; flex-direction: column; gap: .35cqw; }
+.tg-c .lb { font-size: 1cqw; font-weight: 700; color: var(--sub-strong); }
+.tg-c .vv { display: flex; align-items: baseline; gap: .6cqw; flex-wrap: wrap; }
+.tg-c .from { font-size: 1.15cqw; color: var(--sub); font-weight: 700; text-decoration: line-through; text-decoration-thickness: 1px; }
+.tg-c .to { font-family: var(--f-display); font-weight: 800; font-size: 2.1cqw; color: var(--brand); }
+.tg-c.new .to { font-size: 1.4cqw; color: var(--ink); }
+
+/* 공사 설계 자동화: AI */
+.ai { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 3cqw; flex: 1; min-height: 0; }
+.vflow { display: flex; flex-direction: column; gap: .8cqw; }
+.vf { display: grid; grid-template-columns: 3.4cqw 1fr; gap: .3cqw 1.2cqw; align-items: center; border-radius: 1cqw; padding: 1.1cqw 1.3cqw; background: var(--card); }
+.vf .ic { grid-row: 1 / 3; width: 3.4cqw; height: 3.4cqw; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 1.2cqw; }
+.vf.auto { background: var(--brand-soft); }
+.vf.auto h4 { color: var(--brand); }
+.vf .idea { justify-self: start; font-size: .78cqw; font-weight: 800; color: #fff; background: var(--sub-strong); border-radius: .3cqw; padding: .05cqw .45cqw; }
+.vf.auto .ic { background: var(--brand); }
+.vf h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.4cqw; }
+.vf p { font-size: 1.05cqw; color: var(--sub-strong); line-height: 1.45; }
+.vflow .dn { align-self: center; color: var(--sub); font-weight: 800; font-size: 1.1cqw; margin: -.3cqw 0; }
+.phone { border-radius: 1.6cqw; border: 1.5px solid var(--line-strong); background: var(--card); padding: 1.4cqw; display: flex; flex-direction: column; gap: .9cqw; }
+.phone .ph-h { font-size: .95cqw; font-weight: 800; color: var(--sub-strong); display: flex; justify-content: space-between; }
+.bub { max-width: 82%; border-radius: 1.1cqw; padding: .9cqw 1.2cqw; font-size: 1.12cqw; line-height: 1.5; background: var(--bg); align-self: flex-start; }
+.bub.me { align-self: flex-end; background: var(--ink); color: #fff; }
+.bub.ai { border: 1.5px solid var(--brand); }
+.bub.sys { align-self: center; background: transparent; color: var(--sub); font-size: .95cqw; padding: .2cqw; text-align: center; }
+.bub .who-l { display: block; font-size: .82cqw; font-weight: 800; color: var(--brand); margin-bottom: .2cqw; }
+.bub.flag { border: 1.5px solid var(--brand); background: var(--bg); }
+.bub .fl { display: inline-block; margin-top: .5cqw; font-size: .82cqw; font-weight: 800; color: #fff; background: var(--brand); border-radius: .3cqw; padding: .1cqw .5cqw; }
+.req { border-radius: 1cqw; background: var(--bg); border: 1.5px dashed var(--brand); padding: 1cqw 1.2cqw; display: grid; grid-template-columns: auto 1fr; gap: .35cqw 1.2cqw; font-size: 1.05cqw; }
+.req .lbl-sm { grid-column: 1 / -1; color: var(--brand); }
+.req dt { color: var(--sub); font-weight: 600; }
+.req dd { font-weight: 700; margin: 0; }
+
+/* 작업자 화면: 대시보드 */
+.dsh-wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 2.6cqw; flex: 1; min-height: 0; }
+.dsh { border-radius: 1.2cqw; border: 1.5px solid var(--line-strong); padding: 1.4cqw; display: flex; flex-direction: column; gap: 1cqw; }
+.dsh-h { display: flex; justify-content: space-between; align-items: center; }
+.dsh-h b { font-family: var(--f-display); font-weight: 700; font-size: 1.3cqw; }
+.dsh-h span { font-size: .9cqw; color: var(--sub); }
+.dsh-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9cqw; flex: 1; }
+.dt { border-radius: .9cqw; background: var(--card); padding: 1.1cqw 1.2cqw; display: flex; flex-direction: column; gap: .3cqw; }
+.dt .lb { font-size: .98cqw; color: var(--sub-strong); font-weight: 700; }
+.dt .v { font-family: var(--f-display); font-weight: 800; font-size: 1.6cqw; }
+.dt p { font-size: .92cqw; color: var(--sub); }
+.sub-ba { display: flex; flex-direction: column; gap: 1cqw; }
+.sb { border-radius: 1.1cqw; padding: 1.4cqw 1.6cqw; display: flex; flex-direction: column; gap: .7cqw; background: var(--card); }
+.sb.after { background: var(--ink); color: #fff; }
+.sb.after .dots li { color: rgba(255,255,255,.88); }
+.sb.after .dots li::before { background: var(--brand); }
+.sb h4 { font-size: 1.05cqw; font-weight: 800; letter-spacing: .03em; color: var(--sub); }
+.sb.after h4 { color: var(--brand); }
+.sb h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.6cqw; }
+.sub-ba .dn { align-self: center; color: var(--brand); font-weight: 800; }
+
+/* 인앱 채팅 */
+.ch-wrap { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.2fr) minmax(0, .9fr); gap: 2cqw; flex: 1; min-height: 0; }
+.ch-before { border-radius: 1.2cqw; background: var(--card); padding: 1.7cqw; display: flex; flex-direction: column; gap: .8cqw; }
+.ch-before h4 { font-size: 1.05cqw; font-weight: 800; color: var(--sub); letter-spacing: .04em; }
+.ch-before .num { font-size: 3.6cqw; line-height: 1; }
+.ch-before .num small { font-size: 1.3cqw; margin-left: .3cqw; }
+.ch-before .lb { font-size: 1.1cqw; color: var(--sub-strong); font-weight: 600; }
+
+/* 커뮤니티 포커스 */
+.cm { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 1.1cqw; flex: 1; min-height: 0; }
+.cmb { border-radius: 1.2cqw; background: var(--card); padding: 1.6cqw 1.8cqw; display: flex; flex-direction: column; gap: .6cqw; min-width: 0; min-height: 0; overflow: hidden; position: relative; }
+.cmb .no { font-family: var(--f-display); font-weight: 800; font-size: 1.15cqw; color: var(--brand); }
+.cmb h4 { font-family: var(--f-display); font-weight: 800; font-size: 2.1cqw; line-height: 1.25; }
+.cmb .cm-d, .cmb .cm-pts { display: none; }
+.cmb .who { align-self: flex-start; }
+.cmb.seen::after { content: "✓"; position: absolute; right: 1.4cqw; top: 1.2cqw; font-weight: 800; color: var(--sub); font-size: 1.2cqw; }
+.cmb.seen h4 { color: var(--sub-strong); }
+.cm.edit .cmb .cm-d, .cm.edit .cmb .cm-pts { display: block; }
+.cm.edit .cmb h4 { font-size: 1.6cqw; }
+.cm.edit .cmb .cm-d { font-size: 1.05cqw; color: var(--sub-strong); }
+.cm.focus { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: .8cqw 1.4cqw; }
+.cm.focus .cmb { padding: .8cqw 1.3cqw; flex-direction: row; align-items: center; gap: 1cqw; background: transparent; border: 1.5px solid var(--line); }
+.cm.focus .cmb h4 { font-size: 1.25cqw; color: var(--sub); }
+.cm.focus .cmb .no { color: var(--sub); }
+.cm.focus .cmb .who { display: none; }
+.cm.focus .cmb.seen::after { top: 50%; transform: translateY(-50%); }
+.cm.focus .cmb.cur { grid-column: 1; grid-row: 1 / -1; flex-direction: column; align-items: stretch; padding: 2.4cqw 2.6cqw; background: var(--ink); color: #fff; border: 0; gap: 1.2cqw; }
+.cm.focus .cmb.cur h4 { font-size: 3.2cqw; color: #fff; }
+.cm.focus .cmb.cur .no { color: var(--brand); font-size: 1.4cqw; }
+.cm.focus .cmb.cur .who { display: inline-flex; background: var(--brand); color: #fff; font-size: 1cqw; }
+.cm.focus .cmb.cur .cm-d { display: block; font-size: 1.5cqw; line-height: 1.55; color: rgba(255,255,255,.9); }
+.cm.focus .cmb.cur .cm-pts { display: flex; flex-direction: column; gap: .8cqw; margin-top: auto; }
+.cm.focus .cmb.cur .cm-pts li { font-size: 1.3cqw; color: rgba(255,255,255,.82); padding-left: 1.4cqw; position: relative; }
+.cm.focus .cmb.cur .cm-pts li::before { content: ""; position: absolute; left: 0; top: .75cqw; width: .5cqw; height: .5cqw; border-radius: 50%; background: var(--brand); }
+.cm.focus .cmb.cur::after { display: none; }
+@keyframes cmIn { from { opacity: 0; transform: translateY(1cqw); } to { opacity: 1; transform: none; } }
+.pv .cm.focus .cmb.cur .cm-d, .pv .cm.focus .cmb.cur .cm-pts li { animation: cmIn .6s cubic-bezier(.2,.7,.2,1) both; }
+.pv .cm.focus .cmb.cur .cm-d { animation-delay: .45s; }
+.pv .cm.focus .cmb.cur .cm-pts li:nth-child(1) { animation-delay: .75s; }
+.pv .cm.focus .cmb.cur .cm-pts li:nth-child(2) { animation-delay: 1.05s; }
+.pv .cm.focus .cmb.cur .cm-pts li:nth-child(3) { animation-delay: 1.35s; }
+.pv .cm.focus .cmb.cur .cm-pts li:nth-child(4) { animation-delay: 1.65s; }
+
+/* 성장 시나리오 */
+.gw { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0 .9cqw; flex: 1; min-height: 0; grid-template-rows: auto minmax(0, 1fr); }
+.lv { border-radius: 1cqw; background: var(--card); padding: 1.1cqw 1.1cqw; display: flex; flex-direction: column; gap: .45cqw; min-width: 0; }
+.lv .lb { font-size: 1.02cqw; font-weight: 800; color: var(--ink); }
+.lv .ch { font-size: 1.02cqw; font-weight: 700; color: var(--sub-strong); font-variant-numeric: tabular-nums; }
+.lv .mx { font-family: var(--f-display); font-weight: 800; font-size: 1.9cqw; color: var(--brand); line-height: 1.1; }
+.lv .why { font-size: .9cqw; color: var(--sub-strong); line-height: 1.45; }
+.lv .whos { display: flex; flex-wrap: wrap; gap: .3cqw; margin-top: auto; }
+.lv.ex { background: var(--bg); border: 1.5px dashed var(--line-strong); }
+.lv.ex .mx { color: var(--sub-strong); }
+.lv-end { border-radius: 1cqw; padding: 1.1cqw; display: flex; flex-direction: column; justify-content: flex-end; gap: .3cqw; }
+.lv-end .lb { font-size: 1.02cqw; font-weight: 800; color: var(--sub-strong); }
+.lv-end p { font-size: .9cqw; color: var(--sub); line-height: 1.45; }
+.gw-chart { grid-column: 1 / -1; position: relative; min-height: 0; padding-top: 1.2cqw; }
+.gw-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.wf-base { fill: var(--sub-strong); }
+.wf-up { fill: var(--brand); }
+.wf-up.ex { fill: var(--brand-soft); stroke: var(--brand); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.wf-res { fill: var(--ink); }
+.wf-conn { stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.wf-lab { font-family: var(--f-display); font-weight: 800; font-size: 20px; fill: var(--ink); }
+.wf-lab.big { font-size: 30px; fill: var(--brand); }
+.wf-ax { font-size: 15px; fill: var(--sub); font-weight: 700; }
+.pv .play .wf-up, .pv .play .wf-res, .pv .play .wf-base { transform-box: fill-box; transform-origin: bottom; animation: barUp .7s cubic-bezier(.2,.7,.2,1) both; }
+.gw-legend { display: flex; flex-wrap: wrap; gap: .5cqw 1.6cqw; font-size: .98cqw; color: var(--sub-strong); align-items: center; }
+.gw-legend span { display: inline-flex; gap: .5cqw; align-items: center; }
+
 .tk-arrow { display: grid; place-items: center; }
 .tk-arrow i { width: 1cqw; height: 1cqw; border-top: 2px solid var(--line-strong); border-right: 2px solid var(--line-strong); transform: rotate(45deg); }
-.kpi-line { display: flex; flex-wrap: wrap; align-items: center; gap: .6cqw 1.8cqw; border-top: 1px solid var(--line); padding-top: 1.2cqw; font-size: 1.3cqw; font-weight: 600; }
-.kpi-line .lbl-sm { color: var(--brand); }
-.kpi-line span { display: inline-flex; gap: .5cqw; align-items: baseline; }
-.kpi-line span::before { content: ""; width: .45cqw; height: .45cqw; border-radius: 50%; background: var(--ink); align-self: center; }
-
-/* 커뮤니티 */
-.boards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1cqw; }
-.bo { border-radius: 1cqw; background: var(--card); padding: 1.7cqw 1.8cqw; min-height: 8.5cqw; display: flex; flex-direction: column; gap: .5cqw; min-width: 0; }
-.bo.first { background: var(--ink); color: #fff; }
-.bo.first p { color: rgba(255,255,255,.8); }
-.bo-h { display: flex; align-items: center; justify-content: space-between; gap: .8cqw; }
-.bo h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.6cqw; }
-.bo p { font-size: 1.22cqw; color: var(--sub-strong); line-height: 1.5; }
-.bo .chip { font-size: .82cqw; }
 .loop { display: flex; flex-wrap: wrap; align-items: center; gap: .6cqw; }
-.loop span { font-size: 1.25cqw; font-weight: 700; padding: .55cqw 1.1cqw; border-radius: 99px; background: var(--brand-soft); color: var(--brand); }
+.loop span { font-size: 1.15cqw; font-weight: 700; padding: .5cqw 1.1cqw; border-radius: 99px; background: var(--brand-soft); color: var(--brand); }
 .loop i { font-style: normal; color: var(--sub); font-weight: 700; }
-
-/* KPI 트리 */
-.tree { display: flex; align-items: stretch; gap: .8cqw; }
-.tn { flex: 1 1 0; min-width: 0; border-radius: 1.1cqw; border: 1.5px solid var(--line); padding: 1.6cqw 1.3cqw; min-height: 15cqw; display: flex; flex-direction: column; gap: .5cqw; background: var(--bg); }
-.tn.key { border-color: var(--brand); background: var(--brand-soft); }
-.tn.res { background: var(--ink); color: #fff; border-color: var(--ink); }
-.tn .lb { font-size: 1.15cqw; font-weight: 700; color: var(--sub-strong); }
-.tn.res .lb { color: rgba(255,255,255,.75); }
-.tn .num { font-size: 2.5cqw; line-height: 1.15; }
-.tn .tg { font-size: 1.12cqw; font-weight: 700; color: var(--brand); }
-.tn .by { margin-top: auto; padding-top: .8cqw; border-top: 1px solid var(--line); font-size: 1.08cqw; color: var(--sub-strong); line-height: 1.5; }
-.tn.key .by { border-color: rgba(255,64,124,.25); }
-.tn.res .by { border-color: rgba(255,255,255,.16); color: rgba(255,255,255,.8); }
-.op { flex: none; align-self: center; font-family: var(--f-display); font-weight: 800; font-size: 1.7cqw; color: var(--sub); }
-.ins2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2cqw; }
-.ins2 .insight:nth-child(2) { background: var(--card); }
-.ins2 .insight:nth-child(2) .lbl-sm { color: var(--ink); }
-
-/* BM */
-.bm { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 1.1cqw; flex: 1; min-height: 0; }
-.bmc { border-radius: 1.1cqw; border: 1.5px solid var(--line); padding: 1.6cqw 1.4cqw; display: flex; flex-direction: column; gap: .8cqw; min-width: 0; }
-.bmc .num { font-size: 1.6cqw; color: var(--brand); }
-.bmc h4 { font-family: var(--f-display); font-weight: 700; font-size: 1.75cqw; line-height: 1.3; }
-.bmc p { font-size: 1.3cqw; color: var(--sub-strong); line-height: 1.55; }
-.bmc .base { margin-top: auto; font-size: 1.08cqw; color: var(--sub); border-top: 1px solid var(--line); padding-top: .8cqw; }
-.bmc .base b { color: var(--ink); }
+.loop .lbl-sm { color: var(--sub-strong); margin-right: .6cqw; }
 
 /* 마무리 */
 .sl-close { justify-content: center; align-items: flex-start; padding-left: 6.4cqw; gap: 1.4cqw; }
@@ -370,6 +554,220 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 .cl-s { font-size: 1.6cqw; font-weight: 600; color: var(--sub-strong); }
 .cl-bar { width: 3.2cqw; height: .42cqw; border-radius: 1cqw; background: var(--brand); }
 
+/* 강조 */
+.mk { font-weight: 700; color: inherit; background: linear-gradient(transparent 58%, rgba(255,64,124,.22) 58%); padding: 0 .1em; border-radius: .1em; }
+.sum-c:nth-child(2) .mk, .role-card .mk, .vision .mk, .bgc .mk, .sb.after .mk, .ef:first-child .mk, .tn.res .mk { background: linear-gradient(transparent 58%, rgba(255,64,124,.55) 58%); color: #fff; }
+
+/* 기대 효과 카드 */
+.eff-head { display: flex; align-items: center; gap: 1cqw; }
+.eff-head .lbl-sm { color: var(--brand); }
+.effc { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 1cqw; }
+.effc.stack { grid-template-columns: 1fr; gap: .7cqw; }
+.ef { border-radius: 1cqw; background: var(--brand-soft); padding: 1.2cqw 1.4cqw; display: grid; grid-template-columns: auto 1fr; gap: .2cqw 1cqw; align-items: baseline; min-width: 0; }
+.ef:first-child { background: var(--brand); color: #fff; }
+.ef .ef-n { grid-row: 1 / 3; font-family: var(--f-display); font-weight: 800; font-size: 1.5cqw; color: var(--brand); }
+.ef:first-child .ef-n { color: rgba(255,255,255,.75); }
+.ef h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.55cqw; line-height: 1.3; color: var(--brand); }
+.ef:first-child h4 { color: #fff; }
+.ef p { font-size: 1.05cqw; color: var(--sub-strong); line-height: 1.45; grid-column: 2; }
+.ef:first-child p { color: rgba(255,255,255,.9); }
+.effc.stack .ef { padding: 1cqw 1.3cqw; }
+.effc.stack .ef h4 { font-size: 1.4cqw; }
+.kchips { display: flex; flex-wrap: wrap; align-items: center; gap: .5cqw .6cqw; }
+.kchips .lbl-sm { color: var(--sub-strong); margin-right: .4cqw; }
+.kc { font-size: 1.02cqw; font-weight: 700; border-radius: 99px; padding: .35cqw .95cqw; background: var(--bg); border: 1.5px solid var(--line-strong); color: var(--ink); }
+.eff-row { margin-top: .4cqw; }
+
+/* KPI 숫자 줄바꿈 방지 */
+.kp .vv { flex-wrap: nowrap; white-space: nowrap; }
+.kp .num { font-size: 3.2cqw; }
+
+/* 운영 흐름 (로드맵형) */
+.fl-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1cqw; }
+.fls { display: flex; align-items: baseline; gap: 1cqw; border-radius: .9cqw; background: var(--card); padding: .9cqw 1.3cqw; min-width: 0; }
+.fls .num { font-family: var(--f-display); font-weight: 800; font-size: 2.1cqw; white-space: nowrap; }
+.fls .lb { font-size: 1.05cqw; color: var(--sub-strong); font-weight: 600; line-height: 1.35; }
+.fls.hi { background: var(--ink); color: #fff; }
+.fls.hi .num { color: var(--brand); }
+.fls.hi .lb { color: rgba(255,255,255,.85); }
+.fl2 { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 1.2cqw; flex: 1; min-height: 0; position: relative; }
+.fl2::before { content: ""; position: absolute; left: 2%; right: 2%; top: calc(9.2cqw + .8cqw + 1.6cqw - .45cqw); height: .9cqw; border-radius: 1cqw; background: linear-gradient(90deg, var(--card), var(--line-strong)); }
+.fl2::after { content: ""; position: absolute; right: 1%; top: calc(9.2cqw + .8cqw + 1.6cqw - 1cqw); border-left: 1.4cqw solid var(--line-strong); border-top: 1cqw solid transparent; border-bottom: 1cqw solid transparent; }
+.f2 { display: grid; grid-template-rows: 9.2cqw 3.2cqw 1fr; gap: .8cqw; min-width: 0; position: relative; justify-items: center; }
+.f2-top { display: flex; flex-direction: column; gap: .45cqw; align-items: center; text-align: center; justify-content: flex-end; }
+.f2-top h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.6cqw; }
+.f2-top p { font-size: 1.02cqw; color: var(--sub-strong); line-height: 1.45; }
+.f2-node { width: 3.2cqw; height: 3.2cqw; border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: .25cqw solid var(--sub); color: var(--sub-strong); font-family: var(--f-display); font-weight: 800; font-size: 1.25cqw; position: relative; z-index: 1; }
+.f2.man .f2-node { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 0 0 .5cqw rgba(255,64,124,.18); }
+.f2-sol { position: relative; align-self: stretch; justify-self: stretch; border-radius: 1cqw; background: var(--card); padding: 1.2cqw 1.2cqw; display: flex; flex-direction: column; gap: .45cqw; border-top: .35cqw solid var(--line-strong); }
+.f2.man .f2-sol { background: var(--brand-soft); border-top-color: var(--brand); }
+.f2-sol::before { content: ""; position: absolute; left: 50%; top: -1.15cqw; height: .8cqw; border-left: 2px dashed var(--line-strong); }
+.f2-sol .lbl-sm { color: var(--brand); }
+.f2-sol h5 { font-family: var(--f-display); font-weight: 800; font-size: 1.4cqw; line-height: 1.3; }
+.f2.man .f2-sol h5 { color: var(--brand); }
+.f2-sol p { font-size: 1cqw; color: var(--sub-strong); line-height: 1.45; }
+.f2-sol .chip { margin-top: auto; align-self: flex-start; }
+
+/* 디자인 시스템 Before/After */
+.ds2 { display: flex; flex-direction: column; align-items: stretch; gap: 3cqw; flex: 1; min-height: 0; justify-content: center; }
+.ds2 .ds-g { flex-direction: row; align-items: center; gap: 1.6cqw; }
+.ds2 .ds-lab { width: 11cqw; flex: none; font-size: 1.2cqw; line-height: 1.35; }
+.ds2 .ds-arrow { display: none; }
+.ds-ex { font-size: .95cqw; font-weight: 700; color: var(--sub); }
+.ds-wrap { min-width: 0; }
+.ds-g { display: flex; flex-direction: column; gap: .8cqw; }
+.ds-lab { font-size: 1.1cqw; font-weight: 800; color: var(--sub); }
+.ds-g.after .ds-lab { color: var(--brand); }
+.ds-row { display: flex; gap: 1cqw; position: relative; }
+.ds-img { width: 17cqw; aspect-ratio: 360 / 198; max-width: 100%; border-radius: 1cqw; background: var(--card); overflow: hidden; display: grid; place-items: center; box-shadow: 0 .4cqw 1.2cqw rgba(25,31,40,.08); }
+.ds-img img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; }
+.ds-img.broken img { display: none; }
+.ds-ph { font-size: 1cqw; color: var(--sub); font-weight: 700; }
+.ds-g.before .ds-img:nth-child(1) { transform: rotate(-2.5deg); }
+.ds-g.before .ds-img:nth-child(2) { transform: rotate(2deg); border: .2cqw solid #D1D6DB; }
+.ds-g.before .ds-img:nth-child(3) { transform: rotate(-1.5deg); }
+.ds-g.after .ds-img { outline: .2cqw solid var(--brand); outline-offset: .25cqw; }
+.ds-guide { position: absolute; left: -1cqw; right: -1cqw; border-top: 2px dashed var(--brand); pointer-events: none; }
+.ds-guide.g1 { display: none; }
+.ds-guide.g2 { top: 79%; }
+.ds-rule { position: absolute; right: 0; bottom: -2.1cqw; white-space: nowrap; font-size: .95cqw; font-weight: 800; color: #fff; background: var(--brand); border-radius: 99px; padding: .25cqw .9cqw; }
+.ds-arrow { font-family: var(--f-display); font-weight: 800; font-size: 2.6cqw; color: var(--brand); padding-top: 2cqw; }
+.ds-pts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1cqw; margin-top: 1.4cqw; }
+.dp { display: flex; flex-direction: column; gap: .2cqw; border-left: .3cqw solid var(--brand); padding: .2cqw 0 .2cqw 1cqw; }
+.dp .num { font-size: 1cqw; color: var(--brand); }
+.dp b { font-family: var(--f-display); font-weight: 700; font-size: 1.3cqw; }
+.dp span:last-child { font-size: 1cqw; color: var(--sub-strong); line-height: 1.45; }
+
+/* 작업자 모집 · 도입 배경 */
+.bgc { border-radius: 1.1cqw; background: var(--ink); color: #fff; padding: 1.4cqw 1.6cqw; display: flex; flex-direction: column; gap: .8cqw; }
+.bgc .lbl-sm { color: var(--brand); }
+.bgc ol { display: flex; flex-direction: column; gap: .7cqw; }
+.bgc li { display: flex; gap: .9cqw; align-items: baseline; }
+.bgc li span { flex: none; width: 1.7cqw; height: 1.7cqw; border-radius: 50%; background: var(--brand); display: grid; place-items: center; font-size: .9cqw; font-weight: 800; }
+.bgc li p { font-size: 1.22cqw; line-height: 1.45; color: rgba(255,255,255,.92); }
+.side-list { gap: 1cqw; }
+
+/* 플래너 분기 */
+.br-wrap { display: grid; grid-template-columns: minmax(0, .62fr) minmax(0, 2fr); gap: 2cqw; flex: 1; min-height: 0; }
+.br-r { display: flex; flex-direction: column; gap: 1cqw; min-width: 0; }
+.br-h { color: var(--ink); }
+.br { position: relative; display: grid; grid-template-columns: 18% 20% 30% 22%; grid-template-rows: 1fr 1fr; column-gap: 3.333%; row-gap: 10%; height: 17cqw; }
+.br-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.br-lines path { fill: none; stroke: var(--line-strong); stroke-width: 3; vector-effect: non-scaling-stroke; }
+.br-lines path.hot { stroke: var(--brand); }
+.bx { border-radius: 1cqw; padding: 1cqw 1.2cqw; display: flex; flex-direction: column; justify-content: center; gap: .3cqw; position: relative; z-index: 1; background: var(--card); min-width: 0; }
+.bx h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.4cqw; line-height: 1.3; }
+.bx p { font-size: .98cqw; color: var(--sub-strong); line-height: 1.45; }
+.bx-tag { position: absolute; top: -1cqw; left: 1cqw; font-size: .82cqw; font-weight: 800; border-radius: .3cqw; padding: .1cqw .5cqw; background: var(--sub-strong); color: #fff; }
+.b-start { grid-column: 1; grid-row: 1 / 3; align-self: center; height: 60%; }
+.b-q { grid-column: 2; grid-row: 1 / 3; align-self: center; height: 70%; background: var(--bg); border: 2px solid var(--ink); text-align: center; align-items: center; }
+.b-a { grid-column: 3; grid-row: 1; background: var(--bg); border: 1.5px solid var(--line-strong); }
+.b-b { grid-column: 3; grid-row: 2; background: var(--ink); color: #fff; }
+.b-b p { color: rgba(255,255,255,.85); }
+.b-b .bx-tag { background: var(--brand); }
+.b-end { grid-column: 4; grid-row: 1 / 3; align-self: center; height: 64%; background: var(--brand-soft); }
+.b-end h4 { color: var(--brand); }
+
+/* 공사 설계 폼 목업 */
+.fm { border-radius: 1.4cqw; border: 1.5px solid var(--line-strong); background: var(--bg); padding: 1.3cqw 1.5cqw; display: flex; flex-direction: column; gap: .7cqw; min-width: 0; }
+.fm-h { display: flex; justify-content: space-between; align-items: baseline; }
+.fm-h b { font-family: var(--f-display); font-weight: 800; font-size: 1.25cqw; }
+.fm-h span { font-size: 1cqw; font-weight: 800; color: var(--sub-strong); font-variant-numeric: tabular-nums; }
+.fm-bar { display: block; height: .35cqw; border-radius: 1cqw; background: linear-gradient(90deg, var(--ink) 8%, var(--card) 8%); }
+.fm-sec { font-size: .92cqw; font-weight: 800; color: var(--brand); }
+.fq { display: flex; flex-direction: column; gap: .45cqw; }
+.fq-h { display: flex; justify-content: space-between; align-items: center; gap: 1cqw; }
+.fq-h h5 { font-family: var(--f-display); font-weight: 800; font-size: 1.3cqw; }
+.fq-na { font-size: .82cqw; font-weight: 700; color: var(--sub-strong); border: 1.5px solid var(--line-strong); border-radius: .6cqw; padding: .25cqw .6cqw; white-space: nowrap; }
+.fq-help { font-size: .92cqw; color: var(--sub); line-height: 1.4; }
+.fq-opts { display: flex; gap: .45cqw; flex-wrap: wrap; }
+.fo { font-size: .95cqw; font-weight: 600; padding: .45cqw .9cqw; border-radius: .6cqw; background: var(--card); color: var(--sub-strong); }
+.fo.sel { background: var(--ink); color: #fff; }
+.fq-ai { border-radius: .8cqw; border: 1.5px solid var(--brand); background: var(--brand-soft); padding: .6cqw .9cqw; font-size: .95cqw; line-height: 1.45; }
+.fq-ai .who-l { display: block; font-size: .78cqw; font-weight: 800; color: var(--brand); }
+.fm-res { margin-top: auto; border-radius: .9cqw; background: var(--ink); color: #fff; padding: .8cqw 1.1cqw; display: flex; flex-direction: column; gap: .2cqw; }
+.fm-res .lbl-sm { color: var(--brand); }
+.fm-res b { font-family: var(--f-display); font-weight: 800; font-size: 1.35cqw; }
+.fm-res p { font-size: .92cqw; color: rgba(255,255,255,.8); }
+.ai { grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr); gap: 2.4cqw; }
+.ai .fm { gap: .5cqw; padding: 1cqw 1.3cqw; overflow: hidden; }
+.ai .fq { gap: .35cqw; }
+.ai .fm-res { margin-top: .2cqw; padding: .6cqw 1cqw; }
+.ai .vf { padding: .8cqw 1.1cqw; }
+.ai .vf h4 { font-size: 1.3cqw; }
+.eff-row .ef { padding: .8cqw 1.1cqw; }
+.eff-row .ef h4 { font-size: 1.3cqw; }
+.eff-row .ef p { font-size: .98cqw; }
+
+/* 작업자 A/B */
+.parts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2cqw; flex: 1; min-height: 0; }
+.part { border-radius: 1.3cqw; border: 1.5px solid var(--line); padding: 1.4cqw 1.6cqw; display: flex; flex-direction: column; gap: 1cqw; min-width: 0; }
+.part.b { border-color: var(--brand); background: linear-gradient(180deg, var(--brand-soft), var(--bg) 40%); }
+.part-h { display: flex; align-items: center; gap: .9cqw; }
+.part-l { width: 2.6cqw; height: 2.6cqw; border-radius: .7cqw; display: grid; place-items: center; background: var(--ink); color: #fff; font-family: var(--f-display); font-weight: 800; font-size: 1.4cqw; }
+.part.b .part-l { background: var(--brand); }
+.part-h h4 { font-family: var(--f-display); font-weight: 800; font-size: 1.6cqw; flex: 1; min-width: 0; }
+.part .dsh { flex: 1; padding: 1cqw; }
+.part .sub-ba { flex: 1; }
+.part .sb { padding: 1cqw 1.3cqw; }
+
+/* 인앱 채팅 목업 */
+.cm-ph { gap: .6cqw; padding: 1.1cqw; }
+.cm-body { display: flex; flex-direction: column; gap: .6cqw; flex: 1; }
+.cm-sys { align-self: center; font-size: .82cqw; color: var(--sub); background: var(--bg); border-radius: 99px; padding: .2cqw .8cqw; }
+.cm-row { display: flex; gap: .6cqw; align-items: flex-start; }
+.cm-row.me { justify-content: flex-end; }
+.cm-av { width: 1.9cqw; height: 1.9cqw; border-radius: 50%; background: var(--line-strong); flex: none; }
+.cm-col { display: flex; flex-direction: column; gap: .2cqw; min-width: 0; max-width: 86%; }
+.cm-row.me .cm-col { align-items: flex-end; }
+.cm-name { font-size: .82cqw; font-weight: 700; color: var(--sub-strong); }
+.cm-line { display: flex; align-items: flex-end; gap: .4cqw; }
+.cm-b { font-size: 1cqw; line-height: 1.4; border-radius: 1cqw; padding: .55cqw .9cqw; background: var(--bg); }
+.cm-row.me .cm-b { background: var(--ink); color: #fff; }
+.cm-time { font-size: .72cqw; color: var(--sub); white-space: nowrap; }
+.cm-det { display: flex; align-items: center; gap: .6cqw; border-radius: 1cqw; background: var(--brand-soft); border: 1.5px solid var(--brand); padding: .7cqw .9cqw; }
+.cm-det > div { flex: 1; min-width: 0; }
+.cm-det-q { font-size: .85cqw; color: var(--sub-strong); font-weight: 600; }
+.cm-det-v { font-family: var(--f-display); font-weight: 800; font-size: 1.5cqw; }
+.cm-btn { font-size: .9cqw; font-weight: 700; border-radius: .6cqw; padding: .4cqw .9cqw; background: var(--bg); }
+.cm-btn.yes { background: var(--brand); color: #fff; }
+.cm-quick { display: flex; gap: .4cqw; overflow: hidden; }
+.cm-q { font-size: .85cqw; font-weight: 600; white-space: nowrap; border: 1.5px solid var(--line-strong); background: var(--bg); border-radius: 99px; padding: .35cqw .8cqw; }
+.cm-q::after { content: " ✦"; color: var(--brand); }
+.cm-input { font-size: .85cqw; color: var(--sub); background: var(--bg); border-radius: 99px; padding: .5cqw 1cqw; }
+.ch-wrap { grid-template-columns: minmax(0, .8fr) minmax(0, 1.25fr) minmax(0, 1fr); }
+
+/* 성장 시나리오 (탭 · 수수료) */
+.gw-bar { display: flex; align-items: center; justify-content: space-between; gap: 1cqw; }
+.gw-bar .lbl-sm { color: var(--sub-strong); }
+.sc-tabs { display: inline-flex; background: var(--card); border-radius: 99px; padding: .3cqw; gap: .2cqw; }
+.sc-t { border: 0; background: transparent; border-radius: 99px; padding: .45cqw 1.3cqw; font-size: 1.05cqw; font-weight: 800; color: var(--sub-strong); cursor: pointer; font-family: var(--f-body); }
+.sc-t.on { background: var(--ink); color: #fff; }
+.lv .ch b.to { color: var(--brand); font-weight: 800; }
+.fee { display: inline-flex; align-items: center; gap: .5cqw; align-self: flex-start; background: var(--bg); border-radius: 99px; padding: .2cqw; border: 1.5px solid var(--line-strong); }
+.fee button { width: 1.9cqw; height: 1.9cqw; border-radius: 50%; border: 0; background: var(--ink); color: #fff; font-size: 1.1cqw; font-weight: 800; line-height: 1; cursor: pointer; padding: 0; }
+.fee b { font-family: var(--f-display); font-size: 1.15cqw; min-width: 3.4cqw; text-align: center; }
+.lv-end.res { background: var(--ink); color: #fff; justify-content: center; }
+.lv-end.res .lb { color: rgba(255,255,255,.75); }
+.lv-end.res .num { font-family: var(--f-display); font-weight: 800; font-size: 1.95cqw; color: var(--brand); white-space: nowrap; }
+.lv-end.res p { color: rgba(255,255,255,.82); }
+.lv-end.res p b { color: #fff; }
+.gw { grid-template-columns: repeat(var(--n, 7), minmax(0, 1fr)); }
+.gw-chart .hint { text-align: right; }
+
+/* 챕터 전환 */
+.sl-ch { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 5cqw; align-items: center; padding: 5cqw 6.4cqw; background: var(--bg); }
+.ch-l { display: flex; flex-direction: column; gap: 1.2cqw; }
+.ch-n { font-family: var(--f-display); font-weight: 800; font-size: 9cqw; line-height: 1; color: var(--brand); letter-spacing: -.04em; }
+.ch-t { font-family: var(--f-display); font-weight: 800; font-size: 4.4cqw; line-height: 1.15; letter-spacing: -.03em; view-transition-name: slh-title; }
+.ch-s { font-size: 1.5cqw; color: var(--sub-strong); font-weight: 500; }
+.ch-list { border-top: 2px solid var(--ink); }
+.ch-list li { display: flex; gap: 1.4cqw; align-items: baseline; padding: 1.1cqw 0; border-bottom: 1px solid var(--line); color: var(--line-strong); }
+.ch-list li span { font-family: var(--f-display); font-weight: 800; font-size: 1.2cqw; }
+.ch-list li b { font-family: var(--f-display); font-weight: 700; font-size: 1.5cqw; }
+.ch-list li.past { color: var(--sub); }
+.ch-list li.on { color: var(--ink); }
+.ch-list li.on span { color: var(--brand); }
 /* ───────── 발표 화면 ───────── */
 .pv { position: fixed; inset: 0; background: var(--bg); display: grid; place-items: center; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .pv-stage { width: min(100vw, calc(100vh * 16 / 9)); width: min(100vw, calc(100dvh * 16 / 9)); }
@@ -399,16 +797,16 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 }
 </style>
 <div id="app"></div>
-<script type="application/json" id="deck-data">{"rev": 3, "deck": "셀인해 프로덕트 1년 추진 계획", "metrics": "월,매칭 요청,연결,계약\n25.09,212,64,9\n25.10,454,219,31\n25.11,413,280,44\n25.12,966,682,93\n26.01,898,627,102\n26.02,1074,716,113\n26.03,1367,967,170\n26.04,1171,833,124\n26.05,1170,867,86\n26.06,,,\n26.07,817,602,83\n26.08,1263,740,79\n26.09,752,520,124\n26.10,946,901,111", "slides": [{"type": "cover", "note": "프로덕트 담당 남민우입니다. 셀인해 1년 비전을 프로덕트 관점에서 어떻게 실현할지, 앞으로 10개월의 추진 계획을 말씀드리겠습니다.", "d": {"sec": "2026 셀인해 워크숍", "title": "셀인해 1년 비전 달성을 위한 프로덕트 추진 계획", "lead": "기획 · UX/UI · 개발 · 데이터", "meta": [{"k": "발표", "v": "남민우 · 프로덕트 담당"}, {"k": "일자", "v": "2026. 10. 07"}, {"k": "계획 기간", "v": "2026.10 – 2027.07"}]}, "include": true}, {"type": "agenda", "note": "순서는 현황 진단, 목표와 역할, 추진 로드맵, 과제별 실행 계획, 성과 관리, 마지막으로 추가 수익 모델 검토입니다.", "d": {"title": "목차", "items": [{"t": "현황 진단", "d": "지표로 본 플랫폼의 현재"}, {"t": "목표와 역할", "d": "1년 목표와 프로덕트 R&R"}, {"t": "추진 로드맵", "d": "2026.10 – 2027.07 일정"}, {"t": "과제별 실행 계획", "d": "7개 과제 상세"}, {"t": "성과 관리", "d": "KPI 체계 · 측정 · 리스크"}, {"t": "추가 수익 모델", "d": "논의 제안"}], "src": ""}, "include": true}, {"type": "summary", "note": "먼저 결론부터 말씀드리겠습니다. 유입은 이미 월 1천 건 수준으로 확보했습니다. 앞으로 1년은 들어온 고객을 계약까지 더 많이 데려가고, 운영진 손이 가는 일을 시스템으로 옮기는 데 집중하겠습니다.", "d": {"sec": "요약", "title": "유입은 확보했고, 이제 전환과 자동화로 플랫폼 매출을 키우겠습니다", "lead": "", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "cols": [{"h": "현황", "big": "13개월 누적 매칭 요청 11,503건, 계약 1,169건", "pts": ["연결 → 계약 전환율 평균 14.6%", "연결마다 운영진이 단톡방 직접 개설 (월평균 728건)", "매출 · 단계별 전환 데이터 미집계"]}, {"h": "목표", "big": "플랫폼 매출 확대, 운영 부담 축소", "pts": ["연결 → 계약 전환율 20% 이상", "상담 · 단톡방 · 거래 확인 수작업의 시스템화", "대행 매출 의존도 완화"]}, {"h": "실행", "big": "5단계 로드맵, 2026.10 – 2027.07", "pts": ["P1 (10월) 자재 구매 · 작업자 모집 · 커뮤니티 MVP", "P2 (11–12월) 플래너 개편 · 앱 런칭", "P3–P5 (2027) 작업자 개편 · 인앱 채팅 · 커뮤니티"]}]}, "include": true}, {"type": "kpis", "note": "13개월 동안 누적 가입자 2,297명, 매칭 요청 11,503건, 계약 1,169건이 쌓였습니다. 서비스 초기 3개월과 비교하면 최근 3개월 매칭 요청이 2.6배 늘었습니다.", "d": {"sec": "01 현황 진단", "title": "13개월간 매칭 요청 11,503건, 계약 1,169건 달성", "lead": "", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "tiles": [{"lb": "누적 가입자", "v": "2,297", "u": "명", "nt": "2025.09 – 2026.10.07"}, {"lb": "누적 매칭 요청", "v": "11,503", "u": "건", "nt": "가입자 1인당 약 5.0건"}, {"lb": "누적 연결", "v": "8,018", "u": "건", "nt": "매칭 요청 대비 69.7%"}, {"lb": "누적 계약", "v": "1,169", "u": "건", "nt": "연결 대비 14.6%", "hi": true}, {"lb": "활성 업체", "v": "79", "u": "팀", "nt": "구독 중"}], "insight": "서비스 첫 3개월(25.09–11) 대비 최근 3개월(26.07–09) 매칭 요청 2.6배 증가 (1,079건 → 2,832건)", "ctx": "참고 · 마케팅 채널 (김도헌 이사 담당): 오픈채팅 609명 · 유튜브 구독자 1,580명 (2026.10.07 기준)"}, "include": true}, {"type": "chartM", "note": "월별로 보면 매칭 요청은 3월에 1,367건으로 정점을 찍고, 이후 750건에서 1,260건 사이를 오가고 있습니다. 유입 규모는 확보됐고, 과제는 유입 이후의 전환입니다.", "d": {"sec": "01 현황 진단", "title": "월 매칭 요청은 1천 건 안팎으로 성장, 이제 과제는 유입 이후의 전환", "lead": "월별 매칭 요청 수 (건)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "points": ["2026.03 최고 1,367건, 이후 750 – 1,260건 사이에서 등락", "첫 3개월 대비 최근 3개월 매칭 요청 2.6배", "막대를 누르면 해당 월의 연결 · 계약 수치 확인 가능"]}, "include": true}, {"type": "chartR", "note": "연결된 고객 중 실제 계약까지 가는 비율은 평균 14.6%입니다. 9월처럼 23.8%까지 오른 달도 있고, 5월처럼 9.9%까지 떨어진 달도 있습니다. 지금은 이 차이가 왜 생기는지 설명할 데이터가 없습니다. 목표는 이 전환율을 안정적으로 20% 이상으로 올리는 것입니다.", "d": {"sec": "01 현황 진단", "title": "연결 대비 계약 전환율 평균 14.6%, 목표는 20% 이상 안정화", "lead": "월별 연결 → 계약 전환율 (%)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "target": "20", "points": ["최고 2026.09 23.8%, 최저 2026.05 9.9%로 변동 폭이 큼", "월별 변동 원인을 설명할 단계별 데이터가 아직 없음", "플래너 개편과 측정 체계로 20% 이상을 안정적으로 유지"]}, "include": true}, {"type": "flow", "note": "현재 운영 구조입니다. 매칭 요청부터 계약까지 다섯 단계 중 세 단계를 운영진이 직접 처리합니다. 특히 연결 한 건마다 단톡방을 손으로 만들고 있어, 최근 기준 하루 약 24개입니다. 매출이 늘수록 운영진 시간도 같이 늘어나는 구조입니다.", "d": {"sec": "01 현황 진단", "title": "연결 1건마다 운영진 수작업이 반복되는 구조", "lead": "매칭 요청부터 계약까지의 운영 프로세스와 개선 과제", "src": "출처: 셀인해 어드민 (2025.12 – 2026.09 중 2026.06 제외 9개월 평균) · 연결 1건 = 단톡방 1개 기준", "steps": [{"t": "매칭 요청", "d": "고객이 플래너에서 공정별 시공 업체 요청", "man": false, "fix": "플래너 개편 (2026.11–12)"}, {"t": "상담 · 확인", "d": "반셀프가 낯선 고객 상담, 요청 내용 확인", "man": true, "fix": "단계형 플래너로 상담 대체"}, {"t": "단톡방 개설", "d": "고객 · 업체 · 셀인해 카카오톡 단톡방 직접 생성", "man": true, "fix": "인앱 채팅 (2027.03–04)"}, {"t": "대화 · 거래 확인", "d": "대화를 보며 계약 여부와 우회 거래 확인", "man": true, "fix": "거래 신호 자동 감지"}, {"t": "계약 · 정산", "d": "계약 확정 및 수수료 정산", "man": false, "fix": "월 매출 추이 집계 신설"}], "stats": [{"v": "728건", "lb": "월평균 연결 = 운영진이 만드는 단톡방 수"}, {"v": "약 24건", "lb": "하루 평균 단톡방 개설"}, {"v": "3단계", "lb": "운영진 손을 거치는 단계 (상담 · 개설 · 확인)"}]}, "include": true}, {"type": "goals", "note": "회사의 1년 비전은 '반셀프 하면 셀인해'입니다. 이 비전 아래에서 프로덕트는 두 가지 목표에 집중하겠습니다. 첫째, 플랫폼 매출 확대입니다. 대행은 사람 시간에 비례하지만 플랫폼은 개선이 곱해져 커집니다. 둘째, 운영 부담을 줄이고 대행 의존도를 낮추는 것입니다.", "d": {"sec": "02 목표와 역할", "title": "회사 비전 아래, 프로덕트는 두 가지 목표에 집중합니다", "lead": "", "src": "", "vision": "반셀프 하면, [[셀인해]]", "visionNote": "셀인해 1년 비전", "concept": true, "goals": [{"no": "목표 01", "t": "플랫폼 매출 확대", "d": "대행 매출은 운영진 시간에 비례하지만, 플랫폼 매출은 유입과 전환 개선이 곱으로 쌓입니다. 같은 유입에서 더 많은 계약이 나오게 만듭니다.", "kpi": "연결 → 계약 전환율 14.6% → 20% 이상"}, {"no": "목표 02", "t": "운영 부담 축소 · 대행 의존도 완화", "d": "상담 · 단톡방 개설 · 거래 확인 등 반복 수작업을 시스템으로 옮깁니다. 운영진은 대행과 고부가 업무에 집중하고, 매출 구조는 플랫폼 중심으로 이동합니다.", "kpi": "운영 수작업 건수 · 플랫폼 매출 비중 (측정 신설)"}]}, "include": true}, {"type": "rnr", "note": "제 역할은 프로덕트 담당입니다. 기획부터 디자인, 개발, 데이터까지 단독으로 맡아 네 개 서비스를 운영합니다. 오른쪽은 제가 책임지는 영역과, 각 영역의 성과를 무엇으로 판단할지입니다.", "d": {"sec": "02 목표와 역할", "title": "프로덕트 전 과정을 책임지고, 성과는 지표로 증명합니다", "lead": "", "src": "", "role": "프로덕트 담당", "roleD": "기획 · UX/UI 디자인 · 개발 · 데이터를 단독 수행하며, 소비자 · 작업자 · 자재 매장 · 어드민 4개 서비스를 운영합니다.", "team": [{"k": "대표", "v": "사업 총괄 · 의사결정"}, {"k": "김도헌 이사", "v": "마케팅 · 운영"}, {"k": "남민우", "v": "프로덕트 · 데이터"}], "rows": [{"a": "프로덕트 전략", "w": "로드맵 수립, 과제 우선순위 결정", "k": "로드맵 일정 준수"}, {"a": "고객 경험 설계", "w": "고객 흐름 기획, UX/UI · 디자인 시스템 운영", "k": "단계별 전환율"}, {"a": "서비스 개발", "w": "Bubble 기반 전 화면 개발, 앱 전환", "k": "출시 일정 · 오류 건수"}, {"a": "운영 자동화", "w": "단톡방 · 알림 · 거래 확인 자동화", "k": "운영 수작업 건수"}, {"a": "데이터 · 성과 관리", "w": "로그 설계, 월간 지표 리포트", "k": "월 1회 리포트 공유"}, {"a": "고객 커뮤니케이션", "w": "알림톡 · 채널 메시지 작성", "k": "메시지 반응률"}]}, "include": true}, {"type": "done", "note": "로드맵에 앞서 최근 완료한 작업입니다. 그때그때 추가하던 화면 요소를 하나의 규칙으로 정리했습니다. 이 디자인 시스템이 앞으로 만들 모든 화면의 기반이 되고, 자재 구매 기능에 처음 적용했습니다.", "d": {"sec": "03 추진 로드맵 · 완료 과제", "title": "디자인 시스템 재정립 완료, 이후 모든 신규 화면의 기반", "lead": "그때그때 추가되던 화면 요소를 하나의 규칙으로 정리", "src": "", "pts": [{"t": "사용 기준 정의", "d": "팝업 · 바텀시트를 상황별로 구분해 사용 규칙 수립"}, {"t": "오조작 방지", "d": "확인 · 취소 버튼의 위치와 위계 통일"}, {"t": "개발 속도 향상", "d": "공통 요소 재사용으로 신규 화면 제작 시간 단축"}, {"t": "첫 적용", "d": "자재 구매 기능 (소비자 · 매장 · 어드민)에 전면 적용"}], "images": [null, null]}, "include": true}, {"type": "gantt", "note": "전체 일정입니다. 다섯 단계로 나눴습니다. 10월에는 자재 구매를 마무리하고 작업자 모집 페이지와 커뮤니티 MVP를 만듭니다. 연말까지 플래너 개편과 앱 런칭, 내년 1–2월 작업자 화면 개편, 3–4월 인앱 채팅, 4월부터 커뮤니티를 정식으로 엽니다. 데이터 트래킹은 전 기간 동안 지속합니다.", "d": {"sec": "03 추진 로드맵", "title": "5단계로 10개월간 추진합니다", "lead": "P1 기반 구축 → P2 전환율 · 앱 → P3 공급자 경험 → P4 운영 자동화 → P5 커뮤니티", "src": "※ 커뮤니티 MVP 일정은 가안", "from": "2026-10-01", "today": "2026-10-07", "months": ["26년 10월", "11월", "12월", "27년 1월", "2월", "3월", "4월", "5월", "6월", "7월"], "rows": [{"ph": "P1", "t": "자재 구매 기능 완성", "p": "~ 10.11", "s": "2026-10-01", "e": "2026-10-12", "kind": "go", "step": 1}, {"ph": "P1", "t": "작업자 모집 페이지", "p": "10.12 – 10.18", "s": "2026-10-12", "e": "2026-10-19", "kind": "", "step": 1}, {"ph": "P1", "t": "커뮤니티 MVP (단톡방 요약)", "p": "10월 말", "s": "2026-10-19", "e": "2026-11-01", "kind": "", "step": 1}, {"ph": "P2", "t": "플래너 전면 개편", "p": "11 – 12월", "s": "2026-11-01", "e": "2027-01-01", "kind": "", "step": 2}, {"ph": "P2", "t": "앱 런칭 (홍보 없이)", "p": "12월 말", "s": "2026-12-31", "kind": "ms", "step": 2}, {"ph": "P2", "t": "앱 안정화 테스트", "p": "1 – 4월", "s": "2027-01-01", "e": "2027-05-01", "kind": "ongoing", "step": 2}, {"ph": "P3", "t": "작업자 화면 전면 개편", "p": "1 – 2월", "s": "2027-01-01", "e": "2027-03-01", "kind": "", "step": 3}, {"ph": "P4", "t": "인앱 채팅 · 앱 홍보", "p": "3 – 4월", "s": "2027-03-01", "e": "2027-05-01", "kind": "", "step": 4}, {"ph": "P5", "t": "커뮤니티 정식 오픈", "p": "4월 ~", "s": "2027-04-01", "e": "2027-08-01", "kind": "", "step": 5}, {"ph": "상시", "t": "데이터 트래킹 · 월간 리포트", "p": "전 기간", "s": "2026-10-01", "e": "2027-08-01", "kind": "ongoing", "step": 5}]}, "include": true}, {"type": "task", "include": true, "note": "첫 번째 과제는 자재 구매입니다. 원래 10월 6일 완료 목표였는데 이번 주말까지로 조정했습니다. 시공 업체 연결에서 끝나던 흐름을 자재 구매까지 이어서, 플랫폼 밖에서 일어나던 자재 거래를 수익으로 연결합니다.", "d": {"sec": "04 과제별 실행 계획 · 1 / 7 · P1", "title": "자재 구매 기능 완성으로 시공 이후 자재 구매까지 플랫폼 안에서 연결", "lead": "", "period": "2026.10.01 – 10.11", "status": "마무리 중", "tag": "당초 10.06 → 10.11 완료 예정", "asis": ["시공 업체 연결 후 자재는 고객이 직접 검색해 구매", "자재 거래가 플랫폼 밖에서 발생해 수익 · 데이터 미확보", "자재 매장과의 접점이 운영진 개인 연락에 의존"], "tobe": ["공정이 확정된 고객에게 연동 자재 매장 자동 추천", "방문 예약 → 전날 리마인드 → 방문 확인 알림 자동 발송", "매장 전용 관리 화면 (매출 · 예약 · 통계 · 프로필) 제공", "거래 발생 시 매장 · 어드민이 매출 입력"], "eff": ["자재 거래 수수료라는 신규 매출원 확보", "고객 체류 구간 확대 (시공 → 자재)", "관리 화면으로 매장의 플랫폼 이탈 방지"], "kpi": ["예약 → 방문 전환율", "방문 → 거래 신고율", "업체별 방문 대비 신고 비율"], "src": ""}}, {"type": "task", "include": true, "note": "두 번째는 작업자 모집 페이지입니다. 자재 구매 직후 1주일 동안 소개부터 가입 신청까지 만들겠습니다. 지금은 운영진이 개별로 안내하고 있는데, 이걸 페이지 하나로 대체합니다.", "d": {"sec": "04 과제별 실행 계획 · 2 / 7 · P1", "title": "작업자 모집 페이지로 공급 확대를 시스템화", "lead": "", "period": "2026.10.12 – 10.18", "status": "예정", "tag": "1주 집중", "asis": ["작업자 모집 · 가입 안내를 운영진이 개별 응대", "셀인해를 소개할 공식 페이지가 없어 신뢰 형성에 시간 소요"], "tobe": ["셀인해 소개 → 혜택 → 가입 신청까지 한 페이지 흐름", "신청 정보 어드민 자동 적재, 검토 상태 관리", "신규 디자인 시스템 적용"], "eff": ["활성 업체 79팀 기반 공급 확대", "모집 응대 시간 절감", "연결률 개선의 기반 (공급 부족 공정 보강)"], "kpi": ["월 가입 신청 수", "신청 → 활성 업체 전환율"], "src": ""}}, {"type": "task", "include": true, "note": "세 번째는 커뮤니티 MVP입니다. 단톡방에 좋은 정보가 매일 올라오는데 흘러가 버립니다. 전날 대화를 자동으로 모아 아티클로 만들고, 어드민이 검수한 뒤 발행합니다. 정식 커뮤니티를 열기 전에 콘텐츠를 먼저 쌓는 단계입니다.", "d": {"sec": "04 과제별 실행 계획 · 3 / 7 · P1", "title": "단톡방에서 휘발되던 정보를 매일 아티클로 축적", "lead": "", "period": "2026.10 말 (가안)", "status": "예정", "tag": "커뮤니티 MVP", "asis": ["오픈채팅 609명이 매일 양질의 정보를 나누지만 흘러가서 사라짐", "셀인해 사이트로 검색 유입을 만들 콘텐츠 부족"], "tobe": ["전날 단톡방 대화를 자동 수집 → 핵심 내용을 AI가 아티클로 정리", "발행 전 어드민 최종 검수", "게시글 구조를 Q&A · 자랑 게시판까지 확장 가능하게 설계"], "eff": ["커뮤니티 콘텐츠 DB 선확보", "검색 유입 경로 확보, 반셀프 정보 허브로서의 인지도", "2027.04 정식 커뮤니티의 기반"], "kpi": ["발행 아티클 수", "아티클 방문자 수"], "src": ""}}, {"type": "task", "include": true, "note": "네 번째, 가장 중요한 과제인 플래너 개편입니다. 반셀프를 모르는 고객도 튜토리얼처럼 따라오면 계약까지 갈 수 있게 만들겠습니다. 단계별 이탈 로그도 함께 심고, 연말에는 앱으로 런칭합니다. 앱은 홍보 없이 런칭해서 안정화부터 하겠습니다.", "d": {"sec": "04 과제별 실행 계획 · 4 / 7 · P2", "title": "반셀프 입문자도 혼자 계약까지 도달하는 플래너로 개편", "lead": "", "period": "2026.11 – 12", "status": "기획 · 디자인 진행 중", "tag": "앱 런칭 포함", "asis": ["반셀프가 낯선 고객은 흐름을 몰라 운영진 상담에 의존", "연결 → 계약 전환율 평균 14.6%, 월별 9.9 – 23.8%로 변동", "웹 기반이라 푸시 알림 등 재방문 장치 부재"], "tobe": ["공정 순서를 튜토리얼처럼 안내하는 단계형 플래너", "단계별 이탈 로그 수집 (가입 → 플래너 → 매칭 → 계약)", "앱 래핑 후 연말 런칭, 홍보 없이 안정화 우선"], "eff": ["상담 의존도 감소", "계약 전환율 개선", "앱 기반 재방문 · 알림 채널 확보"], "kpi": ["연결 → 계약 전환율 14.6% → 20% 이상", "가입 → 매칭 요청 전환율 (신규 측정)"], "src": ""}}, {"type": "task", "include": true, "note": "다섯 번째는 작업자 화면 전면 개편입니다. 자재 매장 사장님용 화면을 만들면서 얻은 경험을 작업자 쪽으로 넓힙니다. 작업자가 플랫폼 안에서 일을 관리하게 되면 구독도 오래 유지됩니다.", "d": {"sec": "04 과제별 실행 계획 · 5 / 7 · P3", "title": "자재 매장 화면 구축 경험을 작업자 화면 전면 개편으로 확장", "lead": "", "period": "2027.01 – 02", "status": "예정", "tag": "2개월", "asis": ["작업자 화면이 초기 구조 그대로 운영", "작업자가 일정 · 고객 · 실적을 한눈에 관리하기 어려움"], "tobe": ["자재 매장 화면에서 검증한 관리 구조 (매출 · 예약 · 통계 · 프로필) 적용", "신규 디자인 시스템 전면 적용"], "eff": ["작업자 활동성 증가 → 공급 품질 향상", "구독 유지율 개선"], "kpi": ["활성 업체 수 (현재 79팀)", "작업자 월간 접속률"], "src": ""}}, {"type": "task", "include": true, "note": "여섯 번째는 인앱 채팅입니다. 운영진 부담을 줄이는 핵심 과제입니다. 연결되면 채팅방이 자동으로 만들어지고, 거래가 있었는지는 시스템이 먼저 표시하고 운영진이 최종 판단합니다. 이때부터 앱 홍보도 시작합니다.", "d": {"sec": "04 과제별 실행 계획 · 6 / 7 · P4", "title": "단톡방 수작업을 인앱 채팅으로 대체해 운영 부담을 구조적으로 축소", "lead": "", "period": "2027.03 – 04", "status": "기획 · 디자인 완료", "tag": "앱 홍보 시작", "asis": ["연결마다 운영진이 단톡방 직접 개설 (월평균 728건)", "거래 여부를 운영진이 대화를 보며 수동 확인", "대화 데이터가 플랫폼에 남지 않음"], "tobe": ["연결 시 채팅방 자동 생성 (고객 · 업체 · 셀인해)", "대화 기반 거래 신호 감지 → '확인 필요' 표시, 최종 판단은 운영진", "앱 푸시 알림, 앱 사용 유도 홍보"], "eff": ["단톡방 개설 수작업 제거", "거래 확인 효율화, 누락 매출 방지", "대화 데이터 축적"], "kpi": ["운영 수작업 건수", "앱 전환율"], "src": ""}}, {"type": "boards", "note": "마지막 일곱 번째는 커뮤니티 정식 오픈입니다. 단톡방 요약 아티클에 더해 매거진, Q&A, 자랑 게시판, 남은 자재 나눔까지 열겠습니다. 정보가 쌓이면 검색으로 사람이 들어오고, 그게 신뢰가 되고, 결국 작업자 매칭과 수수료로 이어집니다.", "d": {"sec": "04 과제별 실행 계획 · 7 / 7 · P5", "title": "커뮤니티를 반셀프 정보 · 거래 · 평판이 쌓이는 공간으로 확장", "lead": "", "src": "", "period": "2027.04 ~ (3개월 이상)", "status": "예정", "boards": [{"t": "단톡방 요약 아티클", "d": "매일 자동 발행, 어드민 검수 (MVP에서 확장)", "w": "운영"}, {"t": "셀인해 매거진", "d": "시공 포트폴리오, 반셀프 꿀팁 (어드민 작성)", "w": "어드민"}, {"t": "Q&A", "d": "누구나 질문 · 답변, 작업자는 답변으로 인지도 확보", "w": "소비자 · 작업자"}, {"t": "자랑 게시판", "d": "시공 사진에 자재 · 작업자 연동 (오늘의집 초창기 모델)", "w": "소비자"}, {"t": "자재 나눔 · 중고거래", "d": "공사 후 남은 자재 거래", "w": "소비자"}, {"t": "자유게시판", "d": "반셀프 경험 공유 · 소통", "w": "전체"}], "loop": ["정보 축적", "검색 유입", "신뢰 형성", "작업자 매칭 · 수수료"], "kpi": ["월 방문자 수", "월 게시글 수", "커뮤니티 경유 매칭 요청 수"]}, "include": true}, {"type": "tree", "note": "성과는 이 산식으로 관리하겠습니다. 플랫폼 매출은 가입자, 1인당 매칭 요청, 연결률, 계약 전환율, 계약당 매출의 곱입니다. 계약 전환율 하나만 20%로 올려도 같은 유입에서 계약이 37% 늘어납니다. 그래서 대행과 달리 플랫폼은 곱으로 커집니다.", "d": {"sec": "05 성과 관리", "title": "단계별 전환을 곱으로 관리해 플랫폼 매출을 키웁니다", "lead": "플랫폼 매출 = 가입자 × 1인당 매칭 요청 × 연결률 × 계약 전환율 × 계약당 매출", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "nodes": [{"lb": "가입자", "v": "2,297명", "by": "커뮤니티 · 앱 런칭"}, {"lb": "1인당 매칭 요청", "v": "5.0건", "by": "플래너 개편"}, {"lb": "연결률", "v": "69.7%", "by": "작업자 모집 · 작업자 화면 개편"}, {"lb": "계약 전환율", "v": "14.6%", "tg": "목표 20% 이상", "key": true, "by": "플래너 개편 · 인앱 채팅"}, {"lb": "계약당 매출", "v": "집계 예정", "by": "자재 구매 · 추가 수익 모델"}, {"lb": "결과", "v": "플랫폼 매출", "by": "각 단계 개선이 곱해져 반영"}], "ins": [{"h": "INSIGHT", "p": "계약 전환율만 14.6% → 20%로 올려도, 같은 연결 8,018건에서 계약 1,169건 → 1,604건 (+37%)"}, {"h": "구조", "p": "네 단계가 각각 10%씩만 개선돼도 매출은 1.1⁴ ≈ 1.46배. 사람 시간에 비례하는 대행과 다른 점"}]}, "include": true}, {"type": "table", "note": "지금은 매칭 요청 이후만 보고 있습니다. 앞으로 월 매출 추이와 가입부터 계약까지 전 구간 전환율을 측정하겠습니다. 버블 비용을 고려해 핵심 이벤트만 골라 수집하고, 매월 한 번 지표 리포트로 공유드리겠습니다.", "d": {"sec": "05 성과 관리", "title": "측정 범위를 매출과 전 구간 전환율로 확대합니다", "lead": "현재는 매칭 요청 이후만 집계 → 가입부터 매출까지 월간 리포트로 관리", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.10.07) · 2026.06 데이터 누락", "lastStrong": true, "heads": ["지표", "정의", "현재", "도입 시점"], "rows": [["월 매출 추이", "대행 · 플랫폼 매출을 구분한 월별 추이", "미집계", "P2"], ["가입 → 매칭 요청", "가입자 중 매칭을 요청한 비율", "미측정", "P2 · 플래너 개편"], ["매칭 요청 → 연결", "요청 중 업체와 연결된 비율", "69.7%", "측정 중"], ["연결 → 계약", "연결 중 계약까지 간 비율", "14.6%", "측정 중"], ["가입 → 계약", "가입자 중 계약까지 간 비율", "미측정", "P2 · 플래너 개편"], ["앱 전환율", "활성 사용자 중 앱 사용 비율", "—", "P2 · 앱 런칭 후"], ["거래 신고 누락 탐지", "업체별 방문 완료 대비 거래 신고 비율", "—", "P1 · 자재 구매"]], "insight": "Bubble 워크로드 비용을 고려해 핵심 이벤트만 선별 수집, 월 1회 지표 리포트로 공유"}, "include": true}, {"type": "table", "note": "리스크도 미리 말씀드리겠습니다. 가장 큰 리스크는 일정입니다. 혼자 개발하다 보니 하나가 밀리면 뒤가 같이 밀립니다. 과제마다 최소 범위를 먼저 정하고, 2주마다 진행 상황을 공유드리겠습니다.", "d": {"sec": "05 성과 관리", "title": "일정 · 데이터 리스크를 미리 관리합니다", "lead": "", "src": "", "lastStrong": false, "heads": ["리스크", "영향", "대응 방안"], "rows": [["1인 개발 일정 지연 (자재 구매 5일 지연 발생)", "후속 과제 연쇄 지연", "과제별 최소 기능 범위 확정, 2주 단위 진행 상황 공유"], ["12월 플래너 개편 · 앱 런칭 동시 진행", "품질 저하 · 런칭 지연", "앱은 홍보 없이 런칭, 2027.04까지 안정화 기간 확보"], ["단톡방 · 채팅 데이터 수집과 AI 분석", "개인정보 · 약관 이슈", "약관 · 개인정보처리방침 개정 필요 여부 전문가 확인 후 착수"], ["측정 로그 증가", "Bubble 워크로드 비용 증가", "핵심 이벤트만 수집, 월 단위 비용 점검"], ["카톡 → 인앱 채팅 전환", "기존 사용 습관으로 인한 이탈", "카톡 병행 기간 운영, 앱 사용 유도 혜택"]]}, "include": true}, {"type": "bm", "note": "마지막으로 함께 논의드리고 싶은 부분입니다. 지금 만드는 기능 위에 얹을 수 있는 수익 모델을 다섯 가지 정리해 봤습니다. 아직 아이디어 단계라 우선순위는 같이 정하고 싶습니다.", "d": {"sec": "06 추가 수익 모델", "title": "구축 중인 기능 위에 얹을 수 있는 수익 모델을 함께 검토하고 싶습니다", "lead": "아이디어 단계 · 우선순위와 실행 여부는 논의 후 결정", "src": "", "cards": [{"t": "자재 거래 수수료", "d": "자재 구매 흐름의 거래 신고를 기반으로 매장 거래에 수수료 부과", "b": "자재 구매 (2026.10)"}, {"t": "업체 프리미엄 플랜", "d": "구독 업체 대상 상위 노출 · 추천 배지 등 상위 요금제", "b": "업체 구독 79팀"}, {"t": "브랜드 제휴 콘텐츠", "d": "타일 · 도기 등 자재 브랜드의 매거진 · 자랑 게시판 협찬", "b": "커뮤니티 (2027.04)"}, {"t": "중고 · 나눔 안전거래", "d": "남은 자재 거래에 안전결제를 붙이고 수수료 부과", "b": "커뮤니티 (2027.04)"}, {"t": "반셀프 견적 진단", "d": "누적 매칭 · 계약 데이터로 공정별 적정 견적 범위 제공", "b": "누적 거래 데이터"}]}, "include": true}, {"type": "closing", "note": "이상으로 발표를 마치겠습니다. 감사합니다.", "d": {"title": "감사합니다", "lead": "질의응답"}, "include": true}]}</script>
+<script type="application/json" id="deck-data">{"rev": 8, "deck": "셀인해 프로덕트 1년 추진 계획", "metrics": "월,매칭 요청,연결,계약\n25.09,212,64,9\n25.10,454,219,31\n25.11,413,280,44\n25.12,966,682,93\n26.01,898,627,102\n26.02,1074,716,113\n26.03,1367,967,170\n26.04,1171,833,124\n26.05,1170,867,86\n26.06,817,602,83\n26.07,1263,740,79\n26.08,752,520,124\n26.09,946,901,111", "slides": [{"type": "cover", "include": true, "note": "프로덕트 담당 남민우입니다. 셀인해 1년 비전을 프로덕트 관점에서 어떻게 실현할지 말씀드리겠습니다.", "d": {"sec": "2026 셀인해 워크숍", "title": "셀인해 1년 비전 달성을 위한 프로덕트 추진 계획", "lead": "기획 · UX/UI · 개발 · 데이터", "meta": [{"k": "발표", "v": "남민우 · 프로덕트 담당"}, {"k": "일자", "v": "2026. 10. 07"}, {"k": "계획 기간", "v": "2026.10 – 2027.10"}]}}, {"type": "agenda", "include": true, "note": "현황 진단, 목표와 역할, 추진 로드맵, 성장 시나리오, 성과 측정 순서로 말씀드리겠습니다.", "d": {"title": "목차", "src": "", "items": [{"t": "현황 진단", "d": "지표로 본 플랫폼의 현재"}, {"t": "목표와 역할", "d": "1년 목표와 프로덕트 R&R"}, {"t": "추진 로드맵", "d": "9개 과제, 2026.09 – 2027.10"}, {"t": "성장 시나리오", "d": "지표 개선이 매출로 이어지는 구조"}, {"t": "성과 측정", "d": "새로 측정할 지표"}]}}, {"type": "summary", "include": true, "note": "결론부터 말씀드리겠습니다. 유입은 월 1천 건 수준으로 확보됐고, 마케팅으로 더 늘어날 예정입니다. 프로덕트는 들어온 고객을 계약까지 더 많이 데려가고, 운영진 손이 가는 일을 시스템으로 옮기는 데 집중하겠습니다.", "d": {"sec": "요약", "title": "전환과 자동화로 플랫폼 매출 증가 목표", "lead": "", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.09)", "cols": [{"h": "현황", "big": "13개월 누적 매칭 요청 11,503건, 계약 1,169건", "pts": ["연결 → 계약 전환율 평균 **14.6%**", "연결마다 운영진이 단톡방 직접 개설 (**월평균 약 744건**)", "매출 · 가입 이후 전환 데이터 **미집계**"]}, {"h": "목표", "big": "플랫폼 매출 확대, 운영 부담 축소", "pts": ["UX 개선으로 가입 → 매칭 → 계약 **전 구간 전환율** 상승", "연결 → 계약 전환율 **20% 이상**", "상담 · 단톡방 · 거래 확인 **수작업의 시스템화**"]}, {"h": "실행", "big": "9개 과제, 2026.09 – 2027.10", "pts": ["~10월 자재 구매 · 작업자 모집 · 커뮤니티 MVP", "~12월 **플래너 개편 · 앱 런칭**", "2027 공사 설계 자동화 · 작업자 개편 · 인앱 채팅 · 커뮤니티"]}]}}, {"type": "chapter", "include": true, "note": "현황 진단 순서입니다.", "d": {"cur": 1, "title": "현황 진단", "lead": "지표로 본 플랫폼의 현재", "items": ["현황 진단", "목표와 역할", "추진 로드맵", "성장 시나리오", "성과 측정"]}}, {"type": "kpis", "include": true, "note": "13개월 동안 누적 가입자 2,297명, 매칭 요청 11,503건, 계약 1,169건이 쌓였습니다. 서비스 첫 3개월과 비교하면 최근 3개월 매칭 요청이 2.7배 늘었고, 마케팅 덕분에 유입은 계속 늘어날 것으로 봅니다.", "d": {"sec": "01 현황 진단", "title": "13개월간 매칭 요청 11,503건, 계약 1,169건 달성", "lead": "", "src": "출처: 셀인해 어드민 집계 (매칭 · 연결 · 계약 2025.09 – 2026.09, 가입자 2026.10.07 기준)", "tiles": [{"lb": "누적 가입자", "v": "2,297", "u": "명", "nt": "2026.10.07 기준"}, {"lb": "누적 매칭 요청", "v": "11,503", "u": "건", "nt": "가입자 1인당 약 5.0건"}, {"lb": "누적 연결", "v": "8,018", "u": "건", "nt": "매칭 요청 대비 69.7%"}, {"lb": "누적 계약", "v": "1,169", "u": "건", "nt": "연결 대비 14.6%", "hi": true}, {"lb": "활성 업체", "v": "79", "u": "팀", "nt": "구독 중"}], "insight": "서비스 첫 3개월(25.09–11) 대비 최근 3개월(26.07–09) 매칭 요청 **2.7배 증가** (1,079건 → 2,961건)", "ctx": "참고 · 마케팅 채널 (김도헌 이사 담당): 오픈채팅 609명 · 유튜브 구독자 1,580명 (2026.10.07 기준)"}}, {"type": "chartM", "include": true, "note": "월별로 보면 매칭 요청은 3월 1,367건이 최고였고, 최근에는 750건에서 1,260건 사이입니다. 유입은 마케팅이 키워 주고 있고, 프로덕트의 과제는 유입 이후의 전환입니다.", "d": {"sec": "01 현황 진단", "title": "월 매칭 요청 약1천 건, 과제는 유입 이후의 전환", "lead": "월별 매칭 요청 수 (건)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.09)", "points": ["2026.03 최고 **1,367건**, 최근 6개월 750 – 1,260건 사이에서 등락", "첫 3개월 대비 최근 3개월 매칭 요청 **2.7배**", "막대를 누르면 해당 월의 연결 · 계약 수치 확인 가능"]}}, {"type": "chartR", "include": true, "note": "연결된 고객 중 계약까지 가는 비율은 평균 14.6%입니다. 8월처럼 23.8%까지 오른 달도 있고, 5월처럼 9.9%까지 떨어진 달도 있습니다. 지금은 이 차이를 설명할 데이터가 없습니다. 목표는 이 전환율을 20% 이상으로 안정시키는 것입니다.", "d": {"sec": "01 현황 진단", "title": "연결 대비 계약 전환율 평균 14.6%, 목표는 20% 이상 안정화", "lead": "월별 연결 → 계약 전환율 (%)", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.09)", "target": "20", "points": ["최고 2026.08 **23.8%**, 최저 2026.05 **9.9%**로 변동 폭이 큼", "월별 변동 원인을 설명할 **단계별 데이터가 아직 없음**", "가입 → 매칭, 가입 → 계약 **최종 전환율**까지 측정해 원인 파악"]}}, {"type": "flow", "include": true, "note": "현재 운영 흐름입니다. 매칭 요청부터 계약까지 다섯 단계 중 세 단계를 운영진이 직접 처리합니다. 연결 한 건마다 단톡방을 손으로 만들어 하루 약 25개입니다. 단계마다 어떤 과제로 해결할지 하나씩 보여드리겠습니다.", "d": {"sec": "01 현황 진단", "title": "매칭 요청부터 정산까지, 운영진 손을 거치는 3단계를 시스템으로 바꿉니다", "lead": "", "src": "출처: 셀인해 어드민 (2026.04 – 09, 최근 6개월 평균) · 연결 1건 = 단톡방 1개 기준", "steps": [{"t": "매칭 요청", "d": "고객이 플래너에서 공정별 업체 요청", "man": false, "sol": "플래너 개편", "how": "공정 선택 · 공사 설계 두 갈래로 **누구나 요청 가능**", "when": "2026.11 – 12"}, {"t": "상담 · 확인", "d": "반셀프가 낯선 고객을 운영진이 상담", "man": true, "sol": "공사 설계 자동화", "how": "질문에 답하면 플래너 생성, **AI가 요청사항 정리**", "when": "2027.01"}, {"t": "단톡방 개설", "d": "고객 · 업체 · 셀인해 단톡방을 직접 생성", "man": true, "sol": "인앱 채팅", "how": "연결과 동시에 **채팅방 자동 생성**", "when": "2027.04 – 05"}, {"t": "대화 · 거래 확인", "d": "대화를 보며 계약 여부 · 우회 거래 확인", "man": true, "sol": "금액 자동 감지", "how": "대화 속 견적 금액을 감지해 **거래 확인 자동화**", "when": "2027.04 – 05"}, {"t": "계약 · 정산", "d": "계약 확정, 수수료 정산", "man": false, "sol": "매출 · 전환 데이터 집계", "how": "월 매출 · 단계별 전환율 **월간 리포트**", "when": "2026.11 ~"}], "stats": [{"v": "744건", "lb": "월평균 연결 = 운영진이 만드는 단톡방"}, {"v": "약 25건", "lb": "하루 평균 단톡방 개설"}, {"v": "3단계", "lb": "운영진 손을 거치는 단계"}]}}, {"type": "chapter", "include": true, "note": "목표와 역할 순서입니다.", "d": {"cur": 2, "title": "목표와 역할", "lead": "1년 목표와 프로덕트 R&R", "items": ["현황 진단", "목표와 역할", "추진 로드맵", "성장 시나리오", "성과 측정"]}}, {"type": "goals", "include": true, "note": "회사의 1년 비전은 '반셀프 하면 셀인해'입니다. 프로덕트는 두 가지 목표에 집중하겠습니다. 첫째, 플랫폼 매출 확대입니다. 마케팅으로 늘어나는 유입을 UX 개선으로 계약까지 연결하겠습니다. 둘째, 운영 부담을 줄이고 대행 의존도를 낮추겠습니다.", "d": {"sec": "02 목표와 역할", "title": "비전은 두 가지 목표에 집중합니다", "lead": "", "src": "", "vision": "반셀프 하면, [[셀인해]]", "visionNote": "셀인해 1년 비전", "concept": true, "goals": [{"no": "목표 01", "t": "플랫폼 매출 확대", "d": "마케팅으로 늘어나는 유입을 **UX 개선으로 계약까지 연결**합니다. 대행은 사람 시간에 비례하지만, 플랫폼은 **단계별 개선이 곱해져** 커집니다.", "kpi": "연결 → 계약 14.6% → 20% 이상 · 가입 → 계약 최종 전환율 (측정 신설)"}, {"no": "목표 02", "t": "운영 부담 축소 · 대행 의존도 완화", "d": "상담 · 단톡방 개설 · 거래 확인 등 **반복 수작업을 시스템으로** 옮깁니다. 운영진은 대행과 고부가 업무에 집중하고, 매출 구조는 **플랫폼 중심**으로 이동합니다.", "kpi": "운영 수작업 건수 · 플랫폼 매출 비중 (측정 신설)"}]}}, {"type": "rnr", "include": true, "note": "제 역할은 프로덕트 담당입니다. 기획부터 디자인, 개발, 데이터까지 단독으로 맡아 네 개 서비스를 운영합니다. 오른쪽은 제가 책임지는 영역과, 각 영역의 성과를 무엇으로 판단할지입니다.", "d": {"sec": "02 목표와 역할", "title": "프로덕트 전 과정을 책임지고, 성과는 지표로 증명합니다", "lead": "", "src": "", "role": "프로덕트 담당", "roleD": "기획 · UX/UI 디자인 · 개발 · 데이터를 단독 수행하며, 소비자 · 작업자 · 자재 매장 · 어드민 4개 서비스를 운영합니다.", "team": [{"k": "서명보", "v": "사업 총괄 · 의사결정"}, {"k": "김도헌", "v": "마케팅 · 운영"}, {"k": "남민우", "v": "프로덕트 · 데이터"}], "rows": [{"a": "프로덕트 전략", "w": "로드맵 수립, 과제 우선순위 결정", "k": "로드맵 일정 준수"}, {"a": "고객 경험 설계", "w": "고객 흐름 기획, UX/UI · 디자인 시스템 운영", "k": "단계별 전환율"}, {"a": "서비스 개발", "w": "Bubble 기반 전 화면 개발, 앱 전환", "k": "출시 일정 · 오류 건수"}, {"a": "운영 자동화", "w": "단톡방 · 알림 · 거래 확인 자동화", "k": "운영 수작업 건수"}, {"a": "데이터 · 성과 관리", "w": "로그 설계, 월간 지표 리포트", "k": "개발 진행 페이지"}]}}, {"type": "chapter", "include": true, "note": "추진 로드맵 순서입니다.", "d": {"cur": 3, "title": "추진 로드맵", "lead": "9개 과제 · 2026.09 – 2027.10", "items": ["현황 진단", "목표와 역할", "추진 로드맵", "성장 시나리오", "성과 측정"]}}, {"type": "gantt", "include": true, "note": "전체 일정표입니다. 회색 빗금이 이미 지난 기간이고, 분홍 선이 오늘입니다. 디자인 시스템은 완료했고, 자재 구매는 9월 21일 시작해 이번 주말 마무리합니다. 연말까지 플래너 개편과 앱 런칭, 내년 1월 공사 설계 자동화, 2–3월 작업자 개편, 4–5월 인앱 채팅, 5월부터 커뮤니티를 정식으로 엽니다.", "d": {"sec": "03 추진 로드맵", "title": "2026.09 – 2027.10 전체 일정", "lead": "**타이트하게 잡은 일정**으로, 진행 상황에 따라 조정될 수 있습니다", "src": "※ 매우 타이트하게 잡은 일정이며, 중간 진행 상황에 따라 변경될 수 있습니다 · 커뮤니티 MVP 일정은 가안", "from": "2026-09-01", "today": "2026-10-07", "months": ["26.9", "10", "11", "12", "27.1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], "rows": [{"ph": "완료", "t": "디자인 시스템 재정립", "p": "~ 9월", "s": "2026-09-01", "e": "2026-09-21", "kind": "done", "step": 1}, {"ph": "01", "t": "자재 구매 기능", "p": "9.21 – 10.11", "s": "2026-09-21", "e": "2026-10-12", "kind": "go", "step": 1}, {"ph": "02", "t": "작업자 모집 페이지", "p": "10.12 – 10.18", "s": "2026-10-12", "e": "2026-10-19", "kind": "", "step": 1}, {"ph": "03", "t": "커뮤니티 MVP", "p": "10월 말", "s": "2026-10-19", "e": "2026-11-01", "kind": "", "step": 1}, {"ph": "04", "t": "플래너 전면 개편", "p": "11 – 12월", "s": "2026-11-01", "e": "2027-01-01", "kind": "", "step": 2}, {"ph": "04", "t": "앱 런칭 (홍보 없이)", "p": "12월 말", "s": "2026-12-31", "kind": "ms", "step": 2}, {"ph": "05", "t": "공사 설계 자동화", "p": "1월", "s": "2027-01-01", "e": "2027-02-01", "kind": "", "step": 3}, {"ph": "06", "t": "작업자 화면 개편 · 구독제", "p": "2 – 3월", "s": "2027-02-01", "e": "2027-04-01", "kind": "", "step": 3}, {"ph": "07", "t": "인앱 채팅 · 앱 홍보", "p": "4 – 5월", "s": "2027-04-01", "e": "2027-06-01", "kind": "", "step": 4}, {"ph": "08", "t": "커뮤니티 정식 오픈", "p": "5월 ~", "s": "2027-05-01", "e": "2027-11-01", "kind": "", "step": 4}, {"ph": "상시", "t": "앱 안정화", "p": "1 – 5월", "s": "2027-01-01", "e": "2027-06-01", "kind": "ongoing", "step": 2}, {"ph": "상시", "t": "데이터 트래킹 · 월간 리포트", "p": "전 기간", "s": "2026-10-01", "e": "2027-11-01", "kind": "ongoing", "step": 4}]}}, {"type": "hub", "include": true, "note": "로드맵을 지도로 보겠습니다. 지금부터 과제를 하나씩 설명드리고, 매번 이 지도로 돌아와 어디까지 왔는지 확인하겠습니다.", "d": {"sec": "03 추진 로드맵", "title": "1년간 9개의 과제", "lead": "번호를 누르면 해당 과제로 이동 · **일정은 진행 상황에 따라 조정될 수 있습니다**", "src": "※ 매우 타이트하게 잡은 일정이며, 중간 진행 상황에 따라 변경될 수 있습니다", "endCap": "2027.10 ~"}}, {"type": "rmd", "include": true, "note": "첫 번째는 이미 완료한 디자인 시스템입니다. 색상, 글꼴, 버튼, 팝업까지 화면 전반의 규칙을 다시 세웠습니다. 팝업을 예로 들면, 예전에는 화면마다 생김새와 버튼 위치가 달랐는데 지금은 공통 규칙을 따릅니다. 앞으로 만들 모든 화면이 이 규칙 위에서 만들어집니다.", "d": {"variant": "done", "name": "디자인 시스템 재정립", "period": "~ 2026.09", "status": "완료", "title": "디자인 시스템 재정립 완료, 이후 모든 신규 화면의 기반", "lead": "색상 · 글꼴 · 버튼 · 팝업까지 **화면 전반의 규칙**을 다시 세웠습니다 (아래는 팝업 예시)", "src": "", "pts": [{"t": "공통 규칙 정의", "d": "색 · 글꼴 · 버튼 · 팝업 등 요소별 사용 기준"}, {"t": "오조작 방지", "d": "확인 · 취소 버튼 위치와 위계 통일"}, {"t": "개발 속도 향상", "d": "공통 요소 재사용으로 제작 시간 단축"}, {"t": "첫 적용", "d": "자재 구매 기능 전 화면에 적용"}], "images": ["416e2ad98c803650e3f468ef2acda248", "74d438bd57e55e7709950889197e9aba", "10149acff2dc39076ba6bb6a51cce91b", "ace69c226e1351fb63e4f7e934ec8c1b", "ddac686564dc0157dc301345ccd6abc0", "577a1b1ce363bc569052a4b5af88ec13"]}}, {"type": "rmd", "include": true, "note": "두 번째는 자재 구매입니다. 9월 21일 시작해 이번 주말 마무리합니다. 기대 효과는 세 가지입니다. 플랫폼 밖에서 일어나던 자재 거래를 수수료 매출로 만들고, 고객이 시공 이후 자재 구매까지 셀인해 안에 머물고, 그 과정에서 고객 데이터가 쌓입니다.", "d": {"variant": "journey", "name": "자재 구매 기능", "period": "9.21 – 10.11", "status": "마무리 중", "title": "시공 이후 자재 구매까지 플랫폼 안에서 연결합니다", "lead": "공정이 확정된 고객에게 연동 자재 매장을 추천하고, **방문부터 거래까지 자동으로** 이어지게", "src": "", "steps": [{"t": "자재 매장 추천", "d": "공정 확정 고객에게 연동 매장 자동 추천", "who": "시스템", "auto": true}, {"t": "방문 예약", "d": "고객이 앱에서 바로 예약, 매장에 즉시 알림", "who": "소비자"}, {"t": "전날 리마인드", "d": "방문 전날 예약 확인 메시지 자동 발송", "who": "시스템", "auto": true}, {"t": "방문 확인", "d": "방문 1시간 후 고객 · 매장 양쪽에 확인 요청", "who": "시스템", "auto": true}, {"t": "단톡방 · 상담", "d": "어드민이 고객 · 매장 · 셀인해 단톡방 개설", "who": "운영팀"}, {"t": "거래 신고", "d": "매장이 '거래했음'과 매출액 입력, 어드민 보완", "who": "매장"}], "screens": ["소비자 추천 화면", "매장 관리 화면 (매출 · 예약 · 통계)", "어드민 관리 화면"], "eff": [{"t": "거래 수수료 확보", "d": "플랫폼 밖 자재 거래를 **수수료 매출**로"}, {"t": "고객 체류 구간 확대", "d": "시공 이후 **자재 구매 단계까지** 셀인해 안에서"}, {"t": "고객 데이터 축적", "d": "자재 취향 · 구매 금액 · 방문 이력 **데이터 확보**"}]}}, {"type": "rmd", "include": true, "note": "세 번째는 작업자 모집 페이지입니다. 지금은 운영진이 하나하나 안내하는데, 소개부터 가입 신청까지 한 페이지로 만들겠습니다. 작업자가 늘어야 고객 한 명이 요청할 수 있는 공정도 늘어납니다.", "d": {"variant": "page", "name": "작업자 모집 페이지", "period": "10.12 – 10.18", "status": "예정", "title": "작업자 모집을 개별 응대에서 페이지 하나로 바꿉니다", "lead": "셀인해 소개부터 가입 신청까지, 1주일 집중 구축", "src": "", "url": "selinhae · 작업자 모집", "sections": [{"t": "셀인해와 함께할 작업자를 찾습니다", "d": "반셀프 고객과 직접 연결되는 플랫폼"}, {"t": "숫자로 보는 셀인해", "d": "누적 매칭 요청 11,503건 · 계약 1,169건"}, {"t": "작업자 혜택", "d": "고객 연결 · 일정 관리 · 추천 작업자 노출"}, {"t": "진행 방식", "d": "신청 → 검토 → 승인 → 활동 시작"}, {"t": "가입 신청하기", "d": "기본 정보 · 공정 · 활동 지역 입력, 어드민 자동 적재"}], "why": ["작업자 모집 · 안내를 **운영진이 개별 응대** 중", "작업자 수가 **고객 1인당 매칭 요청 수**를 좌우"], "eff": [{"t": "공급 확대", "d": "활성 업체 79팀에서 **작업자 풀 확대**"}, {"t": "응대 시간 절감", "d": "소개 · 신청을 **페이지가 대신**"}], "kpi": ["월 가입 신청 수", "신청 → 활성 전환율"]}}, {"type": "rmd", "include": true, "note": "네 번째는 커뮤니티 MVP입니다. 단톡방에 좋은 정보가 매일 올라오는데 흘러가 버립니다. 전날 대화를 자동으로 모아 아티클로 만들고, 어드민이 검수한 뒤 발행합니다.", "d": {"variant": "pipe", "name": "커뮤니티 MVP", "period": "10월 말 (가안)", "status": "예정", "title": "단톡방에서 흘러가던 정보를 매일 아티클로 쌓습니다", "lead": "정식 커뮤니티를 열기 전에 콘텐츠 DB부터 확보", "src": "", "nodes": [{"t": "셀인해 오픈채팅", "d": "609명이 매일 반셀프 정보 공유", "kind": "src"}, {"t": "매일 자동 수집", "d": "전날 대화를 새벽에 수집", "kind": "auto"}, {"t": "AI 아티클 생성", "d": "핵심 질문 · 답변을 글로 정리", "kind": "auto"}, {"t": "어드민 검수", "d": "발행 전 최종 확인 · 수정", "kind": "human"}, {"t": "커뮤니티 발행", "d": "검색으로 들어오는 콘텐츠로 축적", "kind": "auto"}], "sample": {"t": "욕실 타일 덧방 vs 철거, 단톡방 고수들의 선택은?", "meta": "어제 단톡방 대화 기반 · 어드민 검수 완료", "b": "덧방은 비용과 기간이 줄지만 바닥 높이와 배수 경사를 먼저 확인해야 합니다. 실제 시공 경험자들이 나눈 체크포인트를 정리했습니다."}, "eff": [{"t": "콘텐츠 DB 선확보", "d": "정식 커뮤니티 전에 **글을 먼저 쌓음**"}, {"t": "검색 유입 경로", "d": "아티클이 **검색으로 고객을 데려옴**"}, {"t": "커뮤니티의 기반", "d": "2027.05 정식 오픈 시 바로 활용"}]}}, {"type": "rmd", "include": true, "note": "다섯 번째, 가장 중요한 플래너 개편입니다. 핵심은 두 갈래입니다. 무엇을 할지 아는 고객은 공정 선택으로 바로 가고, 모르는 고객은 공사 설계로 갑니다. 공사 설계는 질문 30여 개에 답하면 고객에게 맞는 공정과 일정을 골라 줍니다. 두 길 모두 업체 매칭과 계약으로 이어지고, 연말에 앱으로 런칭합니다.", "d": {"variant": "branch", "name": "플래너 전면 개편 · 앱 런칭", "period": "11 – 12월", "status": "기획 · 디자인 진행 중", "title": "공정 선택과 공사 설계, 두 갈래로 누구나 계약까지 가는 플래너", "lead": "할 일을 **아는 고객은 공정 선택**, **모르는 고객은 공사 설계**로. 연말에 앱으로 런칭합니다", "src": "", "asis": ["반셀프가 낯선 고객은 흐름을 몰라 운영진 상담에 의존", "연결 → 계약 전환율 월별 9.9 – 23.8%로 변동", "가입 이후 어디서 이탈하는지 데이터 없음", "웹 기반이라 푸시 알림 등 재방문 장치 부재"], "steps": ["공정 선택", "일정 · 예산", "업체 매칭", "계약", "시공 관리"], "tobe": ["튜토리얼처럼 단계를 안내하는 플래너", "단계별 이탈 로그 수집", "앱 래핑 후 연말 런칭, 홍보 없이 안정화 우선"], "tgts": [{"lb": "연결 → 계약 전환율", "from": "14.6%", "to": "20%+"}, {"lb": "가입 → 매칭 요청 전환율", "to": "측정 신설", "isNew": true}, {"lb": "가입 → 계약 최종 전환율", "to": "측정 신설", "isNew": true}], "nodes": {"start": {"t": "플래너 시작", "d": "가입 후 첫 화면"}, "q": {"t": "무엇을 할지\n정했나요?"}, "a": {"tag": "알고 있다", "t": "공정 선택", "d": "필요한 공정을 직접 골라 바로 업체 매칭"}, "b": {"tag": "잘 모른다", "t": "공사 설계", "d": "질문 약 30개에 답하면 **맞춤 공정 · 일정 추천**"}, "end": {"t": "업체 매칭 → 계약", "d": "단계별 이탈 로그 수집 · **연말 앱 런칭**"}}}}, {"type": "rmd", "include": true, "note": "여섯 번째는 앱 런칭 이후의 공사 설계 자동화입니다. 고객이 선택형 질문에 답하면 시스템이 맞춤 플래너를 만들어 줍니다. 단내림처럼 어려운 용어는 AI가 쉽게 설명해서, 고객이 요청사항을 제대로 적을 수 있게 돕습니다.", "d": {"variant": "ai", "name": "공사 설계 자동화", "period": "2027.01", "status": "예정", "title": "공사 설계를 마치면 플래너가 만들어지고, AI가 요청사항을 정리합니다", "lead": "선택형 질문에 답하기만 하면 **맞춤 플래너 자동 생성**, 어려운 용어는 AI가 쉽게 설명", "src": "※ AI 요청사항 도우미는 아이디어 단계이며, 구현 방식은 검토 후 결정합니다", "steps": [{"t": "공사 설계 (질문 약 30개)", "d": "예산 · 공간 · 설비 등 선택형 질문에 답변", "auto": false}, {"t": "플래너 자동 생성", "d": "답변에 맞는 공정 · 순서 · 일정을 시스템이 생성", "auto": true}, {"t": "AI 요청사항 도우미", "d": "시공 용어를 쉽게 설명하고 업체에 보낼 요청을 정리", "auto": true, "idea": true}], "eff": [{"t": "요청 품질 향상", "d": "정확한 요청으로 **연결률 개선**"}, {"t": "상담 없이 작성", "d": "운영진 **상담 부담 감소**"}, {"t": "견적 정확도 향상", "d": "업체가 **바로 견적** 가능"}], "form": {"prog": "2 / 32", "sec": "설비 · 구조 2/4", "qs": [{"t": "에어컨 단내림", "help": "배관을 감추려면 천장을 낮추는 공사가 필요할 수 있어요", "opts": ["필요", "불필요", "잘 모르겠어요"], "sel": 2, "ai": "단내림을 하면 거실 천장이 약 10cm 낮아지고, 배관이 보이지 않아요. 노출 배관이 괜찮다면 '불필요'를 고르세요."}], "res": "추천 공정 7개 · 예상 기간 5주", "resD": "철거 → 설비 → 목공 → 타일 → 도배 → 가구 → 입주 청소"}}}, {"type": "rmd", "include": true, "note": "일곱 번째는 작업자 화면 개편입니다. 자재 매장 사장님용 화면을 만든 경험으로 작업자 화면을 더 잘 만들 수 있습니다. 지금 매달 계좌이체로 받고 있는 추천 작업자 비용도 이때 구독제로 시스템화하겠습니다.", "d": {"variant": "dash", "name": "작업자 화면 개편 · 구독제", "period": "2027.02 – 03", "status": "예정", "title": "작업자 화면 개편과 추천 작업자 구독제, 두 가지를 함께 진행합니다", "lead": "", "src": "", "tiles": [{"lb": "이번 달 매출", "v": "₩ —", "d": "계약 · 수수료 자동 집계"}, {"lb": "예약 · 일정", "v": "— 건", "d": "공정별 일정 한눈에"}, {"lb": "고객 통계", "v": "— 명", "d": "문의 · 연결 · 계약 추이"}, {"lb": "프로필", "v": "추천 노출", "d": "포트폴리오 · 리뷰 관리"}], "subB": {"h": "매달 수동 계좌이체", "pts": ["운영진이 입금 확인 · 노출 **수동 반영**", "누락 · 연체 관리가 사람 손에 의존"]}, "subA": {"h": "앱 내 정기결제 구독", "pts": ["결제 즉시 **추천 노출 자동 반영**", "갱신 · 해지 · 매출 **자동 집계**"]}, "aT": "작업자 화면 전면 개편", "aP": "사용성", "bT": "추천 작업자 구독제", "bP": "수익 시스템화", "kpiA": ["활성 업체 수 (현재 79팀)", "작업자 월간 접속률"], "kpiB": ["추천 작업자 구독 매출", "구독 유지율"]}}, {"type": "rmd", "include": true, "note": "여덟 번째는 인앱 채팅입니다. 운영진 부담을 줄이는 핵심 과제입니다. 연결되면 채팅방이 자동으로 생기고, 업체가 대화에서 견적 금액을 말하면 시스템이 감지해서 고객에게 제시한 금액인지 확인합니다. 거래 확인이 자동화되고 누락되는 매출도 막을 수 있습니다.", "d": {"variant": "chat", "name": "인앱 채팅 · 앱 홍보", "period": "2027.04 – 05", "status": "기획 · 디자인 완료", "title": "단톡방 수작업을 인앱 채팅으로 바꿔 운영 부담을 줄입니다", "lead": "연결과 동시에 채팅방이 생기고, **대화 속 견적 금액은 시스템이 먼저 감지**합니다", "src": "", "before": {"v": "744", "u": "건/월", "lb": "운영진이 직접 만드는 단톡방", "pts": ["거래 여부를 대화를 보며 수동 확인", "대화 데이터가 플랫폼에 남지 않음"]}, "msgs": [{"who": "sys", "t": "셀인해가 채팅방을 만들었어요 · 고객 · 업체 · 셀인해"}, {"who": "", "n": "고객", "t": "24평 아파트 욕실 2개 타일 견적이 궁금해요", "tm": "오후 2:18"}, {"who": "me", "t": "보내주신 사진 확인했습니다", "tm": "오후 2:21"}, {"who": "me", "t": "200만원 정도로 진행 가능합니다", "tm": "오후 2:22"}], "eff": [{"t": "단톡방 개설 0건", "d": "월 744건 수작업 → **연결 즉시 자동 생성**"}, {"t": "금액 자동 감지", "d": "견적 금액을 감지해 **거래 확인 · 누락 매출 방지**"}, {"t": "대화 데이터 축적", "d": "견적 · 계약 흐름을 **플랫폼 안에 기록**"}], "kpi": ["운영 수작업 건수", "감지 금액 → 계약 확정률", "앱 전환율"], "detect": {"q": "고객에게 제시하는 금액인가요?", "v": "200만원"}, "quick": ["견적 보내드렸습니다. 확인 부탁드려요", "요청하신 내용 확인했어요"]}}, {"type": "rmd", "include": true, "note": "마지막은 커뮤니티 정식 오픈입니다. 여섯 개 공간을 하나씩 소개드리겠습니다.", "d": {"variant": "community", "name": "커뮤니티 정식 오픈", "period": "2027.05 ~", "status": "예정", "title": "커뮤니티를 반셀프 정보 · 거래 · 평판이 쌓이는 공간으로", "lead": "", "src": "", "boards": [{"t": "단톡방 요약 아티클", "w": "운영", "d": "MVP로 쌓아 온 아티클을 매일 자동 발행합니다.", "pts": ["전날 단톡방 대화 자동 요약", "어드민 검수 후 발행", "검색 유입의 핵심 콘텐츠"]}, {"t": "셀인해 매거진", "w": "어드민", "d": "셀인해가 직접 쓰는 시공 포트폴리오와 반셀프 꿀팁입니다.", "pts": ["시공 사례 포트폴리오", "공정별 반셀프 가이드", "회사 유튜브 영상 연동"]}, {"t": "Q&A", "w": "소비자 · 작업자", "d": "누구나 묻고 답하는 공간입니다. 작업자는 답변으로 인지도를 쌓습니다.", "pts": ["소비자 질문, 누구나 답변", "작업자 답변 = 자연스러운 홍보", "좋은 답변은 매칭으로 연결"]}, {"t": "자랑 게시판", "w": "소비자", "d": "시공 결과를 자랑하고, 사용한 자재와 작업자가 함께 연결됩니다.", "pts": ["오늘의집 초창기 모델", "사진 속 자재 · 작업자 태그", "자재 매장 · 작업자 유입 경로"]}, {"t": "자재 나눔 · 중고거래", "w": "소비자", "d": "공사 후 남은 자재를 나누거나 거래합니다.", "pts": ["남은 타일 · 도기 · 부자재 거래", "공사 이후에도 머무는 이유", "향후 안전거래 확장 가능"]}, {"t": "자유게시판", "w": "전체", "d": "반셀프 경험을 나누는 소통 공간입니다.", "pts": ["공사 일상 · 고민 공유", "단톡방의 가벼운 대화 흡수", "커뮤니티 체류 시간 확보"]}], "loop": ["정보 축적", "검색 유입", "신뢰 형성", "작업자 매칭 · 수수료"]}}, {"type": "chapter", "include": true, "note": "성장 시나리오 순서입니다.", "d": {"cur": 4, "title": "성장 시나리오", "lead": "지표 개선이 매출로 이어지는 구조", "items": ["현황 진단", "목표와 역할", "추진 로드맵", "성장 시나리오", "성과 측정"]}}, {"type": "growth", "include": true, "note": "이 과제들을 1년 안에 완수했을 때의 모습입니다. 현재 월 매칭 수수료를 1,000만원으로 가정했습니다. 보통 시나리오에서 활성 이용자 2배, 1인당 매칭 요청 7건, 연결률 78%, 계약 전환율 20%, 수수료율 3%가 되면 월 매칭 수수료는 약 6,400만원입니다. 탭을 누르면 보수적 · 낙관적 시나리오로 바뀌고, 수수료율도 바로 조정해 볼 수 있습니다.", "d": {"sec": "04 성장 시나리오", "title": "로드맵을 완수한 1년 후, 월 매칭 수수료는 이렇게 늘어납니다", "lead": "플랫폼 매출 = 활성 이용자 × 1인당 매칭 요청 × 연결률 × 계약 전환율 × 계약당 수수료율", "src": "※ 시나리오 예시 · 현재 월 매칭 수수료 1,000만원 가정 · 계약 금액 동일 가정 · 확정 목표 아님", "base": 1000, "baseLabel": "1,000만원", "feeNow": 2, "scens": ["보수적", "보통", "낙관적"], "defScen": 1, "levers": [{"lb": "활성 이용자", "cur": 1, "cd": "현재", "tg": [1.5, 2, 3], "td": ["1.5배", "2배", "3배"], "why": "플랫폼 안정화 · 유튜브 영상 누적 · 신뢰도 향상 · 커뮤니티 · **기존 고객의 소개**", "who": ["운영팀 · 마케팅", "프로덕트 · 커뮤니티"]}, {"lb": "1인당 매칭 요청", "cur": 5, "cd": "5건", "tg": [6, 7, 8], "td": ["6건", "7건", "8건"], "why": "작업자 확대로 요청 가능한 공정 증가, 공사 설계로 **필요한 공정 발견**", "who": ["운영팀 · 작업자 확보", "프로덕트 · 모집 페이지"]}, {"lb": "연결률", "cur": 69.7, "cd": "69.7%", "tg": [75, 78, 82], "td": ["75%", "78%", "82%"], "why": "공사 설계 자동화로 **요청 품질 향상**, 작업자 풀 확대", "who": ["프로덕트", "운영팀 · 작업자 확보"]}, {"lb": "계약 전환율", "cur": 14.6, "cd": "14.6%", "tg": [18, 20, 23], "td": ["18%", "20%", "23%"], "why": "인앱 채팅 · 신뢰도 개선 (2026.08 실제 **23.8%** 달성)", "who": ["프로덕트", "운영팀 · 신뢰도"]}], "feeDef": 3}}, {"type": "chapter", "include": true, "note": "성과 측정 순서입니다.", "d": {"cur": 5, "title": "성과 측정", "lead": "새로 측정할 지표", "items": ["현황 진단", "목표와 역할", "추진 로드맵", "성장 시나리오", "성과 측정"]}}, {"type": "table", "include": true, "note": "이 시나리오를 실제로 확인하려면 측정이 먼저입니다. 활성 이용자, 월 매출, 가입부터 계약까지 전 구간 전환율을 새로 측정하겠습니다. 버블 비용을 고려해 핵심 이벤트만 골라 수집하고, 매월 한 번 지표 리포트로 공유드리겠습니다.", "d": {"sec": "05 성과 측정", "title": "시나리오의 5개 지표를 모두 측정할 수 있게 만듭니다", "lead": "현재는 매칭 요청 이후만 집계 → 활성 이용자부터 매출까지 월간 리포트로 관리", "src": "출처: 셀인해 어드민 집계 (2025.09 – 2026.09)", "lastStrong": true, "heads": ["지표", "정의", "현재", "도입 시점"], "rows": [["활성 이용자 수", "월간 서비스를 이용한 고객 수", "미측정", "플래너 개편 (11–12월)"], ["월 매출 추이", "대행 · 플랫폼 매출을 구분한 월별 추이", "미집계", "11월"], ["가입 → 매칭 요청", "가입자 중 매칭을 요청한 비율", "미측정", "플래너 개편 (11–12월)"], ["매칭 요청 → 연결", "요청 중 업체와 연결된 비율", "69.7%", "측정 중"], ["연결 → 계약", "연결 중 계약까지 간 비율", "14.6%", "측정 중"], ["가입 → 계약 (최종 전환율)", "가입자 중 계약까지 간 비율", "미측정", "플래너 개편 (11–12월)"], ["계약당 수수료율", "계약 금액 대비 수수료", "2%", "측정 중"]], "insight": "Bubble 워크로드 비용을 고려해 **핵심 이벤트만 선별 수집**, **월 1회 지표 리포트**로 공유"}}, {"type": "closing", "include": true, "note": "이상으로 발표를 마치겠습니다. 감사합니다.", "d": {"title": "감사합니다", "lead": "질의응답"}}]}</script>
 <script id="deck-app">
 (function () {
   "use strict";
-  var DRAFT_KEY = "slh-vision-deck-v2-draft";
+  var DRAFT_KEY = "slh-vision-deck-v5-draft";
   var RESET_CSS = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,-apple-system,sans-serif;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}";
   var TYPES = {
     cover: "표지", agenda: "목차", summary: "요약", kpis: "핵심 지표", chartM: "월별 추이 차트", chartR: "전환율 차트",
-    flow: "운영 병목", goals: "목표", rnr: "R&R", done: "추진 실적", gantt: "로드맵", task: "과제 상세",
-    boards: "커뮤니티", tree: "KPI 트리", table: "표", bm: "수익 모델", closing: "마무리"
+    flow: "운영 병목", goals: "목표", rnr: "R&R", gantt: "일정표", hub: "로드맵 지도", rmd: "로드맵 과제",
+    growth: "성장 시나리오", table: "표", chapter: "챕터 전환", closing: "마무리"
   };
 
   var dataEl = document.getElementById("deck-data"), styleEl = document.getElementById("deck-style"), appEl = document.getElementById("deck-app");
@@ -430,7 +828,7 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 
   /* ── 도우미 ── */
   function esc(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
-  function fmt(t) { return esc(t).replace(/\[\[(.+?)\]\]/g, '<em class="hl">$1</em>').replace(/\n/g, "<br>"); }
+  function fmt(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong class="mk">$1</strong>').replace(/\[\[(.+?)\]\]/g, '<em class="hl">$1</em>').replace(/\n/g, "<br>"); }
   function get(o, p) { return p.split(".").reduce(function (a, k) { return a == null ? a : a[k]; }, o); }
   function put(o, p, v) { var ks = p.split("."), last = ks.pop(); var t = ks.reduce(function (a, k) { return a[k]; }, o); t[last] = v; }
   function T(d, p, tag, cls, attrs) { var v = get(d, p); return "<" + tag + (cls ? ' class="' + cls + '"' : "") + ' data-k="' + p + '"' + (attrs || "") + ">" + (v == null || v === "" ? "" : fmt(v)) + "</" + tag + ">"; }
@@ -439,7 +837,7 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
   function nfmt(n) { return Number(n).toLocaleString("ko-KR"); }
   function pct(a, b) { return b ? (a / b * 100) : 0; }
   function chipCls(t) { t = String(t || ""); if (/완료/.test(t)) return "chip c-done"; if (/진행|마무리/.test(t)) return "chip c-go"; return "chip c-plan"; }
-  function imgSrc(r) { return !r ? "" : (r.indexOf("data:") === 0 ? r : "/_blob/" + r); }
+  function imgSrc(r) { r = String(r || "").trim(); return !r ? "" : (/^(https?:|data:|blob:|\/)/.test(r) ? r : "/_blob/" + r); }
 
   function metrics() {
     return state.metrics.split("\n").map(function (l) { return l.split(",").map(function (x) { return x.trim(); }); })
@@ -558,13 +956,16 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     return frame(d, c, body);
   };
   R.flow = function (d, c) {
-    var steps = arr(d.steps);
-    var body = '<div class="flow" style="--n:' + steps.length + '">' + steps.map(function (s, i) {
-      return '<div class="fs fx' + (s.man ? " man" : "") + '"' + S(1) + '><div class="fs-box">' + (s.man ? '<span class="chip c-go" style="align-self:flex-start">운영진 수작업</span>' : '<span class="chip c-plan" style="align-self:flex-start">시스템</span>') + T(d, "steps." + i + ".t", "h4", "") + T(d, "steps." + i + ".d", "p", "") + "</div>" + (s.fix != null ? '<p class="fix"' + S(3) + ">" + T(d, "steps." + i + ".fix", "span", "") + "</p>" : "") + "</div>";
+    var st = arr(d.steps);
+    var stats = '<div class="fl-stats">' + arr(d.stats).map(function (s, i) { return '<div class="fls' + (i === 0 ? " hi" : "") + '">' + T(d, "stats." + i + ".v", "span", "num") + T(d, "stats." + i + ".lb", "span", "lb") + "</div>"; }).join("") + "</div>";
+    var html = '<div class="fl2"' + S(1) + ' style="--n:' + st.length + '">' + st.map(function (s, i) {
+      return '<div class="f2' + (s.man ? " man" : "") + '"><div class="f2-top">' + (s.man ? '<span class="chip c-go">운영진 수작업</span>' : '<span class="chip c-plan">시스템</span>') + T(d, "steps." + i + ".t", "h4", "") + T(d, "steps." + i + ".d", "p", "") + "</div>" +
+        '<span class="f2-node">' + (i + 1) + "</span>" +
+        '<div class="f2-sol fx"' + S(i + 2) + '><span class="lbl-sm">해결</span>' + T(d, "steps." + i + ".sol", "h5", "") + T(d, "steps." + i + ".how", "p", "") + T(d, "steps." + i + ".when", "span", "chip " + (s.man ? "c-go" : "c-plan")) + "</div></div>";
     }).join("") + "</div>";
-    body += '<div class="bn-stats">' + arr(d.stats).map(function (s, i) { return '<div class="bs fx' + (i === 0 ? " hi" : "") + '"' + S(2) + '><p class="num">' + T(d, "stats." + i + ".v", "span", "cnt") + "</p>" + T(d, "stats." + i + ".lb", "p", "lb") + "</div>"; }).join("") + "</div>";
-    return frame(d, c, body);
+    return frame(d, c, stats + html);
   };
+
   R.goals = function (d, c) {
     var body = '<div class="vision"' + S(1) + '><span class="lbl-sm">VISION</span>' + T(d, "vision", "h3", "") + T(d, "visionNote", "p", "") + "</div>";
     body += '<div class="goals">' + arr(d.goals).map(function (g, i) {
@@ -589,48 +990,200 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     return frame(d, c, '<div class="done' + (filled.length ? "" : " noimg") + '">' + pts + shots + "</div>");
   };
   function dayIdx(s, start) { var t = Date.parse(s + "T00:00:00"); return isNaN(t) ? null : (t - start) / 864e5; }
+  function whoCls(t) { t = String(t || ""); return /^프로덕트/.test(t) ? "w-p" : /^운영/.test(t) ? "w-o" : /^경영/.test(t) ? "w-m" : "w-s"; }
   R.gantt = function (d, c) {
-    var start = Date.parse((d.from || "2026-10-01") + "T00:00:00"), months = arr(d.months), m = months.length || 10;
+    var start = Date.parse((d.from || "2026-09-01") + "T00:00:00"), months = arr(d.months), m = months.length || 12;
     var endD = new Date(start); endD.setMonth(endD.getMonth() + m); var span = (endD - start) / 864e5;
     var pos = function (s) { var v = dayIdx(s, start); return v == null ? 0 : Math.max(0, Math.min(100, v / span * 100)); };
-    var html = '<div class="gantt"><div class="g-row g-head"><div class="g-lab"><span style="margin-left:0;color:var(--sub-strong);font-weight:700">과제 · 기간</span></div><div class="g-track"><div class="g-months" style="--m:' + m + '">' + months.map(function (x) { return '<span class="' + (/년/.test(x) ? "y" : "") + '">' + esc(x) + "</span>"; }).join("") + "</div></div></div>";
+    var html = '<div class="gantt"><div class="g-row g-head"><div class="g-lab"><span class="lbl-sm">과제</span><span class="pd" style="margin-left:auto">기간</span></div><div class="g-track"><div class="g-months" style="--m:' + m + '">' + months.map(function (x) { return '<span class="' + (/년|\./.test(x) ? "y" : "") + '">' + esc(x) + "</span>"; }).join("") + "</div></div></div>";
     arr(d.rows).forEach(function (r, i) {
       var a = pos(r.s), b = pos(r.e || r.s), bar;
       if (r.kind === "ms") bar = '<span class="g-ms" style="left:' + a + '%"></span>';
       else bar = '<span class="g-bar ' + (r.kind || "") + '" style="--i:' + i + ";left:" + a + "%;width:" + Math.max(b - a, .8) + '%"></span>';
-      html += '<div class="g-row fx"' + S(r.step || 1) + '><div class="g-lab">' + T(d, "rows." + i + ".ph", "span", "ph") + T(d, "rows." + i + ".t", "b", "") + T(d, "rows." + i + ".p", "span", "") + '</div><div class="g-track"><div class="g-grid" style="--m:' + m + '">' + months.map(function () { return "<i></i>"; }).join("") + "</div>" + bar + "</div></div>";
+      html += '<div class="g-row fx' + (r.kind === "done" ? " past" : "") + '"' + S(r.step || 1) + '><div class="g-lab">' + T(d, "rows." + i + ".ph", "span", "ph" + (/완료/.test(r.ph) ? " p0" : "")) + T(d, "rows." + i + ".t", "b", "") + T(d, "rows." + i + ".p", "span", "pd") + '</div><div class="g-track"><div class="g-grid" style="--m:' + m + '">' + months.map(function () { return "<i></i>"; }).join("") + "</div>" + bar + "</div></div>";
     });
-    var today = d.today ? pos(d.today) : null;
-    if (today != null) html += '<div class="g-today" style="left:calc(22cqw + (100% - 22cqw) * ' + (today / 100).toFixed(4) + ')"><b>오늘</b></div>';
+    if (d.today) {
+      var f = (pos(d.today) / 100).toFixed(4);
+      html += '<div class="g-past" style="width:calc((100% - 24cqw) * ' + f + ')"></div><div class="g-today" style="left:calc(24cqw + (100% - 24cqw) * ' + f + ')"><b>오늘</b></div>';
+    }
     html += "</div>";
-    var legend = '<div class="g-legend"><span><i class="go"></i>진행 중</span><span><i></i>예정</span><span><i class="on"></i>상시 · 지속</span><span><i class="ms"></i>마일스톤</span></div>';
-    var body = html + legend;
-    return frame(d, c, body);
+    var legend = '<div class="g-legend"><span><i class="done"></i>완료</span><span><i class="go"></i>진행 중</span><span><i></i>예정</span><span><i class="on"></i>상시 · 지속</span><span><i class="ms"></i>마일스톤</span></div>';
+    return frame(d, c, html + legend);
   };
-  R.task = function (d, c) {
-    var meta = '<div class="tk-meta">' + T(d, "period", "span", "pd") + '<span class="' + chipCls(d.status) + '" data-k="status">' + fmt(d.status || "") + "</span>" + (d.tag != null ? T(d, "tag", "span", "chip c-soft") : "") + "</div>";
-    var col = function (k, cls, h, s) { return '<div class="tk-c fx ' + cls + '"' + S(s) + "><h4>" + h + "</h4>" + list(d, k) + "</div>"; };
-    var arrow = '<div class="tk-arrow"><i></i></div>';
-    var body = meta + '<div class="tk">' + col("asis", "", "현재 (AS-IS)", 1) + arrow + col("tobe", "tobe", "개선 방안 (TO-BE)", 2) + arrow + col("eff", "eff", "기대 효과", 3) + "</div>" +
-      '<div class="kpi-line"' + S(4) + '><span class="lbl-sm" style="display:inline">성과 지표</span>' + arr(d.kpi).map(function (_, i) { return T(d, "kpi." + i, "span", ""); }).join("") + "</div>";
-    return frame(d, c, body);
+
+  /* 로드맵 지도 */
+  R.hub = function (d, c) {
+    var dets = c.dets || [], n = dets.length, L = 865 + Math.PI * 95 + 865;
+    var r1 = Math.ceil(n / 2), r2 = n - r1, pts = [];
+    for (var i = 0; i < r1; i++) { var x = r1 > 1 ? 110 + i * (760 / (r1 - 1)) : 470; pts.push({ x: x, y: 100, t: (x - 40) / L }); }
+    for (var j = 0; j < r2; j++) { var x2 = r2 > 1 ? 830 - j * (690 / (r2 - 1)) : 480; pts.push({ x: x2, y: 290, t: (865 + Math.PI * 95 + (905 - x2)) / L }); }
+    var cur = c.hubCur, frac = 0;
+    if (cur != null && cur > 0) frac = cur >= n ? 1 : pts[cur - 1].t;
+    var path = "M40,100 H905 A95,95 0 0 1 905,290 H40";
+    var svg = '<svg viewBox="0 0 1000 370" preserveAspectRatio="none" aria-hidden="true"><path class="road" d="' + path + '"/><path class="road-mid" d="' + path + '"/><path class="road-prog" pathLength="1" style="stroke-dashoffset:' + (1 - frac).toFixed(4) + '" d="' + path + '"/></svg>';
+    var stations = dets.map(function (det, k) {
+      var p = pts[k], dd = det.d || {}, done = /^\s*완료\s*$/.test(dd.status || ""), seen = cur != null && k < cur, next = cur != null && k === cur;
+      return '<div class="stn' + (done ? " st-done" : "") + (seen ? " seen" : "") + (next ? " next" : "") + '" data-st="' + k + '" style="left:' + (p.x / 10) + "%;top:" + (p.y / 3.7) + "%;view-transition-name:rm-" + k + '">' +
+        (next ? '<span class="tag-next">NEXT</span>' : "") + '<span class="stn-dot">' + (seen || done ? "✓" : (k + 1)) + '</span><div class="stn-lab"><b>' + fmt(dd.name || "") + "</b><span>" + fmt(dd.period || "") + "</span></div></div>";
+    }).join("");
+    var caps = '<span class="hub-cap" style="left:4%;top:12%">START</span><span class="hub-cap" style="left:4%;top:92%">' + esc(d.endCap || "") + "</span>";
+    return frame(d, c, '<div class="hub">' + svg + caps + stations + "</div>");
   };
-  R.boards = function (d, c) {
-    var meta = '<div class="tk-meta">' + T(d, "period", "span", "pd") + '<span class="' + chipCls(d.status) + '" data-k="status">' + fmt(d.status || "") + "</span></div>";
-    var body = meta + '<div class="boards">' + arr(d.boards).map(function (_, i) { return '<div class="bo fx' + (i === 0 ? " first" : "") + '"' + S(1 + Math.floor(i / 3)) + '><div class="bo-h">' + T(d, "boards." + i + ".t", "h4", "") + T(d, "boards." + i + ".w", "span", "chip " + (i === 0 ? "c-go" : "c-plan")) + "</div>" + T(d, "boards." + i + ".d", "p", "") + "</div>"; }).join("") + "</div>";
-    body += '<div class="loop"' + S(3) + ">" + arr(d.loop).map(function (_, i) { return (i ? "<i>→</i>" : "") + T(d, "loop." + i, "span", ""); }).join("") + "</div>";
-    body += '<div class="kpi-line"' + S(4) + '><span class="lbl-sm" style="display:inline">성과 지표</span>' + arr(d.kpi).map(function (_, i) { return T(d, "kpi." + i, "span", ""); }).join("") + "</div>";
-    return frame(d, c, body);
+
+  /* 로드맵 상세 */
+  function rmHead(d, c) {
+    var k = c.det != null ? c.det : 0, n = (c.dets || []).length, done = /^\s*완료\s*$/.test(d.status || "");
+    var badge = '<div class="rm-badge" style="view-transition-name:rm-' + k + '"><span class="n' + (done ? " done" : "") + '">' + (k + 1) + "</span>" + T(d, "name", "b", "") + T(d, "period", "span", "pd") + '<span class="' + chipCls(d.status) + '" data-k="status">' + fmt(d.status || "") + "</span></div>";
+    var mini = n ? '<div class="rm-mini" aria-label="로드맵 ' + (k + 1) + " / " + n + '">' + (c.dets || []).map(function (_, i) { return '<i class="' + (i < k ? "seen" : i === k ? "cur" : "") + '"></i>'; }).join("") + "</div>" : "";
+    return '<header class="hd"><div class="rm-top">' + badge + mini + "</div>" + T(d, "title", "h2", "t novt") + (d.lead != null && (d.lead !== "" || c.edit) ? T(d, "lead", "p", "lead") : "") + "</header>";
+  }
+  function secRow(d, key, label, s) {
+    return '<div class="sec-row"' + (s ? S(s) : "") + '><span class="lbl-sm">' + label + "</span>" + arr(d[key]).map(function (_, i) { return T(d, key + "." + i, "span", "it"); }).join("") + "</div>";
+  }
+  var RV = {};
+  function effCards(d, key, s, cls) {
+    return '<div class="effc ' + (cls || "") + '" style="--n:' + arr(d[key]).length + '">' + arr(d[key]).map(function (_, i) {
+      return '<div class="ef fx"' + (s != null ? S(s + (cls === "stack" ? i : 0)) : "") + '><span class="ef-n">0' + (i + 1) + "</span>" + T(d, key + "." + i + ".t", "h4", "") + T(d, key + "." + i + ".d", "p", "") + "</div>";
+    }).join("") + "</div>";
+  }
+  function chips(d, key, label, s) {
+    return '<div class="kchips"' + (s != null ? S(s) : "") + '><span class="lbl-sm">' + label + "</span>" + arr(d[key]).map(function (_, i) { return T(d, key + "." + i, "span", "kc"); }).join("") + "</div>";
+  }
+  function imgOk(r) { return r && String(r).trim() !== ""; }
+  RV.done = function (d, c) {
+    var imgs = arr(d.images);
+    function group(off, label, cls) {
+      var h = '<div class="ds-g ' + cls + '"><p class="ds-lab">' + label + '<br><span class="ds-ex">예시 · 팝업</span></p><div class="ds-row">';
+      for (var i = 0; i < 3; i++) {
+        var r = imgs[off + i];
+        h += '<figure class="ds-img">' + (imgOk(r) ? '<img src="' + esc(imgSrc(r)) + '" alt="' + label + " " + (i + 1) + '">' : '<span class="ds-ph">팝업 이미지 ' + (i + 1) + "</span>") + "</figure>";
+      }
+      if (cls === "after") h += '<i class="ds-guide g1"></i><i class="ds-guide g2"></i><span class="ds-rule">공통 규칙 · 버튼 위치 · 크기 · 위계 통일</span>';
+      return h + "</div></div>";
+    }
+    var pts = '<div class="ds-pts"' + S(3) + ">" + arr(d.pts).map(function (_, i) { return '<div class="dp fx"><span class="num">0' + (i + 1) + "</span>" + T(d, "pts." + i + ".t", "b", "") + T(d, "pts." + i + ".d", "span", "") + "</div>"; }).join("") + "</div>";
+    return '<div class="ds2"><div' + S(1) + ' class="ds-wrap">' + group(0, "기존<br>화면마다 제각각", "before") + "</div>" + '<span class="ds-arrow"' + S(2) + '>→</span><div' + S(2) + ' class="ds-wrap">' + group(3, "현재<br>공통 규칙 적용", "after") + "</div></div>" + pts;
   };
-  R.tree = function (d, c) {
-    var nodes = arr(d.nodes), html = '<div class="tree">';
-    nodes.forEach(function (nd, i) {
-      if (i) html += '<span class="op"' + S(1) + ">" + (i === nodes.length - 1 ? "=" : "×") + "</span>";
-      html += '<div class="tn fx' + (nd.key ? " key" : "") + (i === nodes.length - 1 ? " res" : "") + '"' + S(i === nodes.length - 1 ? 2 : 1) + ">" + T(d, "nodes." + i + ".lb", "p", "lb") + T(d, "nodes." + i + ".v", "p", "num") + (nd.tg != null ? T(d, "nodes." + i + ".tg", "p", "tg") : "") + T(d, "nodes." + i + ".by", "p", "by") + "</div>";
+  RV.journey = function (d, c) {
+    var steps = arr(d.steps);
+    var html = '<div class="jr" style="--n:' + steps.length + '">' + steps.map(function (s, i) {
+      return '<div class="js fx' + (s.auto ? " auto" : "") + '"' + S(1) + '><span class="ic">' + (i + 1) + "</span>" + T(d, "steps." + i + ".t", "h4", "") + T(d, "steps." + i + ".d", "p", "") + T(d, "steps." + i + ".who", "span", "who " + whoCls(s.who)) + "</div>";
+    }).join("") + "</div>";
+    html += chips(d, "screens", "구축 화면", 1);
+    return html + '<div class="eff-head"' + S(2) + '><span class="lbl-sm">기대 효과</span></div>' + effCards(d, "eff", 2);
+  };
+  RV.page = function (d, c) {
+    var secs = arr(d.sections);
+    var pm = '<div class="pm"' + S(1) + '><div class="pm-bar"><i></i><i></i><i></i>' + T(d, "url", "span", "") + "</div>" + secs.map(function (_, i) {
+      return '<div class="pm-sec' + (i === secs.length - 1 ? " cta" : "") + '"><span class="n">0' + (i + 1) + "</span>" + T(d, "sections." + i + ".t", "h4", "") + T(d, "sections." + i + ".d", "p", "") + "</div>";
+    }).join("") + "</div>";
+    var bg = '<div class="bgc"' + S(2) + '><p class="lbl-sm">도입 배경</p><ol>' + arr(d.why).map(function (_, i) { return "<li><span>" + (i + 1) + "</span>" + T(d, "why." + i, "p", "") + "</li>"; }).join("") + "</ol></div>";
+    var side = '<div class="side-list">' + bg + '<div class="eff-head"' + S(3) + '><span class="lbl-sm">기대 효과</span></div>' + effCards(d, "eff", 3, "stack") + chips(d, "kpi", "성과 지표", 3 + arr(d.eff).length) + "</div>";
+    return '<div class="pm-wrap">' + pm + side + "</div>";
+  };
+  RV.pipe = function (d, c) {
+    var nodes = arr(d.nodes), lab = { src: ["원천", "c-plan"], auto: ["자동", "c-go"], human: ["사람 검수", "c-done"] };
+    var html = '<div class="pipe">' + nodes.map(function (nd, i) {
+      var l = lab[nd.kind] || lab.src;
+      return (i ? '<span class="ar"' + S(i < 3 ? 1 : 2) + ">→</span>" : "") + '<div class="pp fx ' + (nd.kind || "") + '"' + S(i < 3 ? 1 : 2) + '><span class="chip ' + l[1] + '">' + l[0] + "</span>" + T(d, "nodes." + i + ".t", "h4", "") + T(d, "nodes." + i + ".d", "p", "") + "</div>";
+    }).join("") + "</div>";
+    html += '<div class="mvp-bottom"><div class="art fx"' + S(3) + '><p class="lbl-sm">발행 예시</p>' + T(d, "sample.t", "h4", "") + T(d, "sample.meta", "p", "meta") + T(d, "sample.b", "p", "") + "</div>" + '<div class="side-list"><div class="eff-head"' + S(4) + '><span class="lbl-sm">기대 효과</span></div>' + effCards(d, "eff", 4, "stack") + "</div></div>";
+    return html;
+  };
+  RV.branch = function (d, c) {
+    var n = d.nodes || {};
+    function box(k, cls, s) { return '<div class="bx ' + cls + '"' + S(s) + ">" + (n[k] && n[k].tag != null ? T(d, "nodes." + k + ".tag", "span", "bx-tag") : "") + T(d, "nodes." + k + ".t", "h4", "") + (n[k] && n[k].d != null ? T(d, "nodes." + k + ".d", "p", "") : "") + "</div>"; }
+    var svg = '<svg class="br-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+      '<path d="M18,50 H21.3" />' +
+      '<path d="M41.3,50 C43,50 43,22.5 44.7,22.5" />' +
+      '<path class="hot" d="M41.3,50 C43,50 43,77.5 44.7,77.5" />' +
+      '<path d="M74.7,22.5 C76.3,22.5 76.3,50 78,50" />' +
+      '<path class="hot" d="M74.7,77.5 C76.3,77.5 76.3,50 78,50" /></svg>';
+    var diag = '<div class="br">' + svg + box("start", "b-start", 1) + box("q", "b-q", 1) + box("a", "b-a", 2) + box("b", "b-b", 2) + box("end", "b-end", 3) + "</div>";
+    var left = '<div class="cmp-l fx"' + S(1) + "><h4>현재 (AS-IS)</h4>" + list(d, "asis") + "</div>";
+    var tg = arr(d.tgts);
+    var tgts = '<div class="tgts" style="--n:' + tg.length + '">' + tg.map(function (t, i) { return '<div class="tg-c fx' + (t.isNew ? " new" : "") + '"' + S(4) + ">" + T(d, "tgts." + i + ".lb", "p", "lb") + '<p class="vv">' + (t.from ? T(d, "tgts." + i + ".from", "span", "from") : "") + T(d, "tgts." + i + ".to", "span", "to") + "</p></div>"; }).join("") + "</div>";
+    return '<div class="br-wrap">' + left + '<div class="br-r">' + '<p class="lbl-sm br-h">개선 방안 (TO-BE) · 두 갈래 플래너</p>' + diag + tgts + "</div></div>";
+  };
+  RV.ai = function (d, c) {
+    var steps = arr(d.steps), f = d.form || {};
+    var left = '<div class="vflow">' + steps.map(function (s, i) { return (i ? '<p class="dn"' + S(i + 1) + ">↓</p>" : "") + '<div class="vf fx' + (s.auto ? " auto" : "") + '"' + S(i + 1) + '><span class="ic">' + (i + 1) + "</span>" + T(d, "steps." + i + ".t", "h4", "") + T(d, "steps." + i + ".d", "p", "") + (s.idea ? '<span class="idea">아이디어 단계</span>' : "") + "</div>"; }).join("") + "</div>";
+    var qs = arr(f.qs).map(function (q, i) {
+      return '<div class="fq"><div class="fq-h">' + T(d, "form.qs." + i + ".t", "h5", "") + '<span class="fq-na">해당 없음</span></div>' + (q.help != null ? T(d, "form.qs." + i + ".help", "p", "fq-help") : "") +
+        '<div class="fq-opts">' + arr(q.opts).map(function (o, j) { return '<span class="fo' + (q.sel === j ? " sel" : "") + '" data-k="form.qs.' + i + ".opts." + j + '">' + fmt(o) + "</span>"; }).join("") + "</div>" +
+        (q.ai != null ? '<div class="fq-ai"' + S(steps.length + 1) + '><span class="who-l">AI 도우미 · 아이디어 단계</span>' + T(d, "form.qs." + i + ".ai", "span", "") + "</div>" : "") + "</div>";
+    }).join("");
+    var right = '<div class="fm"' + S(1) + '><div class="fm-h"><b>셀인해 공사설계</b>' + T(d, "form.prog", "span", "") + '</div><i class="fm-bar"></i>' + T(d, "form.sec", "p", "fm-sec") + qs +
+      '<div class="fm-res"' + S(steps.length + 2) + '><span class="lbl-sm">자동 생성된 플래너</span>' + T(d, "form.res", "b", "") + T(d, "form.resD", "p", "") + "</div></div>";
+    return '<div class="ai">' + left + right + '</div><div class="eff-row"' + S(steps.length + 3) + ">" + effCards(d, "eff", null) + "</div>";
+  };
+  RV.dash = function (d, c) {
+    var a = '<section class="part fx"' + S(1) + '><header class="part-h"><span class="part-l">A</span>' + T(d, "aT", "h4", "") + T(d, "aP", "span", "chip c-plan") + "</header>" +
+      '<div class="dsh"><div class="dsh-h"><b>작업자 관리 화면</b><span>자재 매장 화면 구조 적용</span></div><div class="dsh-tiles">' + arr(d.tiles).map(function (_, i) { return '<div class="dt">' + T(d, "tiles." + i + ".lb", "p", "lb") + T(d, "tiles." + i + ".v", "p", "v") + T(d, "tiles." + i + ".d", "p", "") + "</div>"; }).join("") + "</div></div>" +
+      chips(d, "kpiA", "성과 지표") + "</section>";
+    var b = '<section class="part b fx"' + S(2) + '><header class="part-h"><span class="part-l">B</span>' + T(d, "bT", "h4", "") + T(d, "bP", "span", "chip c-soft") + "</header>" +
+      '<div class="sub-ba"><div class="sb">' + "<h4>현재</h4>" + T(d, "subB.h", "h3", "") + list(d, "subB.pts") + '</div><p class="dn">↓</p><div class="sb after"><h4>개편 후 · 구독제</h4>' + T(d, "subA.h", "h3", "") + list(d, "subA.pts") + "</div></div>" +
+      chips(d, "kpiB", "성과 지표") + "</section>";
+    return '<div class="parts">' + a + b + "</div>";
+  };
+  RV.chat = function (d, c) {
+    var before = '<div class="ch-before fx"' + S(1) + "><h4>현재 · 카카오톡 단톡방</h4><p class=\"num\">" + T(d, "before.v", "span", "cnt") + "<small>" + T(d, "before.u", "span", "") + "</small></p>" + T(d, "before.lb", "p", "lb") + list(d, "before.pts") + "</div>";
+    var msgs = arr(d.msgs).map(function (m, i) {
+      if (m.who === "sys") return '<p class="cm-sys">' + T(d, "msgs." + i + ".t", "span", "") + "</p>";
+      var me = m.who === "me";
+      return '<div class="cm-row' + (me ? " me" : "") + '">' + (me ? "" : '<span class="cm-av"></span>') + '<div class="cm-col">' + (me ? "" : T(d, "msgs." + i + ".n", "span", "cm-name")) + '<div class="cm-line">' + (me ? '<span class="cm-time">' + esc(m.tm || "") + "</span>" : "") + T(d, "msgs." + i + ".t", "span", "cm-b") + (me ? "" : '<span class="cm-time">' + esc(m.tm || "") + "</span>") + "</div></div></div>";
+    }).join("");
+    var det = d.detect || {};
+    var detect = '<div class="cm-det"' + S(3) + '><div>' + T(d, "detect.q", "p", "cm-det-q") + T(d, "detect.v", "p", "cm-det-v") + '</div><span class="cm-btn">아니오</span><span class="cm-btn yes">예</span></div>';
+    var quick = '<div class="cm-quick"' + S(3) + ">" + arr(d.quick).map(function (_, i) { return T(d, "quick." + i, "span", "cm-q"); }).join("") + "</div>";
+    var phone = '<div class="phone cm-ph"' + S(2) + '><p class="ph-h"><span>셀인해 채팅</span><span>고객 · 업체 · 셀인해</span></p><div class="cm-body">' + msgs + detect + "</div>" + quick + '<div class="cm-input">메시지를 입력하세요</div></div>';
+    var side = '<div class="side-list"><div class="eff-head"' + S(4) + '><span class="lbl-sm">기대 효과</span></div>' + effCards(d, "eff", 4, "stack") + chips(d, "kpi", "성과 지표", 4 + arr(d.eff).length) + "</div>";
+    return '<div class="ch-wrap">' + before + phone + side + "</div>";
+  };
+  RV.community = function (d, c) {
+    var boards = arr(d.boards), focus = c.focus, seenN = c.seenN || 0;
+    var html = '<div class="cm' + (c.edit ? " edit" : "") + (focus != null && !c.edit ? " focus" : "") + '">' + boards.map(function (b, i) {
+      var isCur = focus === i && !c.edit, seen = !c.edit && i < seenN && !isCur;
+      return '<div class="cmb' + (isCur ? " cur" : "") + (seen ? " seen" : "") + '" data-board="' + i + '" style="view-transition-name:bd-' + i + '"><span class="no">0' + (i + 1) + "</span>" + T(d, "boards." + i + ".t", "h4", "") + T(d, "boards." + i + ".w", "span", "who w-s") + T(d, "boards." + i + ".d", "p", "cm-d") +
+        '<ul class="cm-pts">' + arr(b.pts).map(function (_, j) { return T(d, "boards." + i + ".pts." + j, "li", ""); }).join("") + "</ul></div>";
+    }).join("") + "</div>";
+    html += '<div class="loop"><span class="lbl-sm">선순환</span>' + arr(d.loop).map(function (_, i) { return (i ? "<i>→</i>" : "") + T(d, "loop." + i, "span", ""); }).join("") + "</div>";
+    return html;
+  };
+  R.rmd = function (d, c) {
+    var fn = RV[d.variant] || RV.compare;
+    return '<div class="sl">' + rmHead(d, c) + '<div class="bd">' + fn(d, c) + "</div>" + foot(d, c) + "</div>";
+  };
+
+  /* 성장 시나리오 */
+  var GW = { scen: null, fee: null };
+  function manwon(v) { return nfmt(Math.round(v)) + "만원"; }
+  R.growth = function (d, c) {
+    var scens = arr(d.scens), si = GW.scen != null ? GW.scen : (d.defScen != null ? d.defScen : 1);
+    if (si >= scens.length) si = 0;
+    var feeNow = parseFloat(d.feeNow) || 2, fee = GW.fee != null ? GW.fee : (parseFloat(d.feeDef) || feeNow), base = parseFloat(d.base) || 1000;
+    var lv = arr(d.levers), ratios = lv.map(function (l) { return (parseFloat(arr(l.tg)[si]) || 1) / (parseFloat(l.cur) || 1); });
+    ratios.push(fee / feeNow);
+    var cums = [1]; ratios.forEach(function (r) { cums.push(cums[cums.length - 1] * r); });
+    var tot = cums[cums.length - 1], totNoFee = tot / (fee / feeNow);
+    var bar = '<div class="gw-bar"><span class="lbl-sm">1년 후 · 로드맵 완수 시점 가정</span><div class="sc-tabs" role="tablist">' + scens.map(function (s, i) { return '<button type="button" class="sc-t' + (i === si ? " on" : "") + '" data-scen="' + i + '" role="tab" aria-selected="' + (i === si) + '">' + esc(s) + "</button>"; }).join("") + "</div></div>";
+    var cards = '<div class="lv-end"' + S(1) + '><p class="lb">현재 월 매칭 수수료</p><p class="num" style="font-size:1.9cqw">' + T(d, "baseLabel", "span", "") + '</p><p>가정치 · 대행 매출 제외</p></div>' + lv.map(function (l, i) {
+      return '<div class="lv fx"' + S(i + 2) + ">" + T(d, "levers." + i + ".lb", "p", "lb") + '<p class="ch">' + T(d, "levers." + i + ".cd", "span", "") + ' → <b class="to">' + esc(arr(l.td)[si] || "") + '</b></p><p class="mx">×' + ratios[i].toFixed(2) + "</p>" + T(d, "levers." + i + ".why", "p", "why") +
+        '<div class="whos">' + arr(l.who).map(function (w, j) { return T(d, "levers." + i + ".who." + j, "span", "who " + whoCls(w)); }).join("") + "</div></div>";
+    }).join("") +
+      '<div class="lv ex fx"' + S(lv.length + 2) + '><p class="lb">계약당 수수료율</p><p class="ch">' + feeNow + '% → <b class="to">' + fee.toFixed(1) + '%</b></p><p class="mx">×' + (fee / feeNow).toFixed(2) + '</p><div class="fee"><button type="button" data-fee="-1" aria-label="수수료율 낮추기">−</button><b>' + fee.toFixed(1) + '%</b><button type="button" data-fee="1" aria-label="수수료율 높이기">+</button></div><p class="why">누르면 수수료율에 따른 변화를 바로 볼 수 있어요</p><div class="whos"><span class="who w-m">경영 판단</span></div></div>' +
+      '<div class="lv-end res"' + S(lv.length + 3) + '><p class="lb">1년 후 월 매칭 수수료</p><p class="num">' + manwon(base * tot) + '</p><p><b>×' + tot.toFixed(1) + "</b> · 연 환산 약 " + (base * tot * 12 / 10000).toFixed(1) + "억원</p><p>수수료율 유지 시 " + manwon(base * totNoFee) + "</p></div>";
+    var n = lv.length + 3, W = 1400, H = 210, B = 4, top = 34, bw = W / n, w = Math.min(104, bw * .55), max = Math.max(tot, 1) * 1.15;
+    var y = function (v) { return top + (H - B - top) * (1 - v / max); }, base0 = H - B;
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="지표 개선에 따른 월 매칭 수수료 변화"><line x1="0" x2="' + W + '" y1="' + base0 + '" y2="' + base0 + '" stroke="#191F28" stroke-width="1.5"/>';
+    svg += "<g" + S(1) + '><rect class="wf-base" x="' + (bw / 2 - w / 2) + '" y="' + y(1) + '" width="' + w + '" height="' + (base0 - y(1)) + '" rx="6"/><text class="wf-lab" x="' + bw / 2 + '" y="' + (y(1) - 10) + '" text-anchor="middle">' + nfmt(base) + "</text></g>";
+    ratios.forEach(function (r, i) {
+      var x0 = bw * (i + 1) + bw / 2, a = cums[i], b = cums[i + 1], ex = i === ratios.length - 1, up = b >= a;
+      svg += "<g" + S(i + 2) + '><line class="wf-conn" x1="' + (x0 - bw + w / 2) + '" x2="' + (x0 - w / 2) + '" y1="' + y(a) + '" y2="' + y(a) + '"/><rect class="wf-up' + (ex ? " ex" : "") + '" x="' + (x0 - w / 2) + '" y="' + y(Math.max(a, b)) + '" width="' + w + '" height="' + Math.max(2, Math.abs(y(a) - y(b))) + '" rx="6"/><text class="wf-lab" x="' + x0 + '" y="' + (y(Math.max(a, b)) - 10) + '" text-anchor="middle">' + nfmt(Math.round(base * b)) + "</text></g>";
     });
-    html += "</div>";
-    html += '<div class="ins2">' + arr(d.ins).map(function (_, i) { return '<div class="insight"' + S(3 + i) + '>' + T(d, "ins." + i + ".h", "span", "lbl-sm") + T(d, "ins." + i + ".p", "p", "") + "</div>"; }).join("") + "</div>";
-    return frame(d, c, html);
+    var xr = bw * (n - 1) + bw / 2;
+    svg += "<g" + S(lv.length + 3) + '><rect class="wf-res" x="' + (xr - w / 2) + '" y="' + y(tot) + '" width="' + w + '" height="' + (base0 - y(tot)) + '" rx="6"/><text class="wf-lab big" x="' + xr + '" y="' + (y(tot) - 12) + '" text-anchor="middle">×' + tot.toFixed(1) + "</text></g></svg>";
+    return frame(d, c, bar + '<div class="gw" style="--n:' + n + '">' + cards + '<div class="gw-chart">' + svg + '<p class="hint">단위: 만원 / 월</p></div></div>');
   };
   R.table = function (d, c) {
     var heads = arr(d.heads);
@@ -639,16 +1192,37 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     }).join("") + "</tbody></table>";
     return frame(d, c, tbl + (d.insight != null ? '<div class="insight"' + S(arr(d.rows).length + 1) + '><span class="lbl-sm">NOTE</span>' + T(d, "insight", "p", "") + "</div>" : ""));
   };
-  R.bm = function (d, c) {
-    var cards = arr(d.cards);
-    return frame(d, c, '<div class="bm" style="--n:' + cards.length + '">' + cards.map(function (_, i) {
-      return '<div class="bmc fx"' + S(i + 1) + '><span class="num">0' + (i + 1) + "</span>" + T(d, "cards." + i + ".t", "h4", "") + T(d, "cards." + i + ".d", "p", "") + '<p class="base"><b>기반</b> ' + T(d, "cards." + i + ".b", "span", "") + "</p></div>";
-    }).join("") + "</div>");
+  R.chapter = function (d, c) {
+    var items = arr(d.items), cur = +d.cur || 1;
+    return '<div class="sl sl-ch"><div class="ch-l"><p class="ch-n">' + (cur < 10 ? "0" : "") + cur + '</p>' + T(d, "title", "h1", "ch-t") + T(d, "lead", "p", "ch-s") + '</div><ol class="ch-list">' +
+      items.map(function (_, i) { return '<li class="' + (i + 1 === cur ? "on" : i + 1 < cur ? "past" : "") + '"><span>' + (i < 9 ? "0" : "") + (i + 1) + "</span>" + T(d, "items." + i, "b", "") + "</li>"; }).join("") + "</ol></div>";
   };
   R.closing = function (d, c) { return '<div class="sl sl-close"><span class="cl-bar"></span>' + T(d, "title", "h1", "cl-t") + T(d, "lead", "p", "cl-s") + "</div>"; };
 
-  function slideHtml(s, no, edit) { var fn = R[s.type] || R.closing; return fn(s.d, { no: no, edit: !!edit }); }
+  function slideHtml(s, no, edit, extra) {
+    var fn = R[s.type] || R.closing, c = { no: no, edit: !!edit };
+    if (extra) for (var k in extra) c[k] = extra[k];
+    return fn(s.d, c);
+  }
+  function groupOf(list, i) {
+    var s = list[i], d = [], j;
+    if (s.type === "hub") { j = i + 1; while (j < list.length && list[j].type === "rmd") { d.push(list[j]); j++; } return { dets: d }; }
+    if (s.type === "rmd") { var a = i; while (a > 0 && list[a - 1].type === "rmd") a--; j = a; while (j < list.length && list[j].type === "rmd") { d.push(list[j]); j++; } return { dets: d, det: i - a }; }
+    return {};
+  }
 
+
+  function gwChange(el) {
+    var sl = state.slides.filter(function (x) { return x.type === "growth"; })[0], d = sl ? sl.d : {};
+    var feeNow = parseFloat(d.feeNow) || 2;
+    if (el.dataset.scen != null) GW.scen = +el.dataset.scen;
+    if (el.dataset.fee != null) { var f = (GW.fee != null ? GW.fee : (parseFloat(d.feeDef) || feeNow)) + (+el.dataset.fee) * .5; GW.fee = Math.max(.5, Math.min(6, f)); }
+  }
+  document.addEventListener("error", function (e) {
+    var t = e.target; if (!t || t.tagName !== "IMG") return;
+    var fig = t.closest && t.closest(".ds-img, .slot-img");
+    if (fig) { fig.classList.add("broken"); var sp = document.createElement("span"); sp.className = "ds-ph"; sp.textContent = "표시할 수 없는 이미지"; t.replaceWith(sp); }
+  }, true);
   /* 차트 정보 패널 */
   function setInfo(root, i) {
     var info = root.querySelector('[data-role="info"]'), ch = root.querySelector("[data-chart]");
@@ -705,7 +1279,7 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     document.body.style.overflow = "";
     app.className = "ed";
     app.innerHTML =
-      '<header class="ed-bar"><div class="ed-bar-in"><h1 class="ed-name"><small>2026 워크숍 · 시안 2</small>' + esc(state.deck) + "</h1>" +
+      '<header class="ed-bar"><div class="ed-bar-in"><h1 class="ed-name"><small>2026 워크숍 · 시안 5</small>' + esc(state.deck) + "</h1>" +
       '<span class="ed-state" id="ed-state"></span><div class="ed-actions">' +
       '<button class="btn" id="b-data" type="button">지표 데이터</button><button class="btn" id="b-json" type="button">JSON</button>' +
       '<button class="btn primary" id="b-save" type="button">저장</button><button class="btn brand" id="b-present" type="button">발표 시작</button></div></div></header>' +
@@ -737,18 +1311,19 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
 
   function cardHtml(s, i, n) {
     var p = "f-" + s.id + "-", slotUI = "";
-    if (s.type === "done") {
-      var imgs = s.d.images = arr(s.d.images); while (imgs.length < 2) imgs.push(null);
-      slotUI = '<div class="field"><span class="lbl">Before / After 이미지 <span style="font-weight:500;color:var(--sub)">(비워 두면 텍스트만 보여요)</span></span><div class="slots">' + ["Before", "After"].map(function (lb, si) {
+    if (s.type === "rmd" && s.d.variant === "done") {
+      var imgs = s.d.images = arr(s.d.images); while (imgs.length < 6) imgs.push(null);
+      var labs = ["기존 팝업 1", "기존 팝업 2", "기존 팝업 3", "현재 팝업 1", "현재 팝업 2", "현재 팝업 3"];
+      slotUI = '<div class="field" style="grid-column:1/-1"><span class="lbl">팝업 이미지 6장 <span style="font-weight:500;color:var(--sub)">(가로 약 360×198 · 이미지를 복사한 뒤 칸을 누르고 붙여넣기 또는 파일 선택 · 외부 주소는 보안상 표시되지 않을 수 있어요)</span></span><div class="slots">' + labs.map(function (lb, si) {
         var r = imgs[si];
-        return '<div class="slot" data-slot="' + si + '"><span class="slot-name">' + lb + '</span><div class="slot-img">' + (r ? '<img src="' + esc(imgSrc(r)) + '" alt="' + lb + '">' : "비어 있음") + '</div><div class="row"><label class="btn sm" for="' + p + "file" + si + '">' + (r ? "교체" : "이미지 올리기") + '</label><input type="file" accept="image/*" id="' + p + "file" + si + '" data-file="' + si + '">' + (r ? '<button class="btn ghost sm" type="button" data-act="unimg" data-slot="' + si + '">빼기</button>' : "") + "</div></div>";
+        return '<div class="slot" data-slot="' + si + '" tabindex="0"><span class="slot-name">' + lb + '</span><div class="slot-img">' + (r ? '<img src="' + esc(imgSrc(r)) + '" alt="' + lb + '">' : "여기를 누르고 붙여넣기") + '</div><input type="text" class="slot-url" id="' + p + "url" + si + '" data-url="' + si + '" placeholder="이미지 주소" value="' + esc(r && /^https?:/.test(r) ? r : "") + '"><div class="row"><label class="btn sm" for="' + p + "file" + si + '">' + (r ? "교체" : "파일") + '</label><input type="file" accept="image/*" id="' + p + "file" + si + '" data-file="' + si + '">' + (r ? '<button class="btn ghost sm" type="button" data-act="unimg" data-slot="' + si + '">빼기</button>' : "") + "</div></div>";
       }).join("") + "</div></div>";
     }
     return '<article class="card" data-id="' + s.id + '"><div class="card-head"><span class="card-no">' + (i + 1) + '</span><span class="card-tag">' + TYPES[s.type] + '</span><span class="card-sp"></span>' +
       '<label class="toggle"><input type="checkbox" id="' + p + 'inc" data-field="include"' + (s.include ? " checked" : "") + "> 발표에 넣기</label>" +
       '<button class="icon-btn" type="button" data-act="up" aria-label="위로"' + (i === 0 ? " disabled" : "") + '>↑</button><button class="icon-btn" type="button" data-act="down" aria-label="아래로"' + (i === n - 1 ? " disabled" : "") + '>↓</button>' +
       '<button class="icon-btn" type="button" data-act="dup">복제</button><button class="icon-btn" type="button" data-act="del">삭제</button></div>' +
-      '<div class="frame' + (s.include ? "" : " off") + '"><div class="stage" data-role="stage">' + slideHtml(s, i + 1, true) + "</div></div>" +
+      '<div class="frame' + (s.include ? "" : " off") + '"><div class="stage" data-role="stage">' + slideHtml(s, i + 1, true, groupOf(state.slides, i)) + "</div></div>" +
       '<div class="below"><div class="field"><label for="' + p + 'note">발표 멘트</label><textarea id="' + p + 'note" data-field="note" rows="3">' + esc(s.note) + "</textarea></div>" +
       '<div class="field"><span class="lbl">구조 편집</span><details class="adv"><summary>항목 추가 · 삭제 (JSON)</summary><div><textarea id="' + p + 'adv" data-field="adv" spellcheck="false">' + esc(JSON.stringify(s.d, null, 2)) + '</textarea><div class="row"><button class="btn sm" type="button" data-act="adv">적용</button><span class="st-text" data-role="adv-st"></span></div></div></details></div>' + slotUI + "</div></article>";
   }
@@ -758,8 +1333,9 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
   }
   function rerenderStage(card) {
     var i = idx(card.dataset.id), st = card.querySelector('[data-role="stage"]');
-    st.innerHTML = slideHtml(state.slides[i], i + 1, true);
+    st.innerHTML = slideHtml(state.slides[i], i + 1, true, groupOf(state.slides, i));
     armEditable(st);
+    if (state.slides[i].type === "rmd" && !card.dataset.noChain) listEl.querySelectorAll(".card").forEach(function (cd) { var j = idx(cd.dataset.id); if (j >= 0 && state.slides[j].type === "hub") { cd.dataset.noChain = "1"; rerenderStage(cd); delete cd.dataset.noChain; } });
     var adv = card.querySelector('[data-field="adv"]'); if (adv && document.activeElement !== adv) adv.value = JSON.stringify(state.slides[i].d, null, 2);
   }
   var PLAIN = (function () { var d = document.createElement("div"); try { d.contentEditable = "plaintext-only"; return d.contentEditable === "plaintext-only"; } catch (e) { return false; } })();
@@ -791,6 +1367,15 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
       if (e.key === "Escape") el.blur();
     });
     listEl.addEventListener("paste", function (e) {
+      var slot = e.target.closest && e.target.closest(".slot");
+      if (slot && !(e.target.dataset && e.target.dataset.url !== undefined)) {
+        var items = (e.clipboardData && e.clipboardData.files) || [], f = null;
+        for (var q = 0; q < items.length; q++) if (/^image\//.test(items[q].type)) { f = items[q]; break; }
+        if (f) { e.preventDefault(); var cd = slot.closest(".card"); uploadImg(f, cd, idx(cd.dataset.id), +slot.dataset.slot); return; }
+        var txt = e.clipboardData && e.clipboardData.getData("text");
+        if (txt && /^(https?:|data:image)/.test(txt.trim())) { e.preventDefault(); var cd2 = slot.closest(".card"), ii = idx(cd2.dataset.id); state.slides[ii].d.images[+slot.dataset.slot] = txt.trim(); changed(); renderCards(); }
+        return;
+      }
       var el = e.target.closest && e.target.closest(".stage [data-k]"); if (!el || PLAIN) return;
       e.preventDefault(); var t = (e.clipboardData || window.clipboardData).getData("text"); document.execCommand("insertText", false, t);
     });
@@ -798,9 +1383,12 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
       var el = e.target, card = el.closest(".card"); if (!card) return;
       var i = idx(card.dataset.id);
       if (el.dataset.file !== undefined) return onFile(el, card, i);
+      if (el.dataset.url !== undefined) { state.slides[i].d.images[+el.dataset.url] = el.value.trim() || null; changed(); rerenderStage(card); var sl = card.querySelector('[data-slot="' + el.dataset.url + '"] .slot-img'); if (sl) sl.innerHTML = el.value.trim() ? '<img src="' + esc(imgSrc(el.value)) + '" alt="">' : "여기를 누르고 붙여넣기"; return; }
       if (el.dataset.field === "include") { state.slides[i].include = el.checked; card.querySelector(".frame").classList.toggle("off", !el.checked); changed(); }
     });
     listEl.addEventListener("click", function (e) {
+      var g = e.target.closest("[data-scen],[data-fee]");
+      if (g) { e.preventDefault(); gwChange(g); var cg = g.closest(".card"); if (cg) rerenderStage(cg); return; }
       var b = e.target.closest("[data-act]"); if (!b) return;
       var card = b.closest(".card"), i = idx(card.dataset.id), act = b.dataset.act;
       if (act === "up" && i > 0) state.slides.splice(i - 1, 0, state.slides.splice(i, 1)[0]);
@@ -858,7 +1446,10 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
   }
   function onFile(input, card, i) {
     var f = input.files && input.files[0]; if (!f) return;
-    var si = +input.dataset.file, box = card.querySelector('[data-slot="' + si + '"] .slot-img');
+    uploadImg(f, card, i, +input.dataset.file); input.value = "";
+  }
+  function uploadImg(f, card, i, si) {
+    var box = card.querySelector('[data-slot="' + si + '"] .slot-img');
     box.textContent = "올리는 중…";
     shrink(f).then(function (blob) {
       if (assetsCap) return assetsCap.upload(blob).then(function (r) { return r.id; });
@@ -868,7 +1459,6 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
         var code = err && err.code; box.textContent = "업로드 실패";
         msg(code === "too_large" ? "이미지가 너무 커요. 더 작은 파일로 올려 주세요." : code === "quota_or_state" ? "이미지 저장 공간이 가득 찼어요." : code === "rate_limited" ? "잠시 후 다시 올려 주세요." : "이미지를 올리지 못했어요. PNG나 JPG 파일인지 확인하고 다시 시도해 주세요.", true);
       });
-    input.value = "";
   }
   function save() {
     if (!dirty()) return;
@@ -887,13 +1477,37 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
   }
 
   /* ═════════ 발표 ═════════ */
-  var shown = [], cur = 0, step = 0, maxStep = 0, notesOn = false, hideT = null;
+  var seq = [], pos = 0, step = 0, maxStep = 0, notesOn = false, hideT = null, incCount = 0;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function buildSeq() {
+    var inc = state.slides.filter(function (s) { return s.include; });
+    incCount = inc.length; seq = [];
+    for (var i = 0; i < inc.length; i++) {
+      var s = inc[i];
+      if (s.type === "hub") {
+        var dets = [], nos = [], j = i + 1;
+        while (j < inc.length && inc[j].type === "rmd") { dets.push(inc[j]); nos.push(j + 1); j++; }
+        for (var k = 0; k <= dets.length; k++) {
+          seq.push({ s: s, no: i + 1, ctx: { dets: dets, hubCur: k } });
+          if (k < dets.length) seq.push({ s: dets[k], no: nos[k], ctx: { dets: dets, det: k } });
+        }
+        i = j - 1;
+      } else seq.push({ s: s, no: i + 1, ctx: s.type === "rmd" ? { dets: [s], det: 0 } : {} });
+    }
+  }
+  function isCustom(e) { return e && e.s.type === "rmd" && e.s.d.variant === "community"; }
+  function ctxFor(e) {
+    var c = {}, k;
+    for (k in e.ctx) c[k] = e.ctx[k];
+    if (isCustom(e)) { c.focus = step % 2 === 1 ? (step - 1) / 2 : null; c.seenN = Math.ceil(step / 2); }
+    return c;
+  }
+  function renderEntry(e) { return slideHtml(e.s, e.no, false, ctxFor(e)); }
   function renderPresent(showOnly) {
-    shown = state.slides.filter(function (s) { return s.include; });
-    if (!shown.length) { location.hash = ""; return; }
+    buildSeq();
+    if (!seq.length) { location.hash = ""; return; }
     app.className = "";
-    cur = Math.min(cur, shown.length - 1);
+    pos = Math.min(pos, seq.length - 1);
     app.innerHTML = '<div class="pv" id="pv"><div class="pv-stage"><div class="stage" id="pv-stage"></div></div></div><span class="pv-count" id="pv-count"></span>' +
       '<div class="pv-ui" id="pv-ui"><button type="button" id="u-prev" aria-label="이전">‹</button><button type="button" id="u-next" aria-label="다음">›</button>' +
       (showOnly ? "" : '<button type="button" id="u-note">멘트</button>') + '<button type="button" id="u-full">전체화면</button>' + (showOnly ? "" : '<button type="button" id="u-exit">편집으로</button>') + "</div>" +
@@ -903,47 +1517,56 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
   }
   function stageEl() { return document.getElementById("pv-stage"); }
   function paint(stepTo, instant) {
-    var s = shown[cur], st = stageEl();
+    var e = seq[pos], st = stageEl();
     st.className = "stage" + (instant ? " instant" : "");
-    st.innerHTML = slideHtml(s, cur + 1, false);
-    var steps = st.querySelectorAll("[data-s]"); maxStep = 0;
-    steps.forEach(function (el) { maxStep = Math.max(maxStep, +el.dataset.s); });
-    step = stepTo === "max" ? maxStep : stepTo;
-    applyStep(true);
-    document.getElementById("pv-count").textContent = (cur + 1) + " / " + shown.length;
-    document.getElementById("pv-prog").style.width = ((cur + 1) / shown.length * 100) + "%";
-    var nt = document.getElementById("pv-note"); nt.innerHTML = "<b>발표 멘트</b>" + (esc(s.note) || "멘트가 비어 있어요"); nt.hidden = !notesOn;
+    if (isCustom(e)) {
+      maxStep = arr(e.s.d.boards).length * 2;
+      step = stepTo === "max" ? maxStep : stepTo;
+      st.innerHTML = renderEntry(e);
+    } else {
+      step = 0; st.innerHTML = renderEntry(e);
+      maxStep = 0; st.querySelectorAll("[data-s]").forEach(function (el) { maxStep = Math.max(maxStep, +el.dataset.s); });
+      step = stepTo === "max" ? maxStep : Math.max(stepTo, Math.min(1, maxStep));
+      applyStep();
+    }
+    document.getElementById("pv-count").textContent = e.no + " / " + incCount;
+    document.getElementById("pv-prog").style.width = ((pos + 1) / seq.length * 100) + "%";
+    var nt = document.getElementById("pv-note"); nt.innerHTML = "<b>발표 멘트</b>" + (esc(e.s.note) || "멘트가 비어 있어요"); nt.hidden = !notesOn;
   }
-  function applyStep(first) {
+  function applyStep() {
     var st = stageEl(), instant = st.classList.contains("instant");
     st.querySelectorAll("[data-s]").forEach(function (el) {
-      var on = +el.dataset.s <= step, was = !el.classList.contains("off") && !first;
+      var on = +el.dataset.s <= step;
       el.classList.toggle("off", !on);
       if (on && !el.classList.contains("play")) {
         el.classList.add("play");
-        if (!instant && !reduce) el.querySelectorAll(".cnt").forEach(countUp);
-        if (!instant && !reduce && el.classList.contains("cnt")) countUp(el);
-      }
+        if (!instant && !reduce) { if (el.classList.contains("cnt")) countUp(el); el.querySelectorAll(".cnt").forEach(countUp); }
+      } else if (!on) el.classList.remove("play");
     });
   }
+  function vt(fn) {
+    if (document.startViewTransition && !reduce) { try { document.startViewTransition(fn); return; } catch (err) {} }
+    fn();
+  }
+  function customStep(n) { step = n; var e = seq[pos]; vt(function () { stageEl().className = "stage"; stageEl().innerHTML = renderEntry(e); }); }
   function next() {
     var sl = stageEl().querySelector(".sl");
     if (sl && sl.classList.contains("fmode")) { clearFocus(sl); return; }
-    if (step < maxStep) { step += 1; applyStep(false); return; }
-    go(cur + 1, 0);
+    if (isCustom(seq[pos])) { if (step < maxStep) customStep(step + 1); else go(pos + 1, 0); return; }
+    if (step < maxStep) { step += 1; applyStep(); return; }
+    go(pos + 1, 0);
   }
   function prev() {
     var sl = stageEl().querySelector(".sl");
     if (sl && sl.classList.contains("fmode")) { clearFocus(sl); return; }
-    if (step > 0) { step -= 1; stageEl().querySelectorAll("[data-s]").forEach(function (el) { if (+el.dataset.s > step) el.classList.remove("play"); }); applyStep(false); return; }
-    go(cur - 1, "max");
+    if (isCustom(seq[pos])) { if (step > 0) customStep(step - 1); else go(pos - 1, "max"); return; }
+    if (step > Math.min(1, maxStep)) { step -= 1; applyStep(); return; }
+    go(pos - 1, "max");
   }
   function go(n, stepTo) {
-    if (n < 0 || n >= shown.length) return;
-    cur = n;
-    var instant = stepTo === "max";
-    if (document.startViewTransition && !reduce) { try { document.startViewTransition(function () { paint(stepTo, instant); }); return; } catch (e) {} }
-    paint(stepTo, instant);
+    if (n < 0 || n >= seq.length) return;
+    pos = n;
+    vt(function () { paint(stepTo, stepTo === "max"); });
   }
   function clearFocus(sl) { sl.classList.remove("fmode"); sl.querySelectorAll(".fx.on").forEach(function (x) { x.classList.remove("on"); }); delete sl.dataset.pinI; setInfo(sl, null); }
   function poke() {
@@ -957,27 +1580,36 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     if (["ArrowRight", "ArrowDown", "PageDown", " ", "Enter"].indexOf(e.key) >= 0) { e.preventDefault(); next(); }
     else if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].indexOf(e.key) >= 0) { e.preventDefault(); prev(); }
     else if (e.key === "Home") go(0, 0);
-    else if (e.key === "End") go(shown.length - 1, "max");
+    else if (e.key === "End") go(seq.length - 1, "max");
     else if ((e.key === "n" || e.key === "N") && mode === "present") toggleNotes();
     else if (e.key === "Escape" && mode === "present" && !document.fullscreenElement) location.hash = "";
   }
   function bindPresent(showOnly) {
     var pv = document.getElementById("pv"), sx = null, sy = null, swiped = false;
     chartEvents(pv);
-    pv.addEventListener("click", function (e) {
+    pv.addEventListener("click", function (ev) {
       poke();
       if (swiped) { swiped = false; return; }
-      var sl = stageEl().querySelector(".sl");
-      var hit = e.target.closest && e.target.closest("[data-chart] [data-i]");
+      var e = seq[pos], sl = stageEl().querySelector(".sl"), t = ev.target;
+      var g = t.closest && t.closest("[data-scen],[data-fee]");
+      if (g) { gwChange(g); var keep = step; stageEl().className = "stage"; stageEl().innerHTML = renderEntry(e); step = keep; applyStep(); return; }
+      var stn = t.closest && t.closest("[data-st]");
+      if (stn && e.s.type === "hub") {
+        var k = +stn.dataset.st;
+        for (var i = 0; i < seq.length; i++) if (seq[i].ctx.dets === e.ctx.dets && seq[i].ctx.det === k) { go(i, 0); return; }
+      }
+      var bd = t.closest && t.closest("[data-board]");
+      if (bd && isCustom(e) && step % 2 === 0) { customStep(+bd.dataset.board * 2 + 1); return; }
+      var hit = t.closest && t.closest("[data-chart] [data-i]");
       if (hit) { sl.dataset.pinI = hit.dataset.i; setInfo(sl, +hit.dataset.i); return; }
-      var fx = e.target.closest && e.target.closest(".fx");
-      if (fx && !fx.classList.contains("off") && sl.contains(fx)) {
+      var fx = t.closest && t.closest(".fx");
+      if (fx && !fx.classList.contains("off") && sl && sl.contains(fx)) {
         var on = !fx.classList.contains("on");
         sl.querySelectorAll(".fx.on").forEach(function (x) { x.classList.remove("on"); });
         fx.classList.toggle("on", on); sl.classList.toggle("fmode", on);
         return;
       }
-      if (e.clientX / window.innerWidth < 0.25) prev(); else next();
+      if (ev.clientX / window.innerWidth < 0.25) prev(); else next();
     });
     pv.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
     pv.addEventListener("touchend", function (e) {
@@ -998,6 +1630,7 @@ details.adv > div { padding: 0 12px 12px; display: flex; flex-direction: column;
     fb.onclick = function () { try { var p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (p && p.catch) p.catch(function () { fb.hidden = true; }); } catch (err) { fb.hidden = true; } };
   }
   document.addEventListener("keydown", onKey);
+
 
   function route() {
     var h = location.hash;
