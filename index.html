@@ -842,6 +842,86 @@ select.in{padding-right:28px;appearance:none;background-image:url("data:image/sv
 .rm-wline{opacity:.45}
 .rmspan{position:absolute;top:3px;bottom:3px;border-radius:var(--r2);pointer-events:none;background:color-mix(in srgb,var(--c) 7%,transparent);box-shadow:inset 2px 0 0 color-mix(in srgb,var(--c) 70%,transparent),inset -1px 0 0 color-mix(in srgb,var(--c) 35%,transparent)}
 
+
+/* ── 로드맵: 노선도(선 · 역) + 깃발(마일스톤) ── */
+.mt{--c:var(--s-plan);position:absolute;height:58px;padding:4px 0 0 18px;cursor:grab;user-select:none;white-space:nowrap;outline:none}
+.mt.is-ro{cursor:pointer}
+.mt__ln{position:absolute;top:26px;height:6px;border-radius:99px;pointer-events:none}
+.mt__ln--s{left:0;background:var(--c)}
+.mt__ln--d{right:0;background:repeating-linear-gradient(90deg,var(--c) 0 9px,transparent 9px 15px);opacity:.7}
+.mt__st{position:absolute;left:-11px;top:18px;width:22px;height:22px;border-radius:99px;background:var(--bg1);box-shadow:inset 0 0 0 4px var(--c);display:grid;place-items:center;color:#fff;z-index:2;transition:transform .15s var(--e-out)}
+.mt__st svg{width:12px;height:12px;stroke-width:3.4}
+.mt--done .mt__st{background:var(--c);box-shadow:0 0 0 3px var(--bg1)}
+.mt--active .mt__st::after{content:'';position:absolute;inset:-6px;border-radius:99px;border:2px solid color-mix(in srgb,var(--c) 50%,transparent);animation:mtpulse 2.2s ease-out infinite}
+@keyframes mtpulse{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.35);opacity:0}}
+.mt:hover .mt__st,.mt:focus-visible .mt__st{transform:scale(1.14)}
+.mt__n{position:sticky;left:calc(var(--side) + 18px);display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;color:var(--tx1);line-height:18px;background:color-mix(in srgb,var(--bg1) 70%,transparent);border-radius:4px;padding-right:4px}
+.mt__d{position:sticky;left:calc(var(--side) + 18px);display:flex;align-items:center;gap:6px;margin-top:14px;font-size:11px;color:var(--tx3);line-height:16px;width:max-content}
+.mt__ic{display:inline-flex;align-items:center;gap:2px;color:var(--tx3);font-weight:500;font-size:10.5px}
+.mt__ic svg{width:11px;height:11px}
+.mt--done .mt__n{color:var(--tx2)}
+.mt--dropped{opacity:.45}
+.mt--dropped .mt__n{text-decoration:line-through}
+.mt.is-late .mt__d{color:var(--s-block);font-weight:600}
+.mt.is-sel .mt__n{color:var(--c);text-decoration:underline;text-underline-offset:3px}
+.mt.is-sel .mt__st{box-shadow:inset 0 0 0 4px var(--c),0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
+.mt.is-drag{cursor:grabbing;z-index:9}
+.mt.is-drag .mt__ln--s,.mt.is-drag .mt__ln--d{box-shadow:0 0 0 2px color-mix(in srgb,var(--pri) 45%,transparent)}
+.mt:focus-visible .mt__n{box-shadow:0 0 0 2px var(--pri)}
+.mt__h{top:16px;bottom:auto;height:26px}
+.mt__h::after{background:var(--c)}
+.mt:hover .mt__h::after{opacity:.9}
+/* 타임라인 띠용 작은 노선 */
+.mt--sm{height:30px;padding:0 0 0 12px}
+.mt--sm .mt__n{font-size:11.5px;line-height:16px;left:calc(var(--side) + 12px)}
+.mt--sm .mt__ln{top:21px;height:4px}
+.mt--sm .mt__ln--d{background:repeating-linear-gradient(90deg,var(--c) 0 7px,transparent 7px 12px)}
+.mt--sm .mt__st{left:-7px;top:16px;width:14px;height:14px;box-shadow:inset 0 0 0 3px var(--c)}
+.mt--sm .mt__st svg{width:9px;height:9px}
+.mt--sm.mt--done .mt__st{box-shadow:0 0 0 2px var(--bg1)}
+.mt--sm.mt--active .mt__st::after{inset:-4px}
+.mt--sm .mt__h{top:12px;height:18px}
+/* 깃발 */
+.flg{--c:var(--s-block);position:absolute;height:24px;cursor:grab;user-select:none;outline:none;z-index:3}
+.flg.is-ro{cursor:pointer}
+.flg__t{position:absolute;left:-1px;bottom:0;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 7px;border-radius:7px 7px 7px 0;background:var(--c);color:#fff;font-size:12px;white-space:nowrap;box-shadow:0 6px 14px -8px var(--c);transition:transform .15s var(--e-out)}
+.flg__t b{font-weight:700}
+.flg__t .mono{font-size:10.5px;opacity:.85}
+.flg__t svg{width:12px;height:12px;stroke-width:3}
+.flg__d{width:7px;height:7px;border-radius:1.5px;background:#fff;transform:rotate(45deg);flex:0 0 auto}
+.flg::before{content:'';position:absolute;left:-1px;top:100%;height:8px;border-left:2px solid var(--c)}
+.flg:hover .flg__t,.flg:focus-visible .flg__t{transform:translateY(-2px)}
+.flg:focus-visible .flg__t{box-shadow:0 0 0 2px var(--bg1),0 0 0 4px var(--pri)}
+.flg.is-done .flg__t{background:var(--bg1);color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c)}
+.flg.is-done .flg__t b{text-decoration:line-through}
+.flg.is-late .flg__t{animation:flgwarn 2.4s ease-in-out infinite}
+@keyframes flgwarn{0%,100%{box-shadow:0 6px 14px -8px var(--c)}50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 35%,transparent)}}
+.flg.is-sel .flg__t{box-shadow:0 0 0 2px var(--bg1),0 0 0 4px var(--c)}
+.flg.is-drag{cursor:grabbing;z-index:9}
+.flg--sm{height:20px}
+.flg--sm .flg__t{height:20px;font-size:11px;padding:0 7px 0 6px;gap:5px}
+.flg--sm::before{height:6px}
+.lh__i--ms{color:var(--s-block)}
+.tl__main > .rm-msline{border-left:2px dashed color-mix(in srgb,var(--c,var(--s-block)) 65%,transparent)}
+.rm-msline.is-done{opacity:.3}
+
+/* ── 완료는 꽉 채워서 ── */
+:root{--done-fill:#1E8C55}
+[data-theme="dark"]{--done-fill:#238A55}
+.bar.is-done{background:var(--done-fill);color:#fff;box-shadow:none;font-weight:600}
+.bar.is-done:hover{background:color-mix(in srgb,var(--done-fill) 88%,#fff)}
+.bar.is-done.is-sel{box-shadow:0 0 0 2px var(--bg0),0 0 0 3.5px var(--done-fill)}
+.bar.is-done .bar__m,.bar.is-done .bar__m span{color:rgb(255 255 255/.85)}
+.bar.is-done .bar__off{background:rgb(0 0 0/.18);background-image:repeating-linear-gradient(-45deg,rgb(255 255 255/.35) 0 1px,transparent 1px 6px)}
+.bar.is-done .bar__h::after{background:#fff}
+.bar__ck{position:relative;z-index:1;width:14px;height:14px;border-radius:99px;background:#fff;color:var(--done-fill);display:grid;place-items:center;flex:0 0 auto;margin-left:-3px}
+.bar__ck svg{width:9px;height:9px;stroke-width:3.6}
+.tag.tag--done{background:var(--done-fill);color:#fff}
+.tag.tag--done svg{width:11px;height:11px;stroke-width:3.2}
+.chip.chip--done[aria-pressed="true"]{background:var(--done-fill);border-color:var(--done-fill);color:#fff}
+.chip.chip--done[aria-pressed="true"] .dot{background:#fff!important}
+.card__res.is-done svg{color:#fff;background:var(--done-fill);border-radius:99px;padding:2px}
+
 /* ── 9d. 다듬기 (QA · 디자인) ─────────────────────────────── */
 .bar:focus-visible{box-shadow:inset 3px 0 0 var(--c),0 0 0 2px var(--bg0),0 0 0 4px var(--pri)}
 .bar__h--xs{width:6px}
@@ -2423,8 +2503,13 @@ function buildLanes() {
   const T = t => ({ ...t, _t: 'task' });
   /* 맨 위 로드맵 띠 — 큰 흐름을 같은 날짜 축에서 */
   if (S.rmBand && rmOn()) {
-    const items = rmVisible().filter(x => x.status !== 'dropped').map(x => ({ ...x, _t: 'rm' }));
-    lanes.push({ id: '__rm', name: '로드맵', color: cvar('--pri-fg'), kind: 'rmband', items, rows: pack(items, 10) });
+    /* 깃발(마일스톤)은 맨 위 줄들에, 노선(항목)은 그 아래에 */
+    const vis = rmVisible().filter(x => x.status !== 'dropped');
+    const flags = vis.filter(x => x.kind === 'milestone').map(x => ({ ...x, _t: 'rm' }));
+    const lines = vis.filter(x => x.kind !== 'milestone').map(x => ({ ...x, _t: 'rm' }));
+    const fr = flags.length ? pack(flags, 8) : 0, lr = lines.length ? pack(lines, 10) : 0;
+    lines.forEach(x => { x.__row += fr; });
+    lanes.push({ id: '__rm', name: '로드맵', color: cvar('--pri-fg'), kind: 'rmband', items: [...flags, ...lines], rows: Math.max(fr + lr, 1) });
   }
   if (S.group === 'roadmap' && !DB.missing.has('roadmap')) {
     rmItemsForTl().forEach(x => {
@@ -2510,7 +2595,7 @@ function viewTimeline() {
   const lanes = buildLanes();
   lanes.forEach(lane => {
     const closed = S.closed.has(lane.id), isVac = lane.kind === 'vac', isBand = lane.kind === 'rmband', isRm = lane.kind === 'roadmap' && lane.rm;
-    const bh = isVac ? 20 : isBand ? 22 : BAR, pitch = isVac ? 26 : isBand ? 28 : ROW, pad = (ROW - bh) / 2;
+    const bh = isVac ? 20 : isBand ? 30 : BAR, pitch = isVac ? 26 : isBand ? 34 : ROW, pad = (ROW - bh) / 2;
     const H = closed ? ROW + CAP : CAP + pad * 2 + (lane.rows - 1) * pitch + bh;
     const rp = isRm ? rmProgress(lane.rm) : null;
     const cnt = isVac || isBand ? `${lane.items.length}` : isRm && rp != null ? `${rp}%` : `${lane.items.filter(t => t.status === 'done').length}/${lane.items.length}`;
@@ -2560,7 +2645,7 @@ function viewTimeline() {
         else add(track, ...barEls(it, top));
       });
       if (S.owner) track.addEventListener('dblclick', e => {
-        if (e.target.closest('.bar,.vac,.rbb,.rbm')) return;
+        if (e.target.closest('.bar,.vac,.mt,.flg')) return;
         const x = e.clientX - track.getBoundingClientRect().left;
         addToLane(lane, fd(addD(S.range.s, Math.floor(x / S.dayW))));
       });
@@ -2622,7 +2707,7 @@ function barEls(t, top) {
       L.cms && !L.un ? h('span', { title: `댓글 ${L.cms}개` }, svg(I.chat), String(L.cms)) : null) : null,
     L.un ? h('span', { class: 'bar__new', title: `안 읽은 댓글 ${L.un}개` }, String(L.un)) : null);
   let out = null;
-  if (L.inside) add(bar, h('span', { class: 'bar__x' }, t.title), meta());
+  if (L.inside) add(bar, t.status === 'done' ? h('span', { class: 'bar__ck', html: I.check }) : null, h('span', { class: 'bar__x' }, t.title), meta());
   else out = h('div', { class: 'bar__out', style: `left:${x + L.w + 8}px;top:${top}px` }, h('span', {}, t.title), meta());
 
   const od = offDays(t).length;
@@ -2648,28 +2733,14 @@ function barEls(t, top) {
   return [bar, out];
 }
 /* 로드맵 띠의 항목 · 마일스톤 (날짜 축 위) */
-const rmBandExt = x => x.kind === 'milestone' ? 14 + measure(x.title) + 40 : Math.max(wOf(x.start_date, x.end_date), measure(x.title) + 24 > wOf(x.start_date, x.end_date) ? wOf(x.start_date, x.end_date) + 8 + measure(x.title) : 0);
+const rmBandExt = x => x.kind === 'milestone' ? flagW(x) - 10 : Math.max(wOf(x.start_date, x.end_date), measure(x.title) + 24);
 function rmBandEl(x, top) {
-  const open = e => { e.stopPropagation(); if (e.currentTarget._moved) { e.currentTarget._moved = false; return; } openRoadmap(x.id); };
-  if (x.kind === 'milestone') {
-    const late = x.status !== 'done' && x.start_date < today();
-    const el = h('button', {
-      class: 'rbm' + (x.status === 'done' ? ' is-done' : '') + (late ? ' is-late' : '') + (S.sel === x.id ? ' is-sel' : ''),
-      style: `--c:${x.color};left:${xOf(x.start_date) + S.dayW / 2 - 7}px;top:${top}px`, title: `${x.title} · ${mdK(x.start_date)}`, onClick: open
-    }, h('span', { class: 'rm-dia' }), h('b', {}, x.title), h('span', { class: 'mono' }, md(x.start_date)));
-    if (S.owner) el.addEventListener('pointerdown', e => rmBandDrag(e, x, el));
-    return el;
-  }
-  const w = wOf(x.start_date, x.end_date), p = rmProgress(x), st = x.status || 'planned';
-  const inside = measure(x.title) + 24 <= w;
-  const label = h('span', { class: 'rbb__x' }, x.title);
-  const el = h('button', {
-    class: `rbb rbb--${st}` + (S.sel === x.id ? ' is-sel' : '') + (inside ? '' : ' is-out') + (S.owner ? ' is-ed' : ''),
-    style: `--c:${x.color};left:${xOf(x.start_date)}px;width:${w}px;top:${top}px`,
-    title: `${x.title}\n${fmtMonths(x)} · ${rmStOf(st).t}${p != null ? ` · ${p}%` : ''}`,
-    onClick: open, onContextmenu: e => { e.preventDefault(); e.stopPropagation(); rmMenu(e, x); }
-  }, st === 'active' && p != null ? h('i', { class: 'rbb__p', style: `width:${p}%` }) : null, label,
-    S.owner && w >= 28 ? frag(h('span', { class: 'bar__h bar__h--l', data: { edge: 'l' } }), h('span', { class: 'bar__h bar__h--r', data: { edge: 'r' } })) : null);
+  const el = x.kind === 'milestone'
+    ? flagEl(x, xOf(x.start_date) + S.dayW / 2, top + 4, true)
+    : metroEl(x, xOf(x.start_date), wOf(x.start_date, x.end_date) + 3, top, true);
+  el.addEventListener('click', e => { e.stopPropagation(); if (el._moved) { el._moved = false; return; } openRoadmap(x.id); });
+  el.addEventListener('keydown', e => { if (e.target === el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openRoadmap(x.id); } });
+  el.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); rmMenu(e, x); });
   if (S.owner) el.addEventListener('pointerdown', e => rmBandDrag(e, x, el));
   return el;
 }
@@ -2677,7 +2748,7 @@ function rmBandEl(x, top) {
 function rmBandDrag(e, x, el) {
   if (e.button !== 0 || e.pointerType === 'touch') return;
   const edge = e.target.dataset?.edge || null, ms = x.kind === 'milestone';
-  const x0 = e.clientX, left0 = parseFloat(el.style.left), w0 = parseFloat(el.style.width) || 0;
+  const x0 = e.clientX, left0 = parseFloat(el.style.left);
   const s0 = pd(x.start_date), e0 = pd(x.end_date), len = dDiff(s0, e0), tip = $('#tip');
   let started = false, ns = s0, ne = e0;
   const move = ev => {
@@ -2687,7 +2758,7 @@ function rmBandDrag(e, x, el) {
     const dd = Math.round(dx / S.dayW);
     if (edge === 'l') { ns = addD(s0, Math.min(dd, len)); ne = e0; el.style.left = (left0 + dDiff(s0, ns) * S.dayW) + 'px'; el.style.width = Math.max((dDiff(ns, ne) + 1) * S.dayW - 3, 8) + 'px'; }
     else if (edge === 'r') { ns = s0; ne = addD(e0, Math.max(dd, -len)); el.style.width = Math.max((dDiff(ns, ne) + 1) * S.dayW - 3, 8) + 'px'; }
-    else { ns = addD(s0, dd); ne = addD(e0, dd); el.style.left = (left0 + dd * S.dayW) + 'px'; if (!ms) el.style.width = w0 + 'px'; }
+    else { ns = addD(s0, dd); ne = addD(e0, dd); el.style.left = (left0 + dd * S.dayW) + 'px'; }
     tip.textContent = ms ? mdK(fd(ns)) : `${md(fd(ns))} → ${md(fd(ne))} · ${fmtSpan(dDiff(ns, ne) + 1)}`;
     tip.style.left = ev.clientX + 'px'; tip.style.top = ev.clientY + 'px'; tip.classList.add('is-on');
   };
@@ -2861,7 +2932,7 @@ function showPop(t, bar) {
   add(pop,
     h('div', { class: 'pop__t' }, t.title),
     h('div', { class: 'pop__m' },
-      h('span', { class: 'tag tag--c', style: `--c:${cvar(st.v)}` }, st.t),
+      h('span', { class: 'tag tag--c' + (t.status === 'done' ? ' tag--done' : ''), style: `--c:${cvar(st.v)}` }, t.status === 'done' ? svg(I.check) : null, st.t),
       h('span', { class: 'mono' }, `${md(t.start_date)} → ${md(t.end_date)}`),
       h('span', {}, od ? `실작업 ${workDays(t)}일` : `${totalDays(t)}일`),
       m && S.members.length > 1 ? h('span', {}, m.name) : null,
@@ -3056,20 +3127,20 @@ function viewRoadmap() {
     if (w >= 300) for (let d = new Date(m); d <= mLast(m); d = addD(d, 1)) if (d.getDay() === 1 && d.getDate() > 1) add(layer, h('div', { class: 'wline rm-wline', style: `left:${rmX(fd(d))}px` }));
   }
 
-  const ROW = 40, BLK = 28, PADT = 6;
+  const ROW = MT_H + 6, BLK = MT_H, PADT = 6;
   const left = h('div', {}), right = h('div', {});
   const miles = all.filter(x => x.kind === 'milestone');
   const items = all.filter(x => x.kind !== 'milestone');
 
   /* 마일스톤 줄 */
   if (miles.length) {
-    const msPacked = miles.map(x => ({ x, s: rmX(x.start_date) - 8, e: rmX(x.start_date) + 22 + measure(x.title) + 40 }));
+    const msPacked = miles.map(x => ({ x, s: rmX(x.start_date), e: rmX(x.start_date) + flagW(x) }));
     const msRows = packRm(msPacked);
-    const H = Math.max(msRows, 1) * 32 + 8;
+    const H = Math.max(msRows, 1) * 30 + 10;
     add(left, h('div', { class: 'lane rm-lane rm-lane--ms', style: `height:${H}px` },
-      h('div', { class: 'lh' }, h('span', { class: 'rm-dia rm-dia--sm' }), h('div', { class: 'lh__n' }, '마일스톤'), h('span', { class: 'lh__c' }, String(miles.length)))));
+      h('div', { class: 'lh' }, h('span', { class: 'lh__i lh__i--ms', html: I.flag }), h('div', { class: 'lh__n' }, '마일스톤'), h('span', { class: 'lh__c' }, String(miles.length)))));
     const tr = h('div', { class: 'track' });
-    msPacked.forEach(it => add(tr, rmMilestone(it.x, 4 + it.row * 32)));
+    msPacked.forEach(it => add(tr, rmMilestone(it.x, 6 + it.row * 30)));
     add(right, h('div', { class: 'lane rm-lane rm-lane--ms', style: `height:${H}px`, data: { lane: '__ms' } }, tr));
   }
 
@@ -3078,7 +3149,7 @@ function viewRoadmap() {
   themes.forEach(th => {
     const list = items.filter(x => rmThemeName(x) === th.name);
     const packed = list.map(x => { const L = rmLayout(x); return { x, L, s: L.x, e: L.x + L.ext }; });
-    const rows = packRm(packed, 2);
+    const rows = packRm(packed, -1);   // 이어지는 항목은 한 노선에 이어서
     const H = PADT * 2 + rows * ROW - (ROW - BLK);
     const prog = list.map(rmProgress).filter(p => p != null);
     const avg = prog.length ? Math.round(prog.reduce((a, b) => a + b, 0) / prog.length) : null;
@@ -3101,7 +3172,7 @@ function viewRoadmap() {
     const tr = h('div', { class: 'track' });
     packed.forEach(p => add(tr, ...rmBlock(p.x, p.L, PADT + p.row * ROW)));
     if (S.owner) tr.addEventListener('dblclick', e => {
-      if (e.target.closest('.rmb,.rm-ms')) return;
+      if (e.target.closest('.mt,.flg')) return;
       const x = e.clientX - tr.getBoundingClientRect().left;
       createRm({ theme: th.name, color: th.color, start: rmDateAt(x) });
     });
@@ -3123,7 +3194,7 @@ function viewRoadmap() {
     h('div', { class: 'tl__head' }, qs, ms),
     layer,
     h('div', { class: 'now', style: `left:${nowX}px` }),
-    miles.map(x => h('div', { class: 'rm-msline', style: `left:${rmX(x.start_date)}px` })),
+    miles.filter(x => x.status !== 'dropped').map(x => h('div', { class: 'rm-msline' + (x.status === 'done' ? ' is-done' : ''), style: `left:${rmX(x.start_date)}px;--c:${x.color}` })),
     right);
   return h('div', { class: 'tl tl--rm' }, side, main);
 }
@@ -3139,42 +3210,53 @@ function packRm(list, gap = 10) {
   });
   return rows.length;
 }
+/* ── 노선도(B) + 깃발(A) 공용 조각 ── 로드맵 탭과 타임라인 띠가 같이 씀 */
+const MT_H = 58, MT_SM = 30;
 function rmLayout(x) {
-  const a = rmX(x.start_date), b = rmXEnd(x.end_date), w = Math.max(b - a - 4, 14);
-  const tw = measure(x.title) + 26 + (x.status === 'done' ? 16 : 0);
-  const inside = tw <= w;
-  return { x: a + 2, w, inside, ext: inside ? w : w + 8 + tw + 70 };
+  const a = rmX(x.start_date), b = rmXEnd(x.end_date), w = Math.max(b - a, 16);
+  const lw = Math.max(measure(x.title) + 26, 120);
+  return { x: a, w, ext: Math.max(w, lw) };
 }
-function rmBlock(x, L, top) {
+function metroEl(x, left, width, top, sm) {
   const st = x.status || 'planned', p = rmProgress(x);
+  const solid = st === 'done' ? 100 : st === 'active' ? clamp(p ?? 0, 0, 100) : 0;
+  const late = st !== 'done' && st !== 'dropped' && x.end_date < today();
   const imgs = attOf('roadmap_id', x.id).length;
-  const lab = frag(
-    st === 'done' ? h('span', { class: 'rmb__i', html: I.check }) : null,
-    h('span', { class: 'rmb__x' }, x.title),
-    st === 'active' && p != null && (!L.inside || L.w >= 150) ? h('span', { class: 'rmb__p mono' }, p + '%') : null,
-    imgs && (!L.inside || L.w >= 190) ? h('span', { class: 'rmb__p', title: `이미지 ${imgs}장` }, svg(I.img), String(imgs)) : null,
-    x.is_public === false && S.owner ? h('span', { class: 'rmb__p', title: '나만 보기' }, svg(I.lock)) : null);
-  const el = h('div', {
-    class: `rmb rmb--${st}` + (S.sel === x.id ? ' is-sel' : '') + (S.owner ? '' : ' is-ro'),
-    style: `--c:${x.color || cvar('--tx3')};left:${L.x}px;width:${L.w}px;top:${top}px`,
+  const meta = [`${md(x.start_date)}–${md(x.end_date)}`, st === 'active' && p != null ? `${p}%` : rmStOf(st).t].join(' · ');
+  return h('div', {
+    class: `mt mt--${st}` + (sm ? ' mt--sm' : '') + (S.sel === x.id ? ' is-sel' : '') + (late ? ' is-late' : '') + (S.owner ? '' : ' is-ro'),
+    style: `--c:${x.color || cvar('--tx3')};left:${left}px;width:${width}px;top:${top}px`,
     role: 'button', tabindex: '0', data: { id: x.id },
-    title: `${x.title}\n${fmtMonths(x)} · ${rmStOf(st).t}${p != null ? ` · ${p}%` : ''}`,
-    'aria-label': `${x.title}, ${fmtMonths(x)}, ${rmStOf(st).t}`
+    title: `${x.title}\n${md(x.start_date)} → ${md(x.end_date)} · ${rmStOf(st).t}${p != null ? ` · ${p}%` : ''}${late ? ' · 기한 지남' : ''}`,
+    'aria-label': `${x.title}, ${md(x.start_date)}부터 ${md(x.end_date)}까지, ${rmStOf(st).t}`
   },
-    st === 'active' && p != null ? h('i', { class: 'rmb__bar', style: `width:${p}%` }) : null,
-    L.inside ? lab : null,
-    S.owner ? frag(h('div', { class: 'bar__h bar__h--l', data: { edge: 'l' } }), h('div', { class: 'bar__h bar__h--r', data: { edge: 'r' } })) : null);
-  const out = L.inside ? null : h('div', { class: 'bar__out rm-out', style: `left:${L.x + L.w + 8}px;top:${top}px;height:28px` }, lab);
-  wireRm(el, x, out);
-  return [el, out];
+    solid > 0 ? h('i', { class: 'mt__ln mt__ln--s', style: `width:${solid}%` }) : null,
+    solid < 100 ? h('i', { class: 'mt__ln mt__ln--d', style: `left:${solid}%` }) : null,
+    h('span', { class: 'mt__st' }, st === 'done' ? svg(I.check) : null),
+    h('span', { class: 'mt__n' }, x.title,
+      x.is_public === false && S.owner ? h('span', { class: 'mt__ic', title: '나만 보기' }, svg(I.lock)) : null,
+      sm && imgs ? h('span', { class: 'mt__ic', title: `이미지 ${imgs}장` }, svg(I.img)) : null),
+    !sm ? h('span', { class: 'mt__d' }, meta, imgs ? h('span', { class: 'mt__ic', title: `이미지 ${imgs}장` }, svg(I.img), String(imgs)) : null) : null,
+    S.owner && width >= 28 ? frag(h('span', { class: 'bar__h bar__h--l mt__h', data: { edge: 'l' } }), h('span', { class: 'bar__h bar__h--r mt__h', data: { edge: 'r' } })) : null);
+}
+function flagEl(x, left, top, sm) {
+  const done = x.status === 'done', late = !done && x.start_date < today();
+  return h('div', {
+    class: 'flg' + (sm ? ' flg--sm' : '') + (done ? ' is-done' : '') + (late ? ' is-late' : '') + (S.sel === x.id ? ' is-sel' : '') + (S.owner ? '' : ' is-ro'),
+    style: `--c:${x.color || cvar('--s-block')};left:${left}px;top:${top}px`,
+    role: 'button', tabindex: '0', data: { id: x.id },
+    title: `${x.title} · ${mdK(x.start_date)}${late ? ' · 날짜 지남' : done ? ' · 완료' : ''}`,
+    'aria-label': `마일스톤 ${x.title}, ${mdK(x.start_date)}`
+  }, h('span', { class: 'flg__t' }, done ? svg(I.check) : h('i', { class: 'flg__d' }), h('b', {}, x.title), h('span', { class: 'mono' }, md(x.start_date))));
+}
+const flagW = x => measure(x.title) + 70;
+function rmBlock(x, L, top) {
+  const el = metroEl(x, L.x, L.w, top, false);
+  wireRm(el, x, null);
+  return [el, null];
 }
 function rmMilestone(x, top) {
-  const late = x.status !== 'done' && x.start_date < today();
-  const el = h('div', {
-    class: 'rm-ms' + (x.status === 'done' ? ' is-done' : '') + (late ? ' is-late' : '') + (S.sel === x.id ? ' is-sel' : '') + (S.owner ? '' : ' is-ro'),
-    style: `--c:${x.color || cvar('--s-block')};left:${rmX(x.start_date) - 7}px;top:${top}px`,
-    role: 'button', tabindex: '0', data: { id: x.id }, title: `${x.title} · ${fmtMonths(x)}`
-  }, h('span', { class: 'rm-dia' }), h('b', {}, x.title), h('span', { class: 'mono' }, md(x.start_date)));
+  const el = flagEl(x, rmX(x.start_date), top, false);
   wireRm(el, x, null);
   return el;
 }
@@ -3198,7 +3280,7 @@ function rmDrag(e, x, el, out) {
     ev.preventDefault();
     if (ms) {
       ns = ne = rmDateAt(clamp(rmX(x.start_date) + dx, 0, S.rmRange.n * w - 1));
-      el.style.left = (rmX(ns) - 7) + 'px';
+      el.style.left = rmX(ns) + 'px';
       tip.textContent = `${mdK(ns)}`;
     } else {
       /* 날짜 단위로 붙음 (넓은 보기) · 좁은 보기에선 주 단위 */
@@ -3210,7 +3292,7 @@ function rmDrag(e, x, el, out) {
       else if (edge === 'r') b = addD(e1, Math.max(dd, -len));
       else { a = addD(s1, dd); b = addD(e1, dd); }
       ns = fd(a); ne = fd(b);
-      const nx = rmX(ns) + 2, nw = Math.max(rmXEnd(ne) - rmX(ns) - 4, 14);
+      const nx = rmX(ns), nw = Math.max(rmXEnd(ne) - rmX(ns), 16);
       el.style.left = nx + 'px'; el.style.width = nw + 'px';
       tip.textContent = `${md(ns)} → ${md(ne)} · ${fmtSpan(dDiff(a, b) + 1)}`;
     }
@@ -3850,9 +3932,9 @@ function taskPanel(t) {
     h('dl', { class: 'props' },
       h('dt', {}, '상태'),
       h('dd', {}, ro
-        ? h('span', { class: 'tag tag--c', style: `--c:${cvar(st.v)}` }, st.t)
+        ? h('span', { class: 'tag tag--c' + (t.status === 'done' ? ' tag--done' : ''), style: `--c:${cvar(st.v)}` }, t.status === 'done' ? svg(I.check) : null, st.t)
         : ST.map(s => h('button', {
-            class: 'chip', 'aria-pressed': String(t.status === s.k), style: `--c:${cvar(s.v)}`,
+            class: 'chip' + (s.k === 'done' ? ' chip--done' : ''), 'aria-pressed': String(t.status === s.k), style: `--c:${cvar(s.v)}`,
             onClick: () => {
               if (t.status === s.k) return;
               const p = { status: s.k };
@@ -4008,7 +4090,7 @@ function reqPanel(r) {
     t ? h('div', { class: 'sect' },
       h('div', { class: 'sect__h' }, h('b', {}, '연결된 작업')),
       h('button', { class: 'linkcard', onClick: () => openTask(t.id) },
-        h('div', { class: 'linkcard__k' }, h('span', { class: 'tag tag--c', style: `--c:${cvar(stOf(t.status).v)}` }, stOf(t.status).t)),
+        h('div', { class: 'linkcard__k' }, h('span', { class: 'tag tag--c' + (t.status === 'done' ? ' tag--done' : ''), style: `--c:${cvar(stOf(t.status).v)}` }, t.status === 'done' ? svg(I.check) : null, stOf(t.status).t)),
         h('div', { class: 'linkcard__t' }, t.title),
         h('div', { class: 'linkcard__m' }, `${md(t.start_date)} → ${md(t.end_date)}`, h('div', { class: 'meter', style: `--c:${cvar(stOf(t.status).v)}` }, h('i', { style: `width:${t.progress}%` })), `${t.progress}%`))) : null,
     rels.length && S.owner ? h('div', { class: 'sect' },
@@ -4302,8 +4384,8 @@ function roadmapPanel(x) {
     titleBox('rmTitle', x.title, ro, v => saveRmTitle(x.id, v), ms ? '마일스톤 이름' : '항목 이름'),
     h('dl', { class: 'props' },
       h('dt', {}, '상태'),
-      h('dd', {}, ro ? h('span', { class: 'tag tag--c', style: `--c:${cvar(st.v)}` }, st.t)
-        : RM_ST.map(s2 => h('button', { class: 'chip', 'aria-pressed': String((x.status || 'planned') === s2.k), style: `--c:${cvar(s2.v)}`, onClick: () => upRm(x.id, { status: s2.k }) },
+      h('dd', {}, ro ? h('span', { class: 'tag tag--c' + (x.status === 'done' ? ' tag--done' : ''), style: `--c:${cvar(st.v)}` }, x.status === 'done' ? svg(I.check) : null, st.t)
+        : RM_ST.map(s2 => h('button', { class: 'chip' + (s2.k === 'done' ? ' chip--done' : ''), 'aria-pressed': String((x.status || 'planned') === s2.k), style: `--c:${cvar(s2.v)}`, onClick: () => upRm(x.id, { status: s2.k }) },
             h('span', { class: 'dot dot--r', style: `background:${cvar(s2.v)}` }), s2.t))),
       h('dt', {}, ms ? '날짜' : '기간'), h('dd', {}, period),
       presets,
