@@ -795,6 +795,43 @@ select.in{padding-right:28px;appearance:none;background-image:url("data:image/sv
 .tag--rm i{width:6px;height:6px;border-radius:99px;background:var(--c);flex:0 0 auto}
 .card__tags .tag--rm{overflow:hidden;text-overflow:ellipsis}
 
+
+/* 타임라인 속 로드맵 — 맨 위 띠 · 로드맵별 묶기 */
+.lane--rmband{background:color-mix(in srgb,var(--pri) 4%,transparent);border-bottom:1px solid var(--line2)}
+.lh__i{display:grid;place-items:center;width:12px;height:12px;color:var(--pri-fg);flex:0 0 auto}
+.lh__i svg{width:12px;height:12px}
+.lane--rmband .lh__n{font-weight:600}
+.lh__m{flex:0 0 auto;font-size:11px;color:var(--tx3)}
+.lh__n.is-link{cursor:pointer}
+.lh__n.is-link:hover{text-decoration:underline;text-underline-offset:2px}
+.lane--rm .lh__n{font-weight:600}
+.rbb{
+  --c:var(--s-plan);
+  position:absolute;height:22px;border-radius:var(--r2);display:flex;align-items:center;padding:0 9px;overflow:hidden;white-space:nowrap;
+  font-size:11.5px;font-weight:600;color:var(--tx1);text-align:left;
+  background:color-mix(in srgb,var(--c) 22%,var(--bg1));border:1px solid color-mix(in srgb,var(--c) 50%,transparent);
+  transition:background .12s linear,box-shadow .12s linear
+}
+.rbb:hover{background:color-mix(in srgb,var(--c) 30%,var(--bg1))}
+.rbb.is-sel{box-shadow:0 0 0 2px var(--c)}
+.rbb--planned{background:color-mix(in srgb,var(--c) 9%,var(--bg1));border-style:dashed;font-weight:500}
+.rbb--done{background:color-mix(in srgb,var(--c) 12%,var(--bg1));color:var(--tx2)}
+.rbb__p{position:absolute;left:0;top:0;bottom:0;background:color-mix(in srgb,var(--c) 32%,transparent);pointer-events:none}
+.rbb{overflow:clip}
+/* 앞부분이 화면 왼쪽으로 지나가도 이름은 보이게 */
+.rbb__x{position:sticky;left:calc(var(--side) + 8px);z-index:1;overflow:hidden;text-overflow:ellipsis}
+.rbb.is-out{overflow:visible}
+.rbb.is-out .rbb__x{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);color:var(--tx2);overflow:visible}
+.rbm{--c:var(--s-block);position:absolute;height:22px;display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:11.5px;border-radius:var(--r2);padding-right:6px;z-index:2}
+.rbm b{font-weight:600}
+.rbm .mono{font-size:10.5px;color:var(--tx3)}
+.rbm:hover b{text-decoration:underline;text-underline-offset:2px}
+.rbm .rm-dia{width:12px;height:12px}
+.rbm.is-done b{color:var(--tx3);text-decoration:line-through}
+.rbm.is-late .mono{color:var(--s-block);font-weight:600}
+.rbm.is-sel{background:color-mix(in srgb,var(--c) 14%,transparent)}
+.rmspan{position:absolute;top:3px;bottom:3px;border-radius:var(--r2);pointer-events:none;background:color-mix(in srgb,var(--c) 7%,transparent);box-shadow:inset 2px 0 0 color-mix(in srgb,var(--c) 70%,transparent),inset -1px 0 0 color-mix(in srgb,var(--c) 35%,transparent)}
+
 /* ── 9d. 다듬기 (QA · 디자인) ─────────────────────────────── */
 .bar:focus-visible{box-shadow:inset 3px 0 0 var(--c),0 0 0 2px var(--bg0),0 0 0 4px var(--pri)}
 .bar__h--xs{width:6px}
@@ -1709,6 +1746,7 @@ const S = {
   requests: [], releases: [], offdays: [], attachments: [], roadmap: [], settings: { ...DEF },
   uploads: [],                        // 올리는 중인 사진 { uid, key, id, file, local, state }
   rmScale: LS.get('rmScale', 'h'), rmRange: null,
+  rmBand: LS.get('rmBand', true),    // 타임라인 맨 위 로드맵 띠
   drafts: {},                         // 패널별 쓰다 만 댓글
   view: 'timeline', group: DEF.group, dayW: DEF.dayW,
   owner: false, demo: false, booted: false,
@@ -2169,8 +2207,8 @@ function subBar() {
     const fN = S.fStatus.size + (S.fWho ? 1 : 0);
     const zp = S.dayW >= 32 ? '일' : S.dayW >= 12 ? '주' : '월';
     add(bar,
-      h('div', { class: 'seg m-hide', role: 'group', 'aria-label': '묶기' }, [['phase', '단계별'], ['member', '담당별']].map(([k, t]) =>
-        h('button', { 'aria-pressed': String(S.group === k), onClick: () => { S.group = k; render(); } }, t))),
+      h('div', { class: 'seg m-hide', role: 'group', 'aria-label': '묶기' }, groupOpts().map(([k, t]) =>
+        h('button', { 'aria-pressed': String(S.group === k), onClick: () => setGroup(k) }, t))),
       h('div', { class: 'vsep m-hide' }),
       h('div', { class: 'nav3' },
         h('button', { class: 'ico', html: I.left, title: '이전', 'aria-label': '이전', onClick: () => pan(-1) }),
@@ -2252,14 +2290,16 @@ function tlMore(anchor) {
   const items = [];
   if (isMobile()) items.push(
     { h: '묶기' },
-    { check: S.group === 'phase', t: '단계별', fn: () => { S.group = 'phase'; render(); } },
-    { check: S.group === 'member', t: '담당별', fn: () => { S.group = 'member'; render(); } },
+    ...groupOpts().map(([k, t]) => ({ check: S.group === k, t, fn: () => { closeMenu(); setGroup(k); } })),
     { sep: 1 });
+  if (rmOn()) items.push({ check: S.rmBand, t: '맨 위에 로드맵 띠 보이기', fn: () => { S.rmBand = !S.rmBand; LS.set('rmBand', S.rmBand); closeMenu(); render(); } }, { sep: 1 });
   items.push({ t: 'CSV로 내보내기', icon: I.dl, fn: exportCSV });
   if (S.hidden.size) items.push({ t: `숨긴 작업 모두 보이기 (${S.hidden.size})`, icon: I.eye, fn: () => { S.hidden.clear(); LS.set('hidden', []); S.showHidden = false; render(); } });
   if (!isMobile()) items.push({ t: S.sideMin ? '왼쪽 패널 열기' : '왼쪽 패널 접기', icon: S.sideMin ? I.right : I.left, k: 'B', fn: toggleSide });
   showMenu(anchor, items, { align: 'right' });
 }
+const groupOpts = () => [['phase', '단계별'], ['member', '담당별'], ...(!DB.missing.has('roadmap') && rmVisible().some(x => x.kind !== 'milestone') ? [['roadmap', '로드맵별']] : [])];
+function setGroup(k) { S.group = k; render(); }
 function toggleSide() { S.sideMin = !S.sideMin; LS.set('sideMin', S.sideMin); render(); }
 
 function pan(dir) {
@@ -2354,7 +2394,7 @@ function pack(items, gap = 8) {
   items.slice().sort((a, b) => pd(a.start_date) - pd(b.start_date) || pd(b.end_date) - pd(a.end_date))
     .forEach(it => {
       const s = xOf(it.start_date);
-      const e = s + (it._t === 'task' ? barLayout(it).ext : wOf(it.start_date, it.end_date));
+      const e = s + (it._t === 'task' ? barLayout(it).ext : it._t === 'rm' ? rmBandExt(it) : wOf(it.start_date, it.end_date));
       let r = 0;
       for (;;) {
         if (!rows[r]) rows[r] = [];
@@ -2364,10 +2404,27 @@ function pack(items, gap = 8) {
     });
   return Math.max(rows.length, 1);
 }
+/* 로드맵을 타임라인에서 쓸 수 있는지 */
+const rmOn = () => !DB.missing.has('roadmap') && rmVisible().length > 0;
+const rmItemsForTl = () => rmVisible().filter(x => x.kind !== 'milestone' && x.status !== 'dropped')
+  .sort((a, b) => a.start_date.localeCompare(b.start_date) || (a.sort ?? 0) - (b.sort ?? 0));
 function buildLanes() {
   const lanes = [], tasks = visTasks();
   const T = t => ({ ...t, _t: 'task' });
-  if (S.group === 'phase') {
+  /* 맨 위 로드맵 띠 — 큰 흐름을 같은 날짜 축에서 */
+  if (S.rmBand && rmOn()) {
+    const items = rmVisible().filter(x => x.status !== 'dropped').map(x => ({ ...x, _t: 'rm' }));
+    lanes.push({ id: '__rm', name: '로드맵', color: cvar('--pri-fg'), kind: 'rmband', items, rows: pack(items, 10) });
+  }
+  if (S.group === 'roadmap' && !DB.missing.has('roadmap')) {
+    rmItemsForTl().forEach(x => {
+      const items = tasks.filter(t => t.roadmap_id === x.id).map(T);
+      lanes.push({ id: x.id, name: x.title, color: x.color, kind: 'roadmap', rm: x, items, rows: pack(items) });
+    });
+    const known = new Set(rmItemsForTl().map(x => x.id));
+    const loose = tasks.filter(t => !t.roadmap_id || !known.has(t.roadmap_id)).map(T);
+    if (loose.length || !lanes.some(l => l.kind === 'roadmap')) lanes.push({ id: '__none', name: '로드맵 없음', color: cvar('--tx3'), kind: 'roadmap', items: loose, rows: pack(loose) });
+  } else if (S.group === 'phase') {
     if (S.leaves.length) {
       const order = S.members.map(m => m.id).filter(id => S.leaves.some(l => l.member_id === id));
       S.leaves.forEach(l => { if (!order.includes(l.member_id)) order.push(l.member_id); });
@@ -2442,12 +2499,14 @@ function viewTimeline() {
   const left = h('div', {}), right = h('div', {});
   const lanes = buildLanes();
   lanes.forEach(lane => {
-    const closed = S.closed.has(lane.id), isVac = lane.kind === 'vac';
-    const bh = isVac ? 20 : BAR, pitch = isVac ? 26 : ROW, pad = (ROW - bh) / 2;
+    const closed = S.closed.has(lane.id), isVac = lane.kind === 'vac', isBand = lane.kind === 'rmband', isRm = lane.kind === 'roadmap' && lane.rm;
+    const bh = isVac ? 20 : isBand ? 22 : BAR, pitch = isVac ? 26 : isBand ? 28 : ROW, pad = (ROW - bh) / 2;
     const H = closed ? ROW + CAP : CAP + pad * 2 + (lane.rows - 1) * pitch + bh;
-    const cnt = isVac ? `${lane.items.length}` : `${lane.items.filter(t => t.status === 'done').length}/${lane.items.length}`;
+    const rp = isRm ? rmProgress(lane.rm) : null;
+    const cnt = isVac || isBand ? `${lane.items.length}` : isRm && rp != null ? `${rp}%` : `${lane.items.filter(t => t.status === 'done').length}/${lane.items.length}`;
 
-    const name = h('div', { class: 'lh__n', text: lane.name, title: lane.name, data: { pid: lane.id } });
+    const name = h('div', { class: 'lh__n' + (isRm ? ' is-link' : ''), text: lane.name, title: isRm ? `${lane.name} · ${fmtMonths(lane.rm)} — 눌러서 열기` : lane.name, data: { pid: lane.id } });
+    if (isRm) name.addEventListener('click', () => openRoadmap(lane.rm.id));
     const editable = S.owner && lane.kind === 'phase' && lane.id !== '__none';
     if (editable) {
       name.contentEditable = 'true'; name.spellcheck = false;
@@ -2459,16 +2518,18 @@ function viewTimeline() {
       name.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); name.blur(); } if (e.key === 'Escape') { name.textContent = lane.name; name.blur(); } e.stopPropagation(); });
     }
     const toggle = () => { closed ? S.closed.delete(lane.id) : S.closed.add(lane.id); LS.set('closed', [...S.closed]); render(); };
-    const lrow = h('div', { class: 'lane' + (isVac ? ' lane--vac' : ''), style: `height:${H}px` },
+    const lkind = isVac ? ' lane--vac' : isBand ? ' lane--rmband' : isRm ? ' lane--rm' : '';
+    const lrow = h('div', { class: 'lane' + lkind, style: `height:${H}px` },
       h('div', { class: 'lh' + (closed ? ' is-closed' : '') },
         h('button', { class: 'lh__t', html: I.chev, 'aria-label': closed ? '펼치기' : '접기', onClick: toggle }),
-        h('span', { class: 'dot', style: `background:${lane.color}` }),
+        isBand ? h('span', { class: 'lh__i', html: I.flag }) : h('span', { class: 'dot', style: `background:${lane.color}` }),
         name,
-        h('span', { class: 'lh__c' }, cnt),
+        isRm ? h('span', { class: 'lh__m' }, fmtMonths(lane.rm)) : null,
+        h('span', { class: 'lh__c', title: isRm && rp != null ? `진행률 ${rp}%` : null }, cnt),
         S.owner ? h('div', { class: 'lh__a' },
-          h('button', { class: 'ico ico--sm', html: I.plus, title: isVac ? '휴가 등록' : '작업 추가', onClick: e => { e.stopPropagation(); addToLane(lane); } }),
+          h('button', { class: 'ico ico--sm', html: I.plus, title: isVac ? '휴가 등록' : isBand ? '로드맵 항목 추가' : '작업 추가', onClick: e => { e.stopPropagation(); addToLane(lane); } }),
           lane.id !== '__none' && lane.id !== '__vac' ? h('button', { class: 'ico ico--sm', html: I.dots, title: '더보기', onClick: e => { e.stopPropagation(); laneMenu(e.currentTarget, lane); } }) : null,
-          lane.id !== '__none' && lane.id !== '__vac' ? h('div', { class: 'ico ico--sm lh__g', html: I.grip, title: '끌어서 순서 변경', onPointerdown: e => laneDrag(e, lane) }) : null) : null));
+          (lane.kind === 'phase' || lane.kind === 'member') && lane.id !== '__none' ? h('div', { class: 'ico ico--sm lh__g', html: I.grip, title: '끌어서 순서 변경', onPointerdown: e => laneDrag(e, lane) }) : null) : null));
     if (S.owner) lrow.addEventListener('contextmenu', e => { e.preventDefault(); laneMenu(e, lane); });
     add(left, lrow);
 
@@ -2480,18 +2541,21 @@ function viewTimeline() {
         add(track, h('div', { class: 'sumbar', style: `left:${a}px;width:${b - a}px;background:${lane.color}` }));
       }
     } else {
+      /* 로드맵별 묶기: 그 로드맵 기간을 옅게 깔아 작업이 큰 흐름 안에 있는지 보이게 */
+      if (isRm) add(track, h('div', { class: 'rmspan', style: `--c:${lane.color};left:${xOf(lane.rm.start_date)}px;width:${wOf(lane.rm.start_date, lane.rm.end_date) + 3}px` }));
       lane.items.forEach(it => {
         const top = pad + it.__row * pitch;
         if (it._t === 'vac') add(track, vacEl(it, top));
+        else if (it._t === 'rm') add(track, rmBandEl(it, top));
         else add(track, ...barEls(it, top));
       });
       if (S.owner) track.addEventListener('dblclick', e => {
-        if (e.target.closest('.bar,.vac')) return;
+        if (e.target.closest('.bar,.vac,.rbb,.rbm')) return;
         const x = e.clientX - track.getBoundingClientRect().left;
         addToLane(lane, fd(addD(S.range.s, Math.floor(x / S.dayW))));
       });
     }
-    add(right, h('div', { class: 'lane' + (isVac ? ' lane--vac' : ''), style: `height:${H}px`, data: { lane: lane.id, kind: lane.kind } },
+    add(right, h('div', { class: 'lane' + lkind, style: `height:${H}px`, data: { lane: lane.id, kind: lane.kind } },
       CAP ? h('div', { class: 'lane__cap', onClick: toggle }, h('span', { class: 'dot', style: `background:${lane.color}` }), lane.name, h('span', { class: 'lh__c' }, cnt)) : null,
       track));
   });
@@ -2502,7 +2566,7 @@ function viewTimeline() {
 
   const side = h('aside', { class: 'tl__side' + (S.sideMin ? ' is-min' : '') },
     h('div', { class: 'tl__sh' },
-      h('span', {}, S.group === 'phase' ? '단계' : '담당'),
+      h('span', {}, S.group === 'phase' ? '단계' : S.group === 'roadmap' ? '로드맵' : '담당'),
       h('span', { style: 'display:flex;gap:2px' },
         h('button', { class: 'ico', html: I.left, title: '패널 접기 (B)', 'aria-label': '패널 접기', onClick: toggleSide }))),
     left,
@@ -2571,6 +2635,27 @@ function barEls(t, top) {
   bar.addEventListener('mouseleave', hidePop);
   return [bar, out];
 }
+/* 로드맵 띠의 항목 · 마일스톤 (날짜 축 위) */
+const rmBandExt = x => x.kind === 'milestone' ? 14 + measure(x.title) + 40 : Math.max(wOf(x.start_date, x.end_date), measure(x.title) + 24 > wOf(x.start_date, x.end_date) ? wOf(x.start_date, x.end_date) + 8 + measure(x.title) : 0);
+function rmBandEl(x, top) {
+  const open = e => { e.stopPropagation(); openRoadmap(x.id); };
+  if (x.kind === 'milestone') {
+    const late = x.status !== 'done' && x.start_date < today();
+    return h('button', {
+      class: 'rbm' + (x.status === 'done' ? ' is-done' : '') + (late ? ' is-late' : '') + (S.sel === x.id ? ' is-sel' : ''),
+      style: `--c:${x.color};left:${xOf(x.start_date) + S.dayW / 2 - 7}px;top:${top}px`, title: `${x.title} · ${mdK(x.start_date)}`, onClick: open
+    }, h('span', { class: 'rm-dia' }), h('b', {}, x.title), h('span', { class: 'mono' }, md(x.start_date)));
+  }
+  const w = wOf(x.start_date, x.end_date), p = rmProgress(x), st = x.status || 'planned';
+  const inside = measure(x.title) + 24 <= w;
+  const label = h('span', { class: 'rbb__x' }, x.title);
+  return h('button', {
+    class: `rbb rbb--${st}` + (S.sel === x.id ? ' is-sel' : '') + (inside ? '' : ' is-out'),
+    style: `--c:${x.color};left:${xOf(x.start_date)}px;width:${w}px;top:${top}px`,
+    title: `${x.title}\n${fmtMonths(x)} · ${rmStOf(st).t}${p != null ? ` · ${p}%` : ''}`,
+    onClick: open, onContextmenu: e => { e.preventDefault(); e.stopPropagation(); rmMenu(e, x); }
+  }, st === 'active' && p != null ? h('i', { class: 'rbb__p', style: `width:${p}%` }) : null, label);
+}
 function vacEl(l, top) {
   const m = memOf(l.member_id), col = m?.color || cvar('--tx3'), w = wOf(l.start_date, l.end_date);
   const label = `${m?.name || '?'} · ${vkOf(l.kind).t}${l.memo ? ' · ' + l.memo : ''}`;
@@ -2582,8 +2667,10 @@ function vacEl(l, top) {
 }
 function addToLane(lane, start) {
   if (lane.kind === 'vac') return openVac(null, start);
+  if (lane.kind === 'rmband') return createRm(start ? { month: mFirst(pd(start)) } : {});
   const id = lane.id === '__none' ? null : lane.id;
-  if (S.group === 'phase') createTask({ phase_id: id, start });
+  if (lane.kind === 'roadmap') createTask({ roadmap_id: id, start: start || (lane.rm && lane.rm.start_date > today() ? lane.rm.start_date : undefined) });
+  else if (S.group === 'phase') createTask({ phase_id: id, start });
   else createTask({ assignee_id: id, start });
 }
 
@@ -2596,8 +2683,9 @@ function barDrag(e, task, bar, out) {
   const left0 = parseFloat(bar.style.left);
   const tip = $('#tip');
   let started = false, ns = s0, ne = e0, target = null, lastN = null;
-  const lanes = edge ? [] : $$('.tl__main .lane[data-lane]').filter(n => n.dataset.kind !== 'vac');
-  const home = S.group === 'phase' ? (task.phase_id || '__none') : (task.assignee_id || '__none');
+  const lanes = edge ? [] : $$('.tl__main .lane[data-lane]').filter(n => n.dataset.kind !== 'vac' && n.dataset.kind !== 'rmband');
+  const G = S.group;
+  const home = G === 'phase' ? (task.phase_id || '__none') : G === 'roadmap' ? (task.roadmap_id && $(`.tl__main .lane[data-lane="${task.roadmap_id}"]`) ? task.roadmap_id : '__none') : (task.assignee_id || '__none');
   const setW = () => Math.max((dDiff(ns, ne) + 1) * S.dayW - 3, 8);
 
   const move = ev => {
@@ -2621,7 +2709,7 @@ function barDrag(e, task, bar, out) {
       if (next) next.classList.add('is-drop');
       lastN = next; target = next?.dataset.lane || null;
     }
-    const tn = target ? (S.group === 'phase' ? (phOf(target)?.name || '미분류') : (memOf(target)?.name || '미배정')) : null;
+    const tn = target ? (G === 'phase' ? (phOf(target)?.name || '미분류') : G === 'roadmap' ? (rmOf(target)?.title || '로드맵 없음') : (memOf(target)?.name || '미배정')) : null;
     tip.textContent = `${md(fd(ns))} → ${md(fd(ne))} · ${dDiff(ns, ne) + 1}일` + (tn ? `  →  ${tn}` : '');
     tip.style.left = ev.clientX + 'px'; tip.style.top = ev.clientY + 'px';
     tip.classList.add('is-on');
@@ -2637,11 +2725,13 @@ function barDrag(e, task, bar, out) {
     if (fd(ne) !== task.end_date) patch.end_date = fd(ne);
     if (target) {
       const id = target === '__none' ? null : target;
-      if (S.group === 'phase') patch.phase_id = id;
+      if (G === 'phase') patch.phase_id = id;
+      else if (G === 'roadmap') patch.roadmap_id = id;
       else { patch.assignee_id = id; patch.assignee = memOf(id)?.name || ''; }
     }
     if (!Object.keys(patch).length) return render();
-    const old = { start_date: task.start_date, end_date: task.end_date, phase_id: task.phase_id, assignee_id: task.assignee_id, assignee: task.assignee };
+    const old = { start_date: task.start_date, end_date: task.end_date };
+    if (target) { if (G === 'phase') old.phase_id = task.phase_id; else if (G === 'roadmap') old.roadmap_id = task.roadmap_id || null; else { old.assignee_id = task.assignee_id; old.assignee = task.assignee; } }
     /* 통째로 옮기면 쉬는 날도 같이 옮김 */
     const shift = !edge ? dDiff(s0, ns) : 0;
     const offs = shift ? S.offdays.filter(o => o.task_id === task.id) : [];
@@ -3547,6 +3637,13 @@ function delReq(r) {
 }
 function laneMenu(at, lane) {
   if (lane.kind === 'vac') return showMenu(at, [{ t: '휴가 등록', icon: I.plus, fn: () => openVac(null) }]);
+  if (lane.kind === 'rmband') return showMenu(at, [
+    ...(S.owner ? [{ t: '로드맵 항목 추가', icon: I.plus, fn: () => createRm({}) }, { t: '마일스톤 추가', icon: I.flag, fn: () => createRm({ kind: 'milestone', date: fd(mLast(new Date())) }) }] : []),
+    { t: '로드맵 화면에서 보기', icon: I.open, k: '4', fn: () => go('roadmap') },
+    { t: '이 띠 숨기기', icon: I.eyeoff, fn: () => { S.rmBand = false; LS.set('rmBand', false); render(); } }]);
+  if (lane.kind === 'roadmap') return showMenu(at, [
+    ...(S.owner ? [{ t: '작업 추가', icon: I.plus, fn: () => addToLane(lane) }] : []),
+    ...(lane.rm ? [{ t: '로드맵 항목 열기', icon: I.open, fn: () => openRoadmap(lane.rm.id) }] : [])]);
   const items = [{ t: '작업 추가', icon: I.plus, fn: () => addToLane(lane) }];
   if (lane.kind === 'phase' && lane.id !== '__none') {
     items.push({ t: '이름 바꾸기', icon: I.pen, fn: () => { const n = $(`.lh__n[data-pid="${lane.id}"]`); if (n) { n.focus(); getSelection().selectAllChildren(n); } } });
@@ -4887,7 +4984,7 @@ function defaultTab() {
   return h('div', {},
     row('직원이 처음 보는 화면', null, views, 'view'),
     row('내가 처음 보는 화면', '로그인한 상태에서 열면 이 화면부터 보여요.', views, 'ownerView'),
-    row('타임라인 묶기', null, [['phase', '단계별'], ['member', '담당별']], 'group'),
+    row('타임라인 묶기', null, groupOpts(), 'group'),
     h('div', { class: 'fld' }, h('span', { class: 'lb' }, '타임라인 확대'),
       h('div', { class: 'seg' }, ZP.map(p => h('button', { 'aria-pressed': String(nearestZ(d.dayW || DEF.dayW) === p.w), onClick: () => { d.dayW = p.w; save(); } }, p.t)))),
     h('button', { class: 'btn btn--full', onClick: () => { Object.assign(d, { dayW: Math.round(S.dayW), group: S.group, sideW: S.sideW }); save(); } }, '지금 타임라인 모양을 기본값으로'),
@@ -4967,7 +5064,7 @@ async function markAllRead() {
 
 const KEYS = [['/', '검색'], ['?', '단축키'], ['Esc', '닫기'], ['1 2 3 4', '타임라인 · 요청 · 로그 · 로드맵'],
   ['T', '오늘로 이동'], ['← →', '앞뒤로 넘기기'], ['N', '새 작업'], ['R', '요청 · 계획 추가'],
-  ['B', '왼쪽 패널 접기'], ['E', '카드 모두 펼치기'], ['G', '단계별 ↔ 담당별'], ['+ −', '확대 · 축소'],
+  ['B', '왼쪽 패널 접기'], ['E', '카드 모두 펼치기'], ['G', '단계별 → 담당별 → 로드맵별'], ['+ −', '확대 · 축소'],
   ['Alt + 클릭', '내 화면에서 숨기기'], ['우클릭', '메뉴'], ['⌘ Enter', '댓글 등록'], ['⌘ V', '이미지 붙여넣기 (열린 곳에 첨부)']];
 function openKeys() {
   if ($$('.modal').some(m => !m._closed && m.getAttribute('aria-label') === '단축키')) return;
@@ -5098,7 +5195,7 @@ addEventListener('keydown', e => {
   else if (k === 'n' && S.owner && S.view === 'roadmap') { e.preventDefault(); createRm({}); }
   else if (k === 'b' && S.view === 'timeline') toggleSide();
   else if (k === 'e' && S.view === 'board') { S.expandAll = !S.expandAll; S.expanded.clear(); render(); }
-  else if (k === 'g' && S.view === 'timeline') { S.group = S.group === 'phase' ? 'member' : 'phase'; render(); }
+  else if (k === 'g' && S.view === 'timeline') { const o = groupOpts().map(x => x[0]); setGroup(o[(o.indexOf(S.group) + 1) % o.length]); }
   else if ((e.key === '=' || e.key === '+') && S.view === 'timeline') setZoom(S.dayW * 1.35);
   else if ((e.key === '-' || e.key === '_') && S.view === 'timeline') setZoom(S.dayW / 1.35);
 });
@@ -5149,6 +5246,7 @@ async function start() {
   await reload();
   S.dayW = clamp(Number(S.settings.dayW) || DEF.dayW, ZMIN, ZMAX);
   S.group = S.settings.group || DEF.group;
+  if (!groupOpts().some(x => x[0] === S.group)) S.group = 'phase';
   if (!LS.get('sideW', null) && S.settings.sideW) S.sideW = clamp(S.settings.sideW, 180, 360);
   S.view = S.owner ? (S.settings.ownerView || DEF.ownerView) : (S.settings.view || DEF.view);
   if (!views().some(v => v.k === S.view)) S.view = 'timeline';
