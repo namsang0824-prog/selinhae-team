@@ -830,6 +830,16 @@ select.in{padding-right:28px;appearance:none;background-image:url("data:image/sv
 .rbm.is-done b{color:var(--tx3);text-decoration:line-through}
 .rbm.is-late .mono{color:var(--s-block);font-weight:600}
 .rbm.is-sel{background:color-mix(in srgb,var(--c) 14%,transparent)}
+.rbb.is-ed{cursor:grab}
+.rbb.is-drag,.rbm.is-drag{cursor:grabbing;z-index:9;box-shadow:0 0 0 1.5px var(--pri),var(--sh3)}
+.rbb .bar__h{z-index:2}
+.rbb:hover .bar__h::after{opacity:.9}
+.rbm{cursor:pointer}
+.tl__main > .rm-msline{border-left-color:color-mix(in srgb,var(--c,var(--s-block)) 60%,transparent);z-index:11}
+.tl__main > .rm-msline.is-done{opacity:.35}
+.rm-tick{position:relative}
+.rm-wk{position:absolute;bottom:3px;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:var(--tx3)}
+.rm-wline{opacity:.45}
 .rmspan{position:absolute;top:3px;bottom:3px;border-radius:var(--r2);pointer-events:none;background:color-mix(in srgb,var(--c) 7%,transparent);box-shadow:inset 2px 0 0 color-mix(in srgb,var(--c) 70%,transparent),inset -1px 0 0 color-mix(in srgb,var(--c) 35%,transparent)}
 
 /* ── 9d. 다듬기 (QA · 디자인) ─────────────────────────────── */
@@ -2240,7 +2250,7 @@ function subBar() {
     const ok = !DB.missing.has('roadmap');
     add(bar,
       h('span', { class: 'sub__t' }, '로드맵'),
-      h('span', { class: 'sub__m m-hide' }, '몇 달 단위의 큰 그림'),
+      h('span', { class: 'sub__m m-hide' }, '큰 흐름 · 마일스톤'),
       h('div', { class: 'sub__sp' }),
       ok && !isMobile() && rmVisible().length ? frag(
         h('div', { class: 'nav3' },
@@ -2576,6 +2586,8 @@ function viewTimeline() {
     h('div', { class: 'tl__head' }, months, ticks),
     layer,
     (offNow >= 0 && offNow < days) ? h('div', { class: 'now', style: `left:${nowX}px` }) : null,
+    /* 마일스톤: 타임라인 전체를 가로지르는 기준선 */
+    rmOn() ? rmVisible().filter(x => x.kind === 'milestone' && x.status !== 'dropped').map(x => h('div', { class: 'rm-msline' + (x.status === 'done' ? ' is-done' : ''), style: `left:${xOf(x.start_date) + w / 2}px;--c:${x.color}`, title: `${x.title} · ${mdK(x.start_date)}` })) : null,
     right);
 
   const wrap = h('div', { class: 'tl' }, side, main);
@@ -2638,23 +2650,60 @@ function barEls(t, top) {
 /* 로드맵 띠의 항목 · 마일스톤 (날짜 축 위) */
 const rmBandExt = x => x.kind === 'milestone' ? 14 + measure(x.title) + 40 : Math.max(wOf(x.start_date, x.end_date), measure(x.title) + 24 > wOf(x.start_date, x.end_date) ? wOf(x.start_date, x.end_date) + 8 + measure(x.title) : 0);
 function rmBandEl(x, top) {
-  const open = e => { e.stopPropagation(); openRoadmap(x.id); };
+  const open = e => { e.stopPropagation(); if (e.currentTarget._moved) { e.currentTarget._moved = false; return; } openRoadmap(x.id); };
   if (x.kind === 'milestone') {
     const late = x.status !== 'done' && x.start_date < today();
-    return h('button', {
+    const el = h('button', {
       class: 'rbm' + (x.status === 'done' ? ' is-done' : '') + (late ? ' is-late' : '') + (S.sel === x.id ? ' is-sel' : ''),
       style: `--c:${x.color};left:${xOf(x.start_date) + S.dayW / 2 - 7}px;top:${top}px`, title: `${x.title} · ${mdK(x.start_date)}`, onClick: open
     }, h('span', { class: 'rm-dia' }), h('b', {}, x.title), h('span', { class: 'mono' }, md(x.start_date)));
+    if (S.owner) el.addEventListener('pointerdown', e => rmBandDrag(e, x, el));
+    return el;
   }
   const w = wOf(x.start_date, x.end_date), p = rmProgress(x), st = x.status || 'planned';
   const inside = measure(x.title) + 24 <= w;
   const label = h('span', { class: 'rbb__x' }, x.title);
-  return h('button', {
-    class: `rbb rbb--${st}` + (S.sel === x.id ? ' is-sel' : '') + (inside ? '' : ' is-out'),
+  const el = h('button', {
+    class: `rbb rbb--${st}` + (S.sel === x.id ? ' is-sel' : '') + (inside ? '' : ' is-out') + (S.owner ? ' is-ed' : ''),
     style: `--c:${x.color};left:${xOf(x.start_date)}px;width:${w}px;top:${top}px`,
     title: `${x.title}\n${fmtMonths(x)} · ${rmStOf(st).t}${p != null ? ` · ${p}%` : ''}`,
     onClick: open, onContextmenu: e => { e.preventDefault(); e.stopPropagation(); rmMenu(e, x); }
-  }, st === 'active' && p != null ? h('i', { class: 'rbb__p', style: `width:${p}%` }) : null, label);
+  }, st === 'active' && p != null ? h('i', { class: 'rbb__p', style: `width:${p}%` }) : null, label,
+    S.owner && w >= 28 ? frag(h('span', { class: 'bar__h bar__h--l', data: { edge: 'l' } }), h('span', { class: 'bar__h bar__h--r', data: { edge: 'r' } })) : null);
+  if (S.owner) el.addEventListener('pointerdown', e => rmBandDrag(e, x, el));
+  return el;
+}
+/* 띠에서 끌기 — 하루 단위 (양 끝은 기간 조절) */
+function rmBandDrag(e, x, el) {
+  if (e.button !== 0 || e.pointerType === 'touch') return;
+  const edge = e.target.dataset?.edge || null, ms = x.kind === 'milestone';
+  const x0 = e.clientX, left0 = parseFloat(el.style.left), w0 = parseFloat(el.style.width) || 0;
+  const s0 = pd(x.start_date), e0 = pd(x.end_date), len = dDiff(s0, e0), tip = $('#tip');
+  let started = false, ns = s0, ne = e0;
+  const move = ev => {
+    const dx = ev.clientX - x0;
+    if (!started) { if (Math.abs(dx) < 4) return; started = true; S.dragging = true; el._moved = true; el.classList.add('is-drag'); hidePop(); }
+    ev.preventDefault();
+    const dd = Math.round(dx / S.dayW);
+    if (edge === 'l') { ns = addD(s0, Math.min(dd, len)); ne = e0; el.style.left = (left0 + dDiff(s0, ns) * S.dayW) + 'px'; el.style.width = Math.max((dDiff(ns, ne) + 1) * S.dayW - 3, 8) + 'px'; }
+    else if (edge === 'r') { ns = s0; ne = addD(e0, Math.max(dd, -len)); el.style.width = Math.max((dDiff(ns, ne) + 1) * S.dayW - 3, 8) + 'px'; }
+    else { ns = addD(s0, dd); ne = addD(e0, dd); el.style.left = (left0 + dd * S.dayW) + 'px'; if (!ms) el.style.width = w0 + 'px'; }
+    tip.textContent = ms ? mdK(fd(ns)) : `${md(fd(ns))} → ${md(fd(ne))} · ${fmtSpan(dDiff(ns, ne) + 1)}`;
+    tip.style.left = ev.clientX + 'px'; tip.style.top = ev.clientY + 'px'; tip.classList.add('is-on');
+  };
+  const up = () => {
+    removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+    tip.classList.remove('is-on'); el.classList.remove('is-drag');
+    if (!started) return;
+    S.dragging = false;
+    setTimeout(() => { el._moved = false; }, 80);
+    const p2 = { start_date: fd(ns), end_date: fd(ne) };
+    if (p2.start_date === x.start_date && p2.end_date === x.end_date) return render();
+    const old = { start_date: x.start_date, end_date: x.end_date };
+    upRm(x.id, p2, ms ? `${mdK(p2.start_date)}로 옮겼습니다` : `${md(p2.start_date)} → ${md(p2.end_date)}로 옮겼습니다`, { undo: { t: '되돌리기', fn: () => upRm(x.id, old) } });
+  };
+  addEventListener('pointermove', move, { passive: false });
+  addEventListener('pointerup', up); addEventListener('pointercancel', up);
 }
 function vacEl(l, top) {
   const m = memOf(l.member_id), col = m?.color || cvar('--tx3'), w = wOf(l.start_date, l.end_date);
@@ -2667,7 +2716,7 @@ function vacEl(l, top) {
 }
 function addToLane(lane, start) {
   if (lane.kind === 'vac') return openVac(null, start);
-  if (lane.kind === 'rmband') return createRm(start ? { month: mFirst(pd(start)) } : {});
+  if (lane.kind === 'rmband') return createRm(start ? { start } : {});
   const id = lane.id === '__none' ? null : lane.id;
   if (lane.kind === 'roadmap') createTask({ roadmap_id: id, start: start || (lane.rm && lane.rm.start_date > today() ? lane.rm.start_date : undefined) });
   else if (S.group === 'phase') createTask({ phase_id: id, start });
@@ -2840,7 +2889,8 @@ const RM_ST = [
   { k: 'dropped', t: '접음', v: '--tx3' }
 ];
 const rmStOf = k => RM_ST.find(s => s.k === k) || RM_ST[0];
-const RM_SCALE = [{ k: 'q', t: '분기', w: 220 }, { k: 'h', t: '반기', w: 150 }, { k: 'y', t: '1년', w: 92 }];
+/* 한 달 폭(px). '월'은 주 단위 눈금까지 보여서 날짜 단위로 다루기 좋음 */
+const RM_SCALE = [{ k: 'm', t: '월', w: 520 }, { k: 'q', t: '분기', w: 240 }, { k: 'h', t: '반기', w: 150 }];
 const rmOf = id => id ? S.roadmap.find(x => x.id === id) : null;
 const rmVisible = () => S.roadmap.filter(x => S.owner || (x.is_public !== false && x.status !== 'dropped'));
 const rmThemeName = x => (x.theme || '').trim();
@@ -2878,6 +2928,8 @@ function rmRange() {
   return S.rmRange;
 }
 const rmW = () => (RM_SCALE.find(x => x.k === S.rmScale) || RM_SCALE[1]).w;
+const rmDays = x => dDiff(pd(x.start_date), pd(x.end_date)) + 1;
+const fmtSpan = n => n % 7 === 0 && n >= 14 ? `${n / 7}주` : `${n}일`;
 function rmX(ds) {
   const d = pd(ds), m = mFirst(d), w = rmW();
   return mDiff(S.rmRange.s, m) * w + (d.getDate() - 1) / mLast(d).getDate() * w;
@@ -2889,9 +2941,12 @@ function rmDateAt(x) {
   return fd(new Date(m.getFullYear(), m.getMonth(), clamp(Math.floor((x - k * w) / w * dim) + 1, 1, dim)));
 }
 const rmMonthAt = x => mAdd(S.rmRange.s, Math.floor(x / rmW()));
+/* 기간 표시: 달에 딱 맞으면 'n월', 아니면 날짜 */
 const fmtMonths = x => {
   const a = pd(x.start_date), b = pd(x.end_date);
   if (x.kind === 'milestone') return `${a.getMonth() + 1}월 ${a.getDate()}일`;
+  const whole = a.getDate() === 1 && b.getDate() === mLast(b).getDate();
+  if (!whole) return `${md(x.start_date)}–${md(x.end_date)}`;
   const same = a.getFullYear() === b.getFullYear();
   if (mDiff(a, b) === 0) return `${a.getMonth() + 1}월`;
   return same ? `${a.getMonth() + 1}–${b.getMonth() + 1}월` : `${a.getFullYear() % 100}.${a.getMonth() + 1}–${b.getFullYear() % 100}.${b.getMonth() + 1}월`;
@@ -2909,14 +2964,15 @@ async function upRm(id, patch, ok, opt = {}) {
 async function createRm(o = {}) {
   if (needMigration('roadmap')) return;
   return once('newrm', async () => {
-    const m = o.month || mFirst(new Date());
-    const months = o.months || 3;
+    /* 기본: 오늘(또는 누른 날)부터 2주 */
+    const st = o.start || (o.month ? fd(o.month) : today());
+    const days = o.days || 14;
     const theme = o.theme ?? (rmThemes()[0]?.name || '');
     const color = o.color || rmThemes().find(t => t.name === theme)?.color || PAL[rmThemes().length % PAL.length];
     const ms = o.kind === 'milestone';
     const row = {
       title: o.title || (ms ? '새 마일스톤' : '새 항목'), body: '', theme, color,
-      start_date: ms ? (o.date || today()) : fd(m), end_date: ms ? (o.date || today()) : fd(mLast(mAdd(m, months - 1))),
+      start_date: ms ? (o.date || today()) : st, end_date: ms ? (o.date || today()) : fd(addD(pd(st), days - 1)),
       kind: ms ? 'milestone' : 'item', status: 'planned', progress: null, is_public: true, sort: S.roadmap.length
     };
     const x = await guard(() => DB.insert('roadmap', row), '로드맵에 추가하지 못했습니다');
@@ -2981,7 +3037,12 @@ function viewRoadmap() {
   for (let k = 0; k < n; k++) {
     const m = mAdd(s, k);
     const cur = m.getFullYear() === T.getFullYear() && m.getMonth() === T.getMonth();
-    add(ms, h('div', { class: 'tick rm-tick' + (cur ? ' is-cur' : ''), style: `width:${w}px` }, h('b', {}, `${m.getMonth() + 1}월`)));
+    const tk = h('div', { class: 'tick rm-tick' + (cur ? ' is-cur' : ''), style: `width:${w}px` }, h('b', {}, `${m.getMonth() + 1}월`));
+    /* 넓은 보기에선 주(월요일) 눈금도 */
+    if (w >= 300) {
+      for (let d = new Date(m); d <= mLast(m); d = addD(d, 1)) if (d.getDay() === 1 && d.getDate() > 3 && d.getDate() < mLast(m).getDate() - 2) add(tk, h('span', { class: 'rm-wk', style: `left:${(d.getDate() - 1) / mLast(m).getDate() * w}px` }, `${d.getMonth() + 1}/${d.getDate()}`));
+    }
+    add(ms, tk);
   }
   const nowX = rmX(today());
   add(ms, h('div', { class: 'nowcap', style: `left:${nowX}px` }, md(today())));
@@ -2992,6 +3053,7 @@ function viewRoadmap() {
       add(layer, h('div', { class: 'mline', style: `left:${k * w}px` }));
       if (Math.floor(mDiff(s, m) / 3) % 2 === 1) add(layer, h('div', { class: 'band', style: `left:${k * w}px;width:${3 * w}px` }));
     } else add(layer, h('div', { class: 'wline', style: `left:${k * w}px` }));
+    if (w >= 300) for (let d = new Date(m); d <= mLast(m); d = addD(d, 1)) if (d.getDay() === 1 && d.getDate() > 1) add(layer, h('div', { class: 'wline rm-wline', style: `left:${rmX(fd(d))}px` }));
   }
 
   const ROW = 40, BLK = 28, PADT = 6;
@@ -3041,7 +3103,7 @@ function viewRoadmap() {
     if (S.owner) tr.addEventListener('dblclick', e => {
       if (e.target.closest('.rmb,.rm-ms')) return;
       const x = e.clientX - tr.getBoundingClientRect().left;
-      createRm({ theme: th.name, color: th.color, month: rmMonthAt(x) });
+      createRm({ theme: th.name, color: th.color, start: rmDateAt(x) });
     });
     add(right, h('div', { class: 'lane rm-lane', style: `height:${Math.max(H, ROW)}px`, data: { lane: 'th:' + th.name } }, tr));
   });
@@ -3128,7 +3190,6 @@ function rmDrag(e, x, el, out) {
   const edge = e.target.dataset?.edge || null;
   const ms = x.kind === 'milestone';
   const x0 = e.clientX, left0 = parseFloat(el.style.left), w = rmW();
-  const s0 = mFirst(pd(x.start_date)), e0 = mFirst(pd(x.end_date));
   const tip = $('#tip');
   let started = false, ns = x.start_date, ne = x.end_date;
   const move = ev => {
@@ -3140,15 +3201,18 @@ function rmDrag(e, x, el, out) {
       el.style.left = (rmX(ns) - 7) + 'px';
       tip.textContent = `${mdK(ns)}`;
     } else {
-      const dm = Math.round(dx / w);
-      let a = s0, b = e0;
-      if (edge === 'l') a = mAdd(s0, Math.min(dm, mDiff(s0, e0)));
-      else if (edge === 'r') b = mAdd(e0, Math.max(dm, -mDiff(s0, e0)));
-      else { a = mAdd(s0, dm); b = mAdd(e0, dm); }
-      ns = fd(a); ne = fd(mLast(b));
+      /* 날짜 단위로 붙음 (넓은 보기) · 좁은 보기에선 주 단위 */
+      const perDay = w / 30.4, step = perDay >= 6 ? 1 : 7;
+      const dd = Math.round(dx / perDay / step) * step;
+      const s1 = pd(x.start_date), e1 = pd(x.end_date), len = dDiff(s1, e1);
+      let a = s1, b = e1;
+      if (edge === 'l') a = addD(s1, Math.min(dd, len));
+      else if (edge === 'r') b = addD(e1, Math.max(dd, -len));
+      else { a = addD(s1, dd); b = addD(e1, dd); }
+      ns = fd(a); ne = fd(b);
       const nx = rmX(ns) + 2, nw = Math.max(rmXEnd(ne) - rmX(ns) - 4, 14);
       el.style.left = nx + 'px'; el.style.width = nw + 'px';
-      tip.textContent = `${fmtMonths({ start_date: ns, end_date: ne })} · ${mDiff(a, b) + 1}개월`;
+      tip.textContent = `${md(ns)} → ${md(ne)} · ${fmtSpan(dDiff(a, b) + 1)}`;
     }
     tip.style.left = ev.clientX + 'px'; tip.style.top = ev.clientY + 'px'; tip.classList.add('is-on');
   };
@@ -3160,7 +3224,7 @@ function rmDrag(e, x, el, out) {
     setTimeout(() => { el._moved = false; }, 80);
     if (ns === x.start_date && ne === x.end_date) return render();
     const old = { start_date: x.start_date, end_date: x.end_date };
-    upRm(x.id, { start_date: ns, end_date: ne }, `${fmtMonths({ ...x, start_date: ns, end_date: ne })}로 옮겼습니다`, { undo: { t: '되돌리기', fn: () => upRm(x.id, old) } });
+    upRm(x.id, { start_date: ns, end_date: ne }, `${md(ns)} → ${md(ne)}로 옮겼습니다`, { undo: { t: '되돌리기', fn: () => upRm(x.id, old) } });
   };
   addEventListener('pointermove', move, { passive: false });
   addEventListener('pointerup', up); addEventListener('pointercancel', up);
@@ -4204,12 +4268,6 @@ function delComment(c) {
 /* 로드맵 항목 */
 const saveRmTitle = keyedDebounce((id, v) => upRm(id, { title: v.trim() || '이름 없음' }, null, { soft: true }), 600);
 const saveRmBody = keyedDebounce((id, v) => upRm(id, { body: v }, null, { soft: true }), 700);
-function monthOpts(around) {
-  const base = mFirst(pd(around)), T = mFirst(new Date());
-  let a = mAdd(base < T ? base : T, -6), out = [];
-  for (let k = 0; k < 42; k++) { const m = mAdd(a, k); out.push([fd(m), `${m.getFullYear()}년 ${m.getMonth() + 1}월`]); }
-  return out;
-}
 function roadmapPanel(x) {
   const ro = !S.owner, ms = x.kind === 'milestone', st = rmStOf(x.status);
   const p = rmProgress(x), auto = rmProgressAuto(x);
@@ -4217,15 +4275,22 @@ function roadmapPanel(x) {
   const rs = rmLinkedReqs(x.id);
   const themes = rmThemes().map(t => t.name).filter(Boolean);
 
+  const nd = rmDays(x);
+  const setS = v => { if (!v) return; const p2 = { start_date: v }; if (pd(v) > pd(x.end_date)) p2.end_date = v; upRm(x.id, p2); };
+  const setE = v => { if (!v) return; const p2 = { end_date: v }; if (pd(v) < pd(x.start_date)) p2.start_date = v; upRm(x.id, p2); };
   const period = ms
     ? (ro ? h('span', {}, mdK(x.start_date))
           : h('input', { class: 'in', type: 'date', id: 'rmDate', value: x.start_date, 'aria-label': '날짜', onChange: e => e.target.value && upRm(x.id, { start_date: e.target.value, end_date: e.target.value }) }))
-    : (ro ? h('span', {}, fmtMonths(x), h('span', { class: 'hint', style: 'margin-left:8px' }, `${mDiff(pd(x.start_date), pd(x.end_date)) + 1}개월`))
+    : (ro ? h('span', {}, `${mdK(x.start_date)} → ${mdK(x.end_date)}`, h('span', { class: 'hint', style: 'margin-left:8px' }, fmtSpan(nd)))
           : h('div', { class: 'dates' },
-              sel('rmS', monthOpts(x.start_date), fd(mFirst(pd(x.start_date))), v => { const p2 = { start_date: v }; if (pd(v) > pd(x.end_date)) p2.end_date = fd(mLast(pd(v))); upRm(x.id, p2); }),
+              h('input', { class: 'in', type: 'date', id: 'rmS', value: x.start_date, 'aria-label': '시작일', onChange: e => setS(e.target.value) }),
               h('span', { class: 'hint' }, '→'),
-              sel('rmE', monthOpts(x.end_date).map(([v, t]) => [fd(mLast(pd(v))), t]), fd(mLast(pd(x.end_date))), v => { const p2 = { end_date: v }; if (pd(v) < pd(x.start_date)) p2.start_date = fd(mFirst(pd(v))); upRm(x.id, p2); }),
-              h('span', { class: 'dur' }, `${mDiff(pd(x.start_date), pd(x.end_date)) + 1}개월`)));
+              h('input', { class: 'in', type: 'date', id: 'rmE', value: x.end_date, min: x.start_date, 'aria-label': '종료일', onChange: e => setE(e.target.value) }),
+              h('span', { class: 'dur' }, fmtSpan(nd))));
+  const presets = !ro && !ms ? frag(h('dt', {}), h('dd', { style: 'min-height:0;margin-top:-4px' }, h('div', { class: 'presets' },
+    [['오늘 시작', 0], ['1주', 7], ['2주', 14], ['3주', 21], ['한 달', 30], ['6주', 42]].map(([lb, n]) => h('button', {
+      onClick: () => n === 0 ? upRm(x.id, { start_date: today(), end_date: fd(addD(new Date(), nd - 1)) }) : upRm(x.id, { end_date: fd(addD(pd(x.start_date), n - 1)) })
+    }, lb))))) : null;
 
   const themeIn = ro ? null : h('input', {
     class: 'in', id: 'rmTheme', list: 'rmThemeList', maxlength: 40, value: x.theme || '', placeholder: '예: 결제 · 모바일',
@@ -4241,6 +4306,7 @@ function roadmapPanel(x) {
         : RM_ST.map(s2 => h('button', { class: 'chip', 'aria-pressed': String((x.status || 'planned') === s2.k), style: `--c:${cvar(s2.v)}`, onClick: () => upRm(x.id, { status: s2.k }) },
             h('span', { class: 'dot dot--r', style: `background:${cvar(s2.v)}` }), s2.t))),
       h('dt', {}, ms ? '날짜' : '기간'), h('dd', {}, period),
+      presets,
       !ms ? frag(h('dt', {}, '테마'), h('dd', {}, ro ? h('span', {}, rmThemeName(x) || '없음') : frag(themeIn, h('datalist', { id: 'rmThemeList' }, themes.map(t => h('option', { value: t })))))) : null,
       !ro ? frag(h('dt', {}, '색'), h('dd', {}, h('div', { class: 'swatches' }, PAL.map(c => h('button', {
         class: 'swatch', style: `background:${c}`, 'aria-pressed': String((x.color || '').toUpperCase() === c.toUpperCase()), 'aria-label': c,
@@ -4258,6 +4324,7 @@ function roadmapPanel(x) {
         h('button', { class: 'switch', role: 'switch', 'aria-checked': String(x.is_public !== false), 'aria-label': '직원에게 보이기', onClick: () => upRm(x.id, { is_public: x.is_public === false }) }),
         h('span', { class: 'hint' }, x.is_public === false ? '나만 볼 수 있어요' : '직원도 볼 수 있어요')))) : null),
     !ms && auto && !ro ? h('p', { class: 'hint', style: 'margin:-6px 0 14px' }, '진행률은 연결한 작업·요청 중 끝난 비율로 자동 계산돼요.') : null,
+    ms && !ro ? h('p', { class: 'hint', style: 'margin:-6px 0 14px' }, '마일스톤은 출시·오픈·시연처럼 「이날까지 끝낸다」는 기준일이에요. 타임라인에 세로 점선으로 표시되고, 날짜가 지났는데 완료가 아니면 빨갛게 바뀌어요.') : null,
     (S.owner || (x.body || '').trim()) ? h('div', { class: 'sect' },
       h('div', { class: 'sect__h' }, h('b', {}, '설명')),
       ro ? h('div', { class: 'cm__t' }, x.body)
